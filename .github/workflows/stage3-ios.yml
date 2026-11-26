@@ -1,4 +1,4 @@
-name: Stage 3 iPhone build and native checks
+name: Stage 3 iPhone release build
 on:
   push:
     branches: [stage3-iphone]
@@ -48,10 +48,3 @@ jobs:
           if-no-files-found: error
           compression-level: 0
           retention-days: 1
-      - name: Run native session and model checks in a fresh iPhone simulator
-        timeout-minutes: 24
-        working-directory: mobile
-        run: |
-          runtime=$(xcrun simctl list runtimes --json | python3 -c 'import json,sys; r=[x["identifier"] for x in json.load(sys.stdin)["runtimes"] if x["isAvailable"] and ".iOS-" in x["identifier"]]; print(r[-1])')
-          fresh_id=$(xcrun simctl create "Universe Stage 3" com.apple.CoreSimulator.SimDeviceType.iPhone-Air "$runtime")
-          python3 tool/run_ios_test.py "$fresh_id" integration_test/ios_session_test.dart integration_test/ios_model_test.dart

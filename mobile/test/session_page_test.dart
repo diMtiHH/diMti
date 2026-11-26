@@ -10,6 +10,7 @@ class TestBackend implements SessionBackend {
   String? value;
   String language = 'ru';
   bool enabled = false, denied = false, fails = false;
+  bool preferencesFail = false;
   int utc = 1800000000000, continuous = 5000000;
   int writes = 0, resets = 0, schedules = 0;
   @override
@@ -27,8 +28,12 @@ class TestBackend implements SessionBackend {
   }
 
   @override
-  Future<SessionPreferences> preferences() async =>
-      SessionPreferences(language, enabled);
+  Future<SessionPreferences> preferences() async {
+    if (preferencesFail)
+      throw StateError('Private error must not be displayed');
+    return SessionPreferences(language, enabled);
+  }
+
   @override
   Future<void> setLanguage(String next) async {
     language = next;
@@ -211,10 +216,40 @@ void main() {
   testWidgets('unavailable clock blocks input with a visible retry', (
     tester,
   ) async {
-    await show(tester, SessionPage(backend: TestBackend()..fails = true));
+    final backend = TestBackend()..fails = true;
+    final random = TestRandom();
+    await show(
+      tester,
+      SessionPage(diagnostic: true, backend: backend, random: random),
+    );
     expect(find.byType(TextField), findsNothing);
     expect(find.text('Повторить загрузку'), findsOneWidget);
-    expect(find.textContaining('Проверка заблокирована.'), findsOneWidget);
+    expect(find.textContaining('системное время для таймера'), findsOneWidget);
+    expect(find.textContaining('модель'), findsNothing);
+    expect(random.calls, 0);
+    expect(backend.writes, 0);
+    backend.fails = false;
+    await tester.tap(find.text('Повторить загрузку'));
+    await tester.pumpAndSettle();
+    expect(find.text('Подготовить тестовый ответ'), findsOneWidget);
+    expect(random.calls, 0);
+    expect(backend.writes, 0);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('settings failure is specific and reveals no exception details', (
+    tester,
+  ) async {
+    await show(
+      tester,
+      SessionPage(
+        diagnostic: true,
+        backend: TestBackend()..preferencesFail = true,
+      ),
+    );
+    expect(find.textContaining('прочитать настройки'), findsOneWidget);
+    expect(find.textContaining('Private error'), findsNothing);
+    expect(find.textContaining('модель'), findsNothing);
     await tester.pumpWidget(const SizedBox());
   });
 

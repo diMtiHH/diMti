@@ -57,7 +57,9 @@ const maxClockMs = 9007199254740991 - cooldownMs;
 
 abstract interface class SessionClock {
   /// continuousMs must include device sleep and survive process restarts.
-  /// bootToken is local to a boot session; it must change after reboot.
+  /// bootToken identifies the comparison domain, never a device identity.
+  /// A different token takes bounded UTC recovery. The iOS boot-time marker can
+  /// also change after wall-clock edits between process launches; see STAGE_3.
   Future<ClockSample> read();
 }
 

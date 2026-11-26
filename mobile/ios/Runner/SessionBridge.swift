@@ -11,6 +11,11 @@ final class SessionBridge {
   private let center = UNUserNotificationCenter.current()
   private let fileManager = FileManager.default
   private let channel: FlutterMethodChannel
+  // KERN_BOOTTIME is a documented timestamp, not a boot UUID. Cache it for
+  // this process so a wall-clock edit cannot change the active clock domain.
+  // Across process restarts it can change after a clock edit as well as reboot;
+  // that deliberately takes the core's bounded UTC recovery path (see STAGE_3).
+  private static var processClockDomain: String?
   private var englishNoticeApproved: Bool {
     Bundle.main.object(forInfoDictionaryKey: "UniverseEnglishNoticeApproved") as? Bool == true
   }
@@ -24,7 +29,15 @@ final class SessionBridge {
       self.tail = Task { @MainActor in
         await previous?.value
         do { result(try await self.perform(call)) }
-        catch { result(FlutterError(code: "session_unavailable", message: nil, details: nil)) }
+        catch {
+          let code: String
+          switch error {
+          case BridgeError.clock: code = "clock_unavailable"
+          case BridgeError.invalid: code = "invalid_state"
+          default: code = "storage_unavailable"
+          }
+          result(FlutterError(code: code, message: nil, details: nil))
+        }
       }
     }
   }
@@ -100,22 +113,25 @@ final class SessionBridge {
   }
 
   private func clock() throws -> [String: Any] {
-    var size: size_t = 0
-    guard sysctlbyname("kern.bootsessionuuid", nil, &size, nil, 0) == 0, size > 1, size < 128 else { throw BridgeError.clock }
-    var bytes = [CChar](repeating: 0, count: size)
-    let status = bytes.withUnsafeMutableBufferPointer { buffer in
-      sysctlbyname("kern.bootsessionuuid", buffer.baseAddress, &size, nil, 0)
+    if Self.processClockDomain == nil {
+      var boot = timeval()
+      var size = MemoryLayout<timeval>.size
+      var mib: [Int32] = [CTL_KERN, KERN_BOOTTIME]
+      let status = mib.withUnsafeMutableBufferPointer { buffer in
+        sysctl(buffer.baseAddress, UInt32(buffer.count), &boot, &size, nil, 0)
+      }
+      guard status == 0, size == MemoryLayout<timeval>.size,
+        boot.tv_sec > 0, boot.tv_usec >= 0, boot.tv_usec < 1_000_000 else { throw BridgeError.clock }
+      Self.processClockDomain = "boottime-v1:\(boot.tv_sec):\(boot.tv_usec)"
     }
-    guard status == 0 else { throw BridgeError.clock }
-    let boot = String(cString: bytes)
-    guard UUID(uuidString: boot) != nil else { throw BridgeError.clock }
+    guard let domain = Self.processClockDomain else { throw BridgeError.clock }
     var info = mach_timebase_info_data_t()
     guard mach_timebase_info(&info) == KERN_SUCCESS, info.denom != 0 else { throw BridgeError.clock }
     let milliseconds = Double(mach_continuous_time()) * Double(info.numer) / Double(info.denom) / 1_000_000
     let utc = Date().timeIntervalSince1970 * 1000
     guard milliseconds.isFinite, utc.isFinite, milliseconds >= 0, utc >= 0,
       milliseconds < 9_007_199_252_940_991, utc < 9_007_199_252_940_991 else { throw BridgeError.clock }
-    return ["utcMs": Int64(utc), "continuousMs": Int64(milliseconds), "bootToken": boot]
+    return ["utcMs": Int64(utc), "continuousMs": Int64(milliseconds), "bootToken": domain]
   }
 
   private func preferences(_ scope: String) throws -> [String: Any] {
