@@ -1,4 +1,4 @@
-name: Stage 3 native checks on iOS 18.5
+name: Stage 3 complete checks
 on:
   push:
     branches: [stage3-native-check, stage3-iphone]
@@ -6,18 +6,21 @@ on:
 permissions:
   contents: read
 jobs:
+  windows:
+    name: Windows application tests
+    runs-on: windows-2025
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Test rejection of incomplete XCTest reports
+        run: python -m unittest discover -s mobile/tool -p test_xctest_result.py -v
+      - name: Set up pinned SDK, analyze and run all application tests
+        shell: cmd
+        run: setup-windows.cmd
   native:
-    name: iOS ${{ matrix.suite }}
+    name: iOS XCTest and native checks
     runs-on: macos-15-intel
-    timeout-minutes: 40
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - suite: session
-            target: integration_test/ios_session_test.dart
-          - suite: model
-            target: integration_test/ios_model_test.dart
+    timeout-minutes: 60
     env:
       DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     steps:
@@ -26,6 +29,8 @@ jobs:
         run: bash mobile/tool/run_native_safety.sh
       - name: Test native state validation and interrupted writes
         run: bash mobile/tool/run_native_storage.sh
+      - name: Test XCTest result validation
+        run: python3 -m unittest discover -s mobile/tool -p test_xctest_result.py -v
       - name: Install pinned Flutter SDK
         run: |
           git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
@@ -33,7 +38,7 @@ jobs:
           echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
       - name: Prepare verified assets
         run: python3 -m research.prepare_mobile
-      - name: Prepare iOS SDK and simulator
+      - name: Prepare iOS SDK
         timeout-minutes: 12
         working-directory: mobile
         run: |
@@ -42,11 +47,18 @@ jobs:
           flutter config --no-analytics --no-enable-swift-package-manager
           flutter precache --ios
           flutter pub get --enforce-lockfile
-          simulator_id=$(xcrun simctl create "Universe ${{ matrix.suite }} 18.5" com.apple.CoreSimulator.SimDeviceType.iPhone-16 com.apple.CoreSimulator.SimRuntime.iOS-18-5)
-          echo "UNIVERSE_SIMULATOR=$simulator_id" >> "$GITHUB_ENV"
-      # Each suite gets a clean runner and simulator. A previous sequential run
-      # stalled VM service discovery after reinstalling a different test app.
-      - name: Test ${{ matrix.suite }} on a fresh simulator
-        timeout-minutes: 32
+      - name: Build once and run every iOS test through XCTest
+        timeout-minutes: 45
         working-directory: mobile
-        run: python3 tool/run_ios_test.py "$UNIVERSE_SIMULATOR" "${{ matrix.target }}"
+        run: python3 tool/run_ios_test.py
+      - name: Preserve XCTest results and launch diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: stage3-xctest-results
+          path: |
+            mobile/build/ios_ci/*.log
+            mobile/build/ios_ci/*.json
+            mobile/build/ios_ci/Tests.xcresult
+          if-no-files-found: warn
+          retention-days: 1
