@@ -8,7 +8,7 @@ permissions:
 jobs:
   native:
     name: iOS ${{ matrix.suite }}
-    runs-on: macos-15
+    runs-on: macos-15-intel
     timeout-minutes: 40
     strategy:
       fail-fast: false
@@ -44,9 +44,8 @@ jobs:
           flutter pub get --enforce-lockfile
           simulator_id=$(xcrun simctl create "Universe ${{ matrix.suite }} 18.5" com.apple.CoreSimulator.SimDeviceType.iPhone-16 com.apple.CoreSimulator.SimRuntime.iOS-18-5)
           echo "UNIVERSE_SIMULATOR=$simulator_id" >> "$GITHUB_ENV"
-          open -a "$DEVELOPER_DIR/Applications/Simulator.app" --args -CurrentDeviceUDID "$simulator_id"
-      # Each suite gets a clean runner and simulator. Reinstalling a different
-      # Flutter test entry point on one device stalled VM service discovery.
+      # Each suite gets a clean runner and simulator. A previous sequential run
+      # stalled VM service discovery after reinstalling a different test app.
       - name: Test ${{ matrix.suite }} on a fresh simulator
         timeout-minutes: 32
         working-directory: mobile

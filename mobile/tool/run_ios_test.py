@@ -15,12 +15,19 @@ def main():
             print(output, flush=True)
             if boot.returncode == 0 and 'Data Migration Failed' not in output:
                 break
-        except subprocess.TimeoutExpired:
+        except subprocess.TimeoutExpired as error:
+            for partial in (error.stdout, error.stderr):
+                if partial:
+                    print(partial.decode(errors='replace') if isinstance(partial, bytes) else partial, flush=True)
             print('Simulator boot timed out.', flush=True)
         if attempt == 1:
             raise SystemExit('Simulator did not boot; application test was not run.')
         print('Restarting simulator after unsuccessful boot.', flush=True)
-        subprocess.run(['xcrun', 'simctl', 'shutdown', device], timeout=60, check=False)
+        try:
+            subprocess.run(['xcrun', 'simctl', 'shutdown', device], timeout=60, check=False)
+        except subprocess.TimeoutExpired:
+            print('Simulator shutdown timed out; application test was not run.', flush=True)
+            return 124
     try:
         result = subprocess.run(
             ['flutter', 'test', '--verbose', '--reporter', 'expanded', '--no-pub', '-d', device,
