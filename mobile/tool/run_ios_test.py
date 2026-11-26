@@ -103,11 +103,14 @@ def main():
                                   'com.apple.CoreSimulator.SimDeviceType.iPhone-16',
                                   'com.apple.CoreSimulator.SimRuntime.iOS-18-5'],
                                  check=True, capture_output=True, text=True, timeout=30)
-        device = str(UUID(created.stdout.strip()))
+        # simctl accepts a lower-case UUID, but Xcode destination matching
+        # requires the exact identifier returned by CoreSimulator.
+        device = created.stdout.strip()
+        UUID(device)  # Validate without changing its case.
         boot(device, output)
         bundle = output / 'Tests.xcresult'
         checked(['xcodebuild', 'test-without-building', '-xctestrun', str(products[0]),
-                 '-destination', f'id={device}', '-destination-timeout', '120',
+                 '-destination', f'platform=iOS Simulator,id={device}', '-destination-timeout', '120',
                  '-parallel-testing-enabled', 'NO',
                  '-resultBundlePath', str(bundle)], 'test', output, 600)
         for kind in ('summary', 'tests'):
