@@ -32,7 +32,7 @@ final class SessionBridge {
           let code: String
           switch error {
           case BridgeError.clock: code = "clock_unavailable"
-          case BridgeError.invalid: code = "invalid_state"
+          case BridgeError.invalid, is SessionDataError: code = "invalid_state"
           case BridgeError.notification, is CallbackDeadline, is NotificationDeliveryError: code = "notification_unavailable"
           default: code = "storage_unavailable"
           }
@@ -42,79 +42,10 @@ final class SessionBridge {
     }
   }
 
-  private func folder(_ scope: String) throws -> URL {
-    guard scope == "real" || scope == "diagnostic" else { throw BridgeError.invalid }
+  private func storage() throws -> SessionStorage {
     let support = try fileManager.url(for: .applicationSupportDirectory,
       in: .userDomainMask, appropriateFor: nil, create: true)
-    var url = support.appendingPathComponent("UniverseSessionV1", isDirectory: true)
-      .appendingPathComponent(scope, isDirectory: true)
-    try fileManager.createDirectory(at: url, withIntermediateDirectories: true,
-      attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
-    var values = URLResourceValues()
-    values.isExcludedFromBackup = true
-    try url.setResourceValues(values)
-    return url
-  }
-
-  private func read(_ scope: String, _ name: String) throws -> String? {
-    let url = try folder(scope).appendingPathComponent(name + ".json")
-    do {
-      let data = try Data(contentsOf: url)
-      guard data.count <= 2048, let text = String(data: data, encoding: .utf8) else { throw BridgeError.invalid }
-      return text
-    } catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError {
-      return nil
-    }
-  }
-
-  private func write(_ scope: String, _ name: String, _ value: String) throws {
-    guard let data = value.data(using: .utf8), data.count <= 2048 else { throw BridgeError.invalid }
-    let dir = try folder(scope)
-    let temp = dir.appendingPathComponent(name + ".pending")
-    let target = dir.appendingPathComponent(name + ".json")
-    // Protected, excluded directory; the bounded staging file is never read as
-    // committed state. Atomic rename is within the same filesystem/directory.
-    try data.write(to: temp, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
-    let file = try FileHandle(forWritingTo: temp)
-    do { try file.synchronize(); try file.close() }
-    catch { try? file.close(); throw error }
-    guard Darwin.rename(temp.path, target.path) == 0 else { throw BridgeError.storage }
-    let descriptor = Darwin.open(dir.path, O_RDONLY)
-    guard descriptor >= 0 else { throw BridgeError.storage }
-    defer { Darwin.close(descriptor) }
-    guard Darwin.fsync(descriptor) == 0 else { throw BridgeError.storage }
-  }
-
-  private func dictionary(_ text: String) throws -> [String: Any] {
-    guard let data = text.data(using: .utf8),
-      let value = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { throw BridgeError.invalid }
-    return value
-  }
-
-  private func validateState(_ text: String, _ scope: String) throws -> [String: Any] {
-    let value = try dictionary(text)
-    guard let version = value["version"] as? Int, let phase = value["phase"] as? String,
-      version == 1 || (version == 2 && scope == "diagnostic" && phase == "cooldown") else { throw BridgeError.invalid }
-    var keys: Set<String> = ["version", "phase"]
-    switch phase {
-    case "idle", "reserved": break
-    case "pending":
-      keys.insert("answer")
-      guard ["yes", "no"].contains(value["answer"] as? String ?? "") else { throw BridgeError.invalid }
-    case "cooldown":
-      keys.formUnion(["utcDeadline", "continuousDeadline", "bootToken"])
-      if version == 2 {
-        keys.insert("durationMs")
-        guard value["durationMs"] as? Int64 == 60_000 else { throw BridgeError.invalid }
-      }
-      guard let utc = value["utcDeadline"] as? Int64,
-        let continuous = value["continuousDeadline"] as? Int64,
-        utc >= 0, continuous >= 0, utc <= 9_007_199_254_740_991, continuous <= 9_007_199_254_740_991,
-        let boot = value["bootToken"] as? String, !boot.isEmpty, boot.count <= 128 else { throw BridgeError.invalid }
-    default: throw BridgeError.invalid
-    }
-    guard Set(value.keys) == keys else { throw BridgeError.invalid }
-    return value
+    return SessionStorage(root: support.appendingPathComponent("UniverseSessionV1", isDirectory: true))
   }
 
   private func clock() throws -> [String: Any] {
@@ -139,35 +70,29 @@ final class SessionBridge {
     return ["utcMs": Int64(utc), "continuousMs": Int64(milliseconds), "bootToken": domain]
   }
 
-  private func preferences(_ scope: String) throws -> [String: Any] {
-    guard let raw = try read(scope, "preferences") else { return ["language": "ru", "notifications": false] }
-    let value = try dictionary(raw)
-    guard Set(value.keys) == ["language", "notifications"],
-      ["ru", "en"].contains(value["language"] as? String ?? ""), value["notifications"] is Bool else { throw BridgeError.invalid }
-    return value
+  private func preferences(_ scope: SessionScope) throws -> [String: Any] {
+    try storage().preferences(scope)
   }
 
-  private func savePreferences(_ scope: String, _ value: [String: Any]) throws {
-    let data = try JSONSerialization.data(withJSONObject: value, options: [.sortedKeys])
-    guard let text = String(data: data, encoding: .utf8) else { throw BridgeError.invalid }
-    try write(scope, "preferences", text)
+  private func savePreferences(_ scope: SessionScope, _ value: [String: Any]) throws {
+    try storage().savePreferences(scope, value)
   }
 
-  private func notificationID(_ scope: String) -> String {
-    return scope == "real" ? "universe.cooldown.v1" : "universe.cooldown.v1.diagnostic"
+  private func notificationID(_ scope: SessionScope) -> String {
+    return scope == .real ? "universe.cooldown.v1" : "universe.cooldown.v1.diagnostic"
   }
 
-  private func cancel(_ scope: String) {
+  private func cancel(_ scope: SessionScope) {
     let ids = [notificationID(scope)]
     center.removePendingNotificationRequests(withIdentifiers: ids)
     center.removeDeliveredNotifications(withIdentifiers: ids)
   }
 
-  private func schedule(_ scope: String) async throws {
+  private func schedule(_ scope: SessionScope) async throws {
     let prefs = try preferences(scope)
     if prefs["language"] as? String == "en" && !englishNoticeApproved { cancel(scope); return }
     guard prefs["notifications"] as? Bool == true else { cancel(scope); return }
-    guard delivery.isAvailable(scope) else { throw BridgeError.notification }
+    guard delivery.isAvailable(scope.rawValue) else { throw BridgeError.notification }
     let settings = try await BoundedCallback<UNNotificationSettings>.wait(seconds: 2) { reply in
       center.getNotificationSettings { reply(.success($0)) }
     }
@@ -175,8 +100,8 @@ final class SessionBridge {
       cancel(scope)
       throw BridgeError.invalid
     }
-    guard let raw = try read(scope, "state") else { cancel(scope); return }
-    let state = try validateState(raw, scope)
+    guard let raw = try storage().readState(scope) else { cancel(scope); return }
+    let state = try SessionSchema.state(raw, scope: scope)
     guard state["phase"] as? String == "cooldown" else { cancel(scope); return }
     let now = try clock()
     let sameBoot = state["bootToken"] as? String == now["bootToken"] as? String
@@ -187,12 +112,12 @@ final class SessionBridge {
     guard left > 0 else { cancel(scope); return }
     let content = UNMutableNotificationContent()
     let ru = prefs["language"] as? String == "ru"
-    content.title = scope == "diagnostic" ? (ru ? "Проверка ядра" : "Core check") : (ru ? "Спроси Вселенную" : "Ask the Universe")
+    content.title = scope == .diagnostic ? (ru ? "Проверка ядра" : "Core check") : (ru ? "Спроси Вселенную" : "Ask the Universe")
     content.body = ru ? "Вселенная снова готова тебя услышать" : "The Universe is ready to hear you again"
     content.sound = .default
     let request = UNNotificationRequest(identifier: notificationID(scope), content: content,
       trigger: UNTimeIntervalNotificationTrigger(timeInterval: max(1, Double(left) / 1000), repeats: false))
-    try await delivery.add(scope, cancel: { [self] in cancel(scope) }) { reply in
+    try await delivery.add(scope.rawValue, cancel: { [self] in cancel(scope) }) { reply in
       center.add(request) { error in
         if let error = error { reply(.failure(error)) }
         else { reply(.success(())) }
@@ -201,14 +126,13 @@ final class SessionBridge {
   }
 
   private func perform(_ call: FlutterMethodCall) async throws -> Any? {
-    guard let args = call.arguments as? [String: Any], let scope = args["scope"] as? String,
-      scope == "real" || scope == "diagnostic" else { throw BridgeError.invalid }
+    guard let args = call.arguments as? [String: Any], let rawScope = args["scope"] as? String,
+      let scope = SessionScope(rawValue: rawScope) else { throw BridgeError.invalid }
     switch call.method {
-    case "readState": return try read(scope, "state")
+    case "readState": return try storage().readState(scope)
     case "writeState":
       guard let value = args["value"] as? String else { throw BridgeError.invalid }
-      _ = try validateState(value, scope)
-      try write(scope, "state", value)
+      try storage().writeState(scope, value)
       return nil
     case "clock": return try clock()
     case "preferences":
@@ -225,7 +149,7 @@ final class SessionBridge {
       try? await schedule(scope)
       return nil
     case "setNotifications":
-      guard let enabled = args["enabled"] as? Bool else { throw BridgeError.invalid }
+      let enabled = try SessionSchema.boolean(args["enabled"])
       var prefs = try preferences(scope)
       if enabled && prefs["language"] as? String == "en" && !englishNoticeApproved { return false }
       var granted = false
@@ -244,9 +168,9 @@ final class SessionBridge {
     case "scheduleNotification": try await schedule(scope); return nil
     case "cancelNotification": cancel(scope); return nil
     case "resetDiagnostic":
-      guard scope == "diagnostic" else { throw BridgeError.invalid }
+      guard scope == .diagnostic else { throw BridgeError.invalid }
       cancel(scope)
-      try write(scope, "state", "{\"version\":1,\"phase\":\"idle\"}")
+      try storage().writeState(scope, "{\"version\":1,\"phase\":\"idle\"}")
       return nil
     default: return FlutterMethodNotImplemented
     }

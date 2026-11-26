@@ -15,6 +15,8 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Test clock crash recovery and notification deadlines
         run: bash mobile/tool/run_native_safety.sh
+      - name: Test native state validation and interrupted writes
+        run: bash mobile/tool/run_native_storage.sh
       - name: Install pinned Flutter SDK
         run: |
           git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
@@ -22,13 +24,21 @@ jobs:
           echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
       - name: Prepare verified assets
         run: python3 -m research.prepare_mobile
-      - name: Run native session and bundled model tests
-        timeout-minutes: 42
+      - name: Prepare iOS SDK and simulator
+        timeout-minutes: 12
         working-directory: mobile
         run: |
           xcodebuild -version
           flutter config --no-analytics --no-enable-swift-package-manager
+          flutter precache --ios
           flutter pub get --enforce-lockfile
           simulator_id=$(xcrun simctl create "Universe Native 18.5" com.apple.CoreSimulator.SimDeviceType.iPhone-16 com.apple.CoreSimulator.SimRuntime.iOS-18-5)
-          python3 tool/run_ios_test.py "$simulator_id" integration_test/ios_session_test.dart
-          flutter test --no-pub --concurrency=1 -d "$simulator_id" integration_test/ios_model_test.dart
+          echo "UNIVERSE_SIMULATOR=$simulator_id" >> "$GITHUB_ENV"
+      - name: Test native session storage and recovery
+        timeout-minutes: 32
+        working-directory: mobile
+        run: python3 tool/run_ios_test.py "$UNIVERSE_SIMULATOR" integration_test/ios_session_test.dart
+      - name: Test bundled model in Russian and English
+        timeout-minutes: 12
+        working-directory: mobile
+        run: flutter test --no-pub -d "$UNIVERSE_SIMULATOR" integration_test/ios_model_test.dart
