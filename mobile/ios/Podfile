@@ -27,6 +27,13 @@ require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelpe
 
 flutter_ios_podfile_setup
 
+# The Dart FFI plugin looks up OrtGetApiBase directly. Select Microsoft's
+# version-matched XCFramework for that plugin while Flutter registers its pods.
+def pod(name = nil, *requirements)
+  return super(name, :podspec => 'Native/onnxruntime_v2.podspec') if name == 'onnxruntime_v2'
+  super
+end
+
 target 'Runner' do
   use_frameworks!
 
