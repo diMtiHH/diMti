@@ -1,0 +1,33 @@
+name: Stage 3 native checks on iOS 18.5
+on:
+  push:
+    branches: [stage3-native-check]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: macos-15
+    timeout-minutes: 40
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install pinned Flutter SDK
+        run: |
+          git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          test "$(git -C "$RUNNER_TEMP/flutter" rev-parse HEAD)" = ae9b586f34a8443573f82ef57c3bf914a908cbf7
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Prepare verified assets
+        run: python3 -m research.prepare_mobile
+      - name: Run native session and bundled model tests
+        timeout-minutes: 28
+        working-directory: mobile
+        run: |
+          xcodebuild -version
+          flutter config --no-analytics --no-enable-swift-package-manager
+          flutter pub get --enforce-lockfile
+          simulator_id=$(xcrun simctl create "Universe Native 18.5" com.apple.CoreSimulator.SimDeviceType.iPhone-16 com.apple.CoreSimulator.SimRuntime.iOS-18-5)
+          python3 tool/run_ios_test.py "$simulator_id" integration_test/ios_session_test.dart
+          flutter test --no-pub --concurrency=1 -d "$simulator_id" integration_test/ios_model_test.dart
+
