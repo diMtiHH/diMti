@@ -1,0 +1,31 @@
+Run: https://github.com/diMtiHH/diMti/actions/runs/45874431508
+Commit: 6083b41fe8cd5df9fb90fc1fe00bd139fdc7a540 (same app source as IPA)
+Environment: macos-15-intel, Xcode 16.4, iPhone 16 / iOS 18.5 simulator
+Result: success; 16 native safety checks and 2 integration tests passed
+2026-11-26T18:15:58.1934200Z PASS 1: commit token before creating kernel marker
+2026-11-26T18:15:58.1937230Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-26T18:15:58.1939900Z PASS 3: simulated reboot rotates token
+2026-11-26T18:15:58.1940590Z PASS 4: failed write recovery
+2026-11-26T18:15:58.1942060Z PASS 5: ambiguous committed write recovery
+2026-11-26T18:15:58.1942980Z PASS 6: crash between persisted token and kernel creation
+2026-11-26T18:15:58.1943950Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-26T18:15:58.2023540Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-26T18:15:58.2025590Z PASS 9: strict private marker validation
+2026-11-26T18:15:58.2026910Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-26T18:15:58.2028850Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-26T18:15:58.2030470Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-26T18:15:58.2032040Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-26T18:15:58.2036370Z PASS 14: notification callback success/error and duplicate completion
+2026-11-26T18:15:58.2038180Z PASS 15: missing OS callback releases the serial queue
+2026-11-26T18:15:58.2040030Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-26T18:15:58.2041720Z Native safety checks: 16/16 passed
+2026-11-26T18:16:21.1610130Z Xcode 16.4
+2026-11-26T18:16:21.1623750Z Build version 16F6
+2026-11-26T18:33:07.4328230Z Xcode build done.                                           297.8s
+2026-11-26T18:34:51.3480570Z ##[group]✅ Passing tests
+2026-11-26T18:34:51.3508760Z ✅ native iOS storage, clock and notification cancellation preserve recovery
+2026-11-26T18:35:08.5308990Z 🎉 1 test passed.
+2026-11-26T18:38:45.1770730Z Xcode build done.                                           143.7s
+2026-11-26T18:40:12.1605130Z ##[group]✅ Passing tests
+2026-11-26T18:40:12.1612410Z ✅ iOS Runner loads the bundled model and checks RU and EN
+2026-11-26T18:40:18.8245600Z 🎉 1 test passed.

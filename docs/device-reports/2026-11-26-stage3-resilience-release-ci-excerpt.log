@@ -1,0 +1,29 @@
+Run: https://github.com/diMtiHH/diMti/actions/runs/45874432080
+Commit: 6083b41fe8cd5df9fb90fc1fe00bd139fdc7a540
+Result: success
+2026-11-26T18:15:55.6424370Z PASS 1: commit token before creating kernel marker
+2026-11-26T18:15:55.6565490Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-26T18:15:55.6667570Z PASS 3: simulated reboot rotates token
+2026-11-26T18:15:55.6748350Z PASS 4: failed write recovery
+2026-11-26T18:15:55.6749110Z PASS 5: ambiguous committed write recovery
+2026-11-26T18:15:55.6749600Z PASS 6: crash between persisted token and kernel creation
+2026-11-26T18:15:55.6750480Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-26T18:15:55.6751090Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-26T18:15:55.6751640Z PASS 9: strict private marker validation
+2026-11-26T18:15:55.6752690Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-26T18:15:55.6753310Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-26T18:15:55.6754030Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-26T18:15:55.6754640Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-26T18:15:55.6755570Z PASS 14: notification callback success/error and duplicate completion
+2026-11-26T18:15:55.6756260Z PASS 15: missing OS callback releases the serial queue
+2026-11-26T18:15:55.6757190Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-26T18:15:55.6757920Z Native safety checks: 16/16 passed
+2026-11-26T18:16:18.1434370Z Xcode 26.6
+2026-11-26T18:16:18.1449430Z Build version 17F113
+2026-11-26T18:17:19.1037830Z No issues found! (ran in 12.2s)
+2026-11-26T18:19:44.4751880Z Xcode build done.                                           91.1s
+2026-11-26T18:19:54.0508350Z model.onnx: verified in Runner.app
+2026-11-26T18:19:54.0540410Z tokenizer.json: verified in Runner.app
+2026-11-26T18:19:54.0549600Z head.json: verified in Runner.app
+2026-11-26T18:19:54.0551110Z App bytes: 533165287
+2026-11-26T18:21:36.4906360Z Artifact Ask-the-Universe-stage3-iphone has been successfully uploaded! Final size is 295614971 bytes. Artifact ID is 15144193249
