@@ -96,7 +96,7 @@ class PauseNotification {
   final String language;
   const PauseNotification(this.remainingMs, this.language);
   String get body => language == 'ru'
-      ? '��������� ����� ������ ���� ��������'
+      ? 'Вселенная снова готова тебя услышать'
       : 'The Universe is ready to hear you again';
 }
 

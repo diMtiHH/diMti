@@ -98,13 +98,13 @@ void main() {
         );
         await tester.enterText(find.byType(TextField), 'not a real question');
         await tester.pump();
-        await tester.tap(find.text('����������'));
+        await tester.tap(find.text('Продолжить'));
         // A second tap before the next frame must not erase the review snapshot.
-        await tester.tap(find.text('����������'));
+        await tester.tap(find.text('Продолжить'));
         await tester.pumpAndSettle();
         expect(inspections, 0);
-        expect(find.text('��������� ������������'), findsOneWidget);
-        await tester.tap(find.text('�����������'));
+        expect(find.text('Подтверди формулировку'), findsOneWidget);
+        await tester.tap(find.text('Подтверждаю'));
         await tester.pumpAndSettle();
         expect(inspections, 1);
         expect(random.calls, 0);
@@ -128,11 +128,11 @@ void main() {
           SessionPage(diagnostic: true, backend: backend, random: random);
       await show(tester, page());
       expect(find.byType(TextField), findsNothing);
-      await tester.tap(find.text('����������� �������� �����'));
+      await tester.tap(find.text('Подготовить тестовый ответ'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('�����������'));
+      await tester.tap(find.text('Подтверждаю'));
       await tester.pumpAndSettle();
-      expect(find.text('�������� ����������� �����'), findsOneWidget);
+      expect(find.text('Показать сохранённый ответ'), findsOneWidget);
       expect(find.byKey(const ValueKey('answer')), findsNothing);
       expect(backend.value, contains('pending'));
       expect(backend.value, isNot(contains(diagnosticFixture)));
@@ -141,12 +141,12 @@ void main() {
       await tester.pumpWidget(MaterialApp(home: page()));
       await tester.pumpAndSettle();
       expect(random.calls, 1);
-      expect(find.text('�������� ����������� �����'), findsOneWidget);
-      await tester.tap(find.text('�������� ����������� �����'));
+      expect(find.text('Показать сохранённый ответ'), findsOneWidget);
+      await tester.tap(find.text('Показать сохранённый ответ'));
       await tester.pumpAndSettle();
-      expect(find.text('���'), findsOneWidget);
+      expect(find.text('НЕТ'), findsOneWidget);
       expect(find.text('1:00'), findsOneWidget);
-      expect(find.text('�������� ����� � ���� ������'), findsOneWidget);
+      expect(find.text('Тестовая пауза — одна минута'), findsOneWidget);
       expect(backend.value, contains('cooldown'));
       expect(backend.value, isNot(contains('answer')));
       backend.utc += 15000;
@@ -195,18 +195,18 @@ void main() {
       backend.continuous -= 1;
       await tester.pump(const Duration(seconds: 1));
       await tester.pumpAndSettle();
-      expect(find.text('��������� ��������'), findsOneWidget);
+      expect(find.text('Повторить загрузку'), findsOneWidget);
       for (var attempt = 0; attempt < 2; attempt++) {
-        await tester.tap(find.text('��������� ��������'));
+        await tester.tap(find.text('Повторить загрузку'));
         await tester.pumpAndSettle();
         expect(
           find.text(
-            '�� ������� �������� ��������� ����� ��� �������. �������� �������������.',
+            'Не удалось получить системное время для таймера. Проверка заблокирована.',
           ),
           findsOneWidget,
         );
         expect(find.byKey(const ValueKey('answer')), findsNothing);
-        expect(find.text('����������� �������� �����'), findsNothing);
+        expect(find.text('Подготовить тестовый ответ'), findsNothing);
         expect(backend.value, saved);
         expect(backend.writes, writes);
         expect(backend.schedules, schedules);
@@ -214,10 +214,10 @@ void main() {
       }
 
       backend.continuous += 1;
-      await tester.tap(find.text('��������� ��������'));
+      await tester.tap(find.text('Повторить загрузку'));
       await tester.pumpAndSettle();
       expect(find.text(timer), findsOneWidget);
-      expect(find.text('��������� ��������'), findsNothing);
+      expect(find.text('Повторить загрузку'), findsNothing);
       expect(backend.value, saved);
       expect(backend.writes, writes);
       expect(random.calls, 0);
@@ -238,14 +238,14 @@ void main() {
     );
     await tester.enterText(find.byType(TextField), 'private fixture');
     await tester.pump();
-    await tester.tap(find.text('����������'));
+    await tester.tap(find.text('Продолжить'));
     await tester.pumpAndSettle();
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
     await tester.pump();
     expect(find.text('private fixture'), findsNothing);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pumpAndSettle();
-    expect(find.text('�����������'), findsNothing);
+    expect(find.text('Подтверждаю'), findsNothing);
     expect(
       tester.widget<TextField>(find.byType(TextField)).controller!.text,
       isEmpty,
@@ -273,14 +273,14 @@ void main() {
         SessionPage(diagnostic: true, backend: backend, random: random),
       );
       expect(find.text('30:00'), findsOneWidget);
-      expect(find.textContaining('������������ ������� ����'), findsOneWidget);
-      await tester.tap(find.text('�������� ������ ����'));
+      expect(find.textContaining('Продолжается прежний тест'), findsOneWidget);
+      await tester.tap(find.text('Сбросить только тест'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('����������� �������� �����'));
+      await tester.tap(find.text('Подготовить тестовый ответ'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('�����������'));
+      await tester.tap(find.text('Подтверждаю'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('�������� ����������� �����'));
+      await tester.tap(find.text('Показать сохранённый ответ'));
       await tester.pumpAndSettle();
       expect(find.text('1:00'), findsOneWidget);
       expect(backend.resets, 1);
@@ -295,12 +295,12 @@ void main() {
       await show(tester, SessionPage(diagnostic: true, backend: backend));
       await tester.tap(find.byType(SwitchListTile));
       await tester.pumpAndSettle();
-      expect(find.textContaining('����������� ����������.'), findsOneWidget);
+      expect(find.textContaining('Уведомление недоступно.'), findsOneWidget);
       expect(backend.enabled, isFalse);
       expect(backend.writes, 0);
-      await tester.tap(find.text('����������� �������� �����'));
+      await tester.tap(find.text('Подготовить тестовый ответ'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('�����������'));
+      await tester.tap(find.text('Подтверждаю'));
       await tester.pumpAndSettle();
       final saved = backend.value;
       await tester.tap(find.text('English'));
@@ -324,15 +324,15 @@ void main() {
       SessionPage(diagnostic: true, backend: backend, random: random),
     );
     expect(find.byType(TextField), findsNothing);
-    expect(find.text('��������� ��������'), findsOneWidget);
-    expect(find.textContaining('��������� ����� ��� �������'), findsOneWidget);
-    expect(find.textContaining('������'), findsNothing);
+    expect(find.text('Повторить загрузку'), findsOneWidget);
+    expect(find.textContaining('системное время для таймера'), findsOneWidget);
+    expect(find.textContaining('модель'), findsNothing);
     expect(random.calls, 0);
     expect(backend.writes, 0);
     backend.fails = false;
-    await tester.tap(find.text('��������� ��������'));
+    await tester.tap(find.text('Повторить загрузку'));
     await tester.pumpAndSettle();
-    expect(find.text('����������� �������� �����'), findsOneWidget);
+    expect(find.text('Подготовить тестовый ответ'), findsOneWidget);
     expect(random.calls, 0);
     expect(backend.writes, 0);
     await tester.pumpWidget(const SizedBox());
@@ -348,9 +348,9 @@ void main() {
         backend: TestBackend()..preferencesFail = true,
       ),
     );
-    expect(find.textContaining('��������� ���������'), findsOneWidget);
+    expect(find.textContaining('прочитать настройки'), findsOneWidget);
     expect(find.textContaining('Private error'), findsNothing);
-    expect(find.textContaining('������'), findsNothing);
+    expect(find.textContaining('модель'), findsNothing);
     await tester.pumpWidget(const SizedBox());
   });
 
@@ -377,17 +377,17 @@ void main() {
     await tester.pumpAndSettle();
     await tester.enterText(
       find.byType(TextField),
-      '����� �� ��� ������� �������� �����?',
+      'Стоит ли мне сегодня почитать роман?',
     );
     await tester.pump();
-    await tester.ensureVisible(find.text('����������'));
+    await tester.ensureVisible(find.text('Продолжить'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('����������'));
+    await tester.tap(find.text('Продолжить'));
     await tester.pumpAndSettle();
-    await tester.ensureVisible(find.text('�����������'));
-    await tester.tap(find.text('�����������'));
+    await tester.ensureVisible(find.text('Подтверждаю'));
+    await tester.tap(find.text('Подтверждаю'));
     await tester.pumpAndSettle();
-    expect(find.text('�������� ���������. ������ ������.'), findsOneWidget);
+    expect(find.text('Проверка завершена. Допуск закрыт.'), findsOneWidget);
     expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
   });

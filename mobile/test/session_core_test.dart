@@ -338,7 +338,7 @@ void main() {
         return Admission.held;
       },
     );
-    const text = '  Not a real question.\n�� ������� ���������.  ';
+    const text = '  Not a real question.\nНе удалять отрицание.  ';
     f.session.edit(text, language: 'en');
     await f.session.confirm(f.session.review()!);
     expect(seenText, text);
@@ -996,7 +996,7 @@ void main() {
     await f.session.acknowledgeShown();
     expect(
       f.notifications.pending!.body,
-      '��������� ����� ������ ���� ��������',
+      'Вселенная снова готова тебя услышать',
     );
     expect(f.notifications.pending!.remainingMs, cooldownMs);
     expect(f.notifications.schedules, 1);
