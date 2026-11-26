@@ -1,0 +1,4 @@
+# Verified model resources must retain the exact bytes in their SHA-256 manifest.
+mobile/assets/stage2/head.json -text
+mobile/assets/stage2/tokenizer.json -text
+mobile/assets/stage2/model.onnx -text
