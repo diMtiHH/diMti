@@ -1,0 +1,11 @@
+{
+  "repository": "intfloat/multilingual-e5-small",
+  "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+  "files": {
+    "model.onnx": {
+      "path": "onnx/model.onnx",
+      "size": 470268510,
+      "sha256": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665"
+    }
+  }
+}
