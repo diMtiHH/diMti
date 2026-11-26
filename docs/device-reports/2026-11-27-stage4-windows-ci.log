@@ -1,0 +1,360 @@
+﻿2026-11-26T23:21:39.0826714Z Current runner version: '2.338.2'
+2026-11-26T23:21:39.0845390Z ##[group]Runner Image Provisioner
+2026-11-26T23:21:39.0845903Z Hosted Compute Agent
+2026-11-26T23:21:39.0846605Z Version: 20261111.635
+2026-11-26T23:21:39.0846966Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+2026-11-26T23:21:39.0847378Z Build Date: 2026-11-11T01:49:01Z
+2026-11-26T23:21:39.0847767Z Worker ID: {7993c164-6475-48ef-9b72-9033f81af3ca}
+2026-11-26T23:21:39.0848158Z Region: centralus
+2026-11-26T23:21:39.0848474Z Cloud: Azure
+2026-11-26T23:21:39.0848775Z ##[endgroup]
+2026-11-26T23:21:39.0849548Z ##[group]Operating System
+2026-11-26T23:21:39.0849905Z Microsoft Windows Server 2025
+2026-11-26T23:21:39.0850244Z 10.0.26100
+2026-11-26T23:21:39.0850542Z Datacenter
+2026-11-26T23:21:39.0850874Z ##[endgroup]
+2026-11-26T23:21:39.0851169Z ##[group]Runner Image
+2026-11-26T23:21:39.0851564Z Image: windows-2025-vs2026
+2026-11-26T23:21:39.0851926Z Version: 20261116.315.1
+2026-11-26T23:21:39.0852803Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261116.315/images/windows/Windows2025-VS2026-Readme.md
+2026-11-26T23:21:39.0853688Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261116.315
+2026-11-26T23:21:39.0854267Z ##[endgroup]
+2026-11-26T23:21:39.0854938Z ##[group]GITHUB_TOKEN Permissions
+2026-11-26T23:21:39.0856165Z Contents: read
+2026-11-26T23:21:39.0856510Z Metadata: read
+2026-11-26T23:21:39.0856868Z ##[endgroup]
+2026-11-26T23:21:39.0858274Z Secret source: Actions
+2026-11-26T23:21:39.0858769Z Cache mode: write
+2026-11-26T23:21:39.0859180Z Prepare workflow directory
+2026-11-26T23:21:39.1096833Z Prepare all required actions
+2026-11-26T23:21:39.1130005Z Getting action download info
+2026-11-26T23:21:39.3304952Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+2026-11-26T23:21:39.4755255Z Complete job name: Windows application tests
+2026-11-26T23:21:39.5846287Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+2026-11-26T23:21:39.5847099Z with:
+2026-11-26T23:21:39.5847329Z   repository: diMtiHH/diMti
+2026-11-26T23:21:39.5849506Z   token: ***
+2026-11-26T23:21:39.5849736Z   ssh-strict: true
+2026-11-26T23:21:39.5849972Z   ssh-user: git
+2026-11-26T23:21:39.5850213Z   persist-credentials: true
+2026-11-26T23:21:39.5850468Z   clean: true
+2026-11-26T23:21:39.5850710Z   sparse-checkout-cone-mode: true
+2026-11-26T23:21:39.5850994Z   fetch-depth: 1
+2026-11-26T23:21:39.5851226Z   fetch-tags: false
+2026-11-26T23:21:39.5851468Z   show-progress: true
+2026-11-26T23:21:39.5851704Z   lfs: false
+2026-11-26T23:21:39.5851922Z   submodules: false
+2026-11-26T23:21:39.5852165Z   set-safe-directory: true
+2026-11-26T23:21:39.5852526Z ##[endgroup]
+2026-11-26T23:21:39.6855805Z Syncing repository: diMtiHH/diMti
+2026-11-26T23:21:39.6856985Z ##[group]Getting Git version info
+2026-11-26T23:21:39.6857532Z Working directory is 'D:\a\diMti\diMti'
+2026-11-26T23:21:39.7283740Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-26T23:21:40.0034127Z git version 2.56.1.windows.1
+2026-11-26T23:21:40.0067855Z ##[endgroup]
+2026-11-26T23:21:40.0085174Z Temporarily overriding HOME='D:\a\_temp\cad16808-d917-47c2-9e51-ed63f8b9eb23' before making global git config changes
+2026-11-26T23:21:40.0086520Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-26T23:21:40.0092988Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\diMti\diMti
+2026-11-26T23:21:40.0620071Z Deleting the contents of 'D:\a\diMti\diMti'
+2026-11-26T23:21:40.0624406Z ##[group]Initializing the repository
+2026-11-26T23:21:40.0632439Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\diMti\diMti
+2026-11-26T23:21:40.1409062Z Initialized empty Git repository in D:/a/diMti/diMti/.git/
+2026-11-26T23:21:40.1447725Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/diMtiHH/diMti
+2026-11-26T23:21:40.1940094Z ##[endgroup]
+2026-11-26T23:21:40.1940818Z ##[group]Disabling automatic garbage collection
+2026-11-26T23:21:40.1947145Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-11-26T23:21:40.2189768Z ##[endgroup]
+2026-11-26T23:21:40.2190223Z ##[group]Setting up auth
+2026-11-26T23:21:40.2200927Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-26T23:21:40.2469051Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-26T23:21:41.3886555Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-26T23:21:41.4128518Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-26T23:21:41.8002243Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-11-26T23:21:41.8255591Z ##[endgroup]
+2026-11-26T23:21:41.8256043Z ##[group]Fetching the repository
+2026-11-26T23:21:41.8263671Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +6aec0ea12e7e48aac47bb4d088a709cc6e97dc51:refs/remotes/origin/stage4-iphone
+2026-11-26T23:21:42.8231403Z From https://github.com/diMtiHH/diMti
+2026-11-26T23:21:42.8232009Z  * [new ref]         6aec0ea12e7e48aac47bb4d088a709cc6e97dc51 -> origin/stage4-iphone
+2026-11-26T23:21:42.8262773Z ##[endgroup]
+2026-11-26T23:21:42.8263177Z ##[group]Determining the checkout info
+2026-11-26T23:21:42.8264481Z ##[endgroup]
+2026-11-26T23:21:42.8275068Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-11-26T23:21:42.8692975Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-11-26T23:21:42.8954136Z ##[group]Checking out the ref
+2026-11-26T23:21:42.8960054Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B stage4-iphone refs/remotes/origin/stage4-iphone
+2026-11-26T23:21:42.9629061Z Switched to a new branch 'stage4-iphone'
+2026-11-26T23:21:42.9642185Z branch 'stage4-iphone' set up to track 'origin/stage4-iphone'.
+2026-11-26T23:21:42.9667309Z ##[endgroup]
+2026-11-26T23:21:42.9976915Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-11-26T23:21:43.0200959Z 6aec0ea12e7e48aac47bb4d088a709cc6e97dc51
+2026-11-26T23:21:43.0495465Z ##[group]Run python -m unittest discover -s mobile/tool -p test_xctest_result.py -v
+2026-11-26T23:21:43.0495891Z [36;1mpython -m unittest discover -s mobile/tool -p test_xctest_result.py -v[0m
+2026-11-26T23:21:43.1075375Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-11-26T23:21:43.1075599Z ##[endgroup]
+2026-11-26T23:21:44.3207242Z test_all_required_cases (test_xctest_result.XCTestResultContract.test_all_required_cases) ... ok
+2026-11-26T23:21:44.3207947Z test_duplicate_cannot_replace_missing_case (test_xctest_result.XCTestResultContract.test_duplicate_cannot_replace_missing_case) ... ok
+2026-11-26T23:21:44.3208629Z test_empty_report_cannot_pass (test_xctest_result.XCTestResultContract.test_empty_report_cannot_pass) ... ok
+2026-11-26T23:21:44.3209509Z test_failed_case_cannot_pass (test_xctest_result.XCTestResultContract.test_failed_case_cannot_pass) ... ok
+2026-11-26T23:21:44.3210249Z test_missing_case_cannot_pass (test_xctest_result.XCTestResultContract.test_missing_case_cannot_pass) ... ok
+2026-11-26T23:21:44.3210679Z test_retry_cannot_disguise_failure (test_xctest_result.XCTestResultContract.test_retry_cannot_disguise_failure) ... ok
+2026-11-26T23:21:44.3211169Z test_same_name_from_wrong_suite_cannot_pass (test_xctest_result.XCTestResultContract.test_same_name_from_wrong_suite_cannot_pass) ... ok
+2026-11-26T23:21:44.3212276Z test_skipped_case_cannot_pass (test_xctest_result.XCTestResultContract.test_skipped_case_cannot_pass) ... ok
+2026-11-26T23:21:44.3212497Z 
+2026-11-26T23:21:44.3212584Z ----------------------------------------------------------------------
+2026-11-26T23:21:44.3212948Z Ran 8 tests in 0.000s
+2026-11-26T23:21:44.3213026Z 
+2026-11-26T23:21:44.3213074Z OK
+2026-11-26T23:21:44.4204640Z ##[group]Run setup-windows.cmd
+2026-11-26T23:21:44.4204840Z [36;1msetup-windows.cmd[0m
+2026-11-26T23:21:44.4223111Z shell: C:\Windows\system32\cmd.EXE /D /E:ON /V:OFF /S /C "CALL "{0}""
+2026-11-26T23:21:44.4223313Z ##[endgroup]
+2026-11-26T23:21:46.4977258Z Downloading Flutter 3.50.1 for Windows x64.
+2026-11-26T23:21:46.7984748Z   % Total    % Received % Xferd  Average Speed  Time    Time    Time   Current
+2026-11-26T23:21:46.7985161Z                                  Dload  Upload  Total   Spent   Left   Speed
+2026-11-26T23:21:46.7985312Z 
+2026-11-26T23:21:47.7976430Z   0      0   0      0   0      0      0      0                              0
+2026-11-26T23:21:48.7993359Z   8  1.74G   8 153.1M   0      0 123.6M      0   00:14   00:01   00:13 153.3M
+2026-11-26T23:21:49.8054460Z  16  1.74G  16 302.0M   0      0 134.8M      0   00:13   00:02   00:11 150.9M
+2026-11-26T23:21:50.8044420Z  25  1.74G  25 449.9M   0      0 138.6M      0   00:12   00:03   00:09 149.6M
+2026-11-26T23:21:51.8034405Z  32  1.74G  32 583.8M   0      0 137.5M      0   00:12   00:04   00:08 145.7M
+2026-11-26T23:21:52.8024602Z  41  1.74G  41 736.7M   0      0 140.4M      0   00:12   00:05   00:07 147.2M
+2026-11-26T23:21:53.8014776Z  50  1.74G  50 897.3M   0      0 143.7M      0   00:12   00:06   00:06 148.6M
+2026-11-26T23:21:54.8004694Z  59  1.74G  59  1.04G   0      0 147.6M      0   00:12   00:07   00:05 153.4M
+2026-11-26T23:21:55.7995788Z  67  1.74G  67  1.18G   0      0 146.9M      0   00:12   00:08   00:04 152.3M
+2026-11-26T23:21:56.7988740Z  75  1.74G  75  1.30G   0      0 144.7M      0   00:12   00:09   00:03 150.8M
+2026-11-26T23:21:57.7983038Z  83  1.74G  83  1.45G   0      0 145.4M      0   00:12   00:10   00:02 150.6M
+2026-11-26T23:21:58.7984409Z  91  1.74G  91  1.58G   0      0 144.6M      0   00:12   00:11   00:01 145.7M
+2026-11-26T23:21:59.0917561Z  97  1.74G  97  1.69G   0      0 142.2M      0   00:12   00:12         134.2M
+2026-11-26T23:21:59.0918025Z 100  1.74G 100  1.74G   0      0 142.2M      0   00:12   00:12         134.2M
+2026-11-26T23:21:59.0919155Z 100  1.74G 100  1.74G   0      0 142.2M      0   00:12   00:12         134.2M
+2026-11-26T23:21:59.0919445Z 100  1.74G 100  1.74G   0      0 142.2M      0   00:12   00:12         134.2M
+2026-11-26T23:22:39.2866991Z Flutter SDK: C:\Users\runneradmin\AppData\Local\AskTheUniverse\flutter-3.50.1
+2026-11-26T23:22:54.1536090Z model.onnx: verified (470268510 bytes)
+2026-11-26T23:22:54.1536331Z tokenizer.json: verified (17082730 bytes)
+2026-11-26T23:23:26.1423786Z Resolving dependencies...
+2026-11-26T23:23:26.6190296Z Downloading packages...
+2026-11-26T23:23:28.4785913Z   crypto 3.0.7 (3.0.8 available)
+2026-11-26T23:23:28.4786392Z   material_color_utilities 0.13.0 (0.13.1 available)
+2026-11-26T23:23:28.4786642Z   test_api 0.7.14 (0.7.15 available)
+2026-11-26T23:23:28.4786877Z Got dependencies!
+2026-11-26T23:23:28.4787130Z 3 packages have newer versions incompatible with dependency constraints.
+2026-11-26T23:23:28.4787513Z Try `flutter pub outdated` for more information.
+2026-11-26T23:23:36.7456037Z Analyzing mobile...                                             
+2026-11-26T23:23:36.7466461Z No issues found! (ran in 7.2s)
+2026-11-26T23:23:38.2407608Z 00:00 +0: loading D:/a/diMti/diMti/mobile/test/device_report_test.dart
+2026-11-26T23:23:43.8647241Z 00:00 +0: D:/a/diMti/diMti/mobile/test/device_report_test.dart: report preserves units, UTC time, build mode and verified asset identity
+2026-11-26T23:23:43.8948535Z 00:00 +1: loading D:/a/diMti/diMti/mobile/test/device_run_test.dart
+2026-11-26T23:23:44.4933062Z 00:00 +1: D:/a/diMti/diMti/mobile/test/device_run_test.dart: device measurement uses nearest-rank percentiles and checks both outcomes
+2026-11-26T23:23:44.5054674Z 00:00 +2: D:/a/diMti/diMti/mobile/test/device_run_test.dart: a failed check cannot yield a successful benchmark
+2026-11-26T23:23:44.5086994Z 00:00 +3: D:/a/diMti/diMti/mobile/test/device_run_test.dart: interruption during check 1 discards the run
+2026-11-26T23:23:44.5105361Z 00:00 +4: D:/a/diMti/diMti/mobile/test/device_run_test.dart: interruption during check 20 discards the run
+2026-11-26T23:23:44.5242499Z 00:00 +5: loading D:/a/diMti/diMti/mobile/test/engine_test.dart
+2026-11-26T23:23:45.0792157Z 00:01 +5: D:/a/diMti/diMti/mobile/test/engine_test.dart: (setUpAll)
+2026-11-26T23:23:50.9347582Z 00:07 +5: D:/a/diMti/diMti/mobile/test/engine_test.dart: FP32 Dart path agrees with the frozen Python implementation, one full question per run
+2026-11-26T23:23:51.5285320Z 00:07 +6: D:/a/diMti/diMti/mobile/test/engine_test.dart: full input is required
+2026-11-26T23:23:51.5412947Z 00:07 +7: D:/a/diMti/diMti/mobile/test/engine_test.dart: missing or corrupt model fails at startup
+2026-11-26T23:23:51.5500859Z 00:07 +8: D:/a/diMti/diMti/mobile/test/engine_test.dart: UI worker runs the bundled model off the UI isolate
+2026-11-26T23:23:56.3953639Z 00:12 +9: D:/a/diMti/diMti/mobile/test/engine_test.dart: (tearDownAll)
+2026-11-26T23:23:56.4631699Z 00:12 +9: loading D:/a/diMti/diMti/mobile/test/session_core_test.dart
+2026-11-26T23:23:57.1582817Z 00:13 +9: D:/a/diMti/diMti/mobile/test/session_core_test.dart: diagnostic pause restores and expires at exactly one minute
+2026-11-26T23:23:57.1749045Z 00:13 +10: D:/a/diMti/diMti/mobile/test/session_core_test.dart: short pause keeps its duration through reboot and clock rebasing
+2026-11-26T23:23:57.1771630Z 00:13 +11: D:/a/diMti/diMti/mobile/test/session_core_test.dart: a real session rejects the diagnostic record without altering it
+2026-11-26T23:23:57.1789718Z 00:13 +12: D:/a/diMti/diMti/mobile/test/session_core_test.dart: upgrading diagnostic mode preserves a legacy thirty minute deadline
+2026-11-26T23:23:57.1807593Z 00:13 +13: D:/a/diMti/diMti/mobile/test/session_core_test.dart: short timer schema rejects unsupported durations and extra fields
+2026-11-26T23:23:57.1843214Z 00:13 +14: D:/a/diMti/diMti/mobile/test/session_core_test.dart: all 100 values map to exactly 50 YES and 50 NO
+2026-11-26T23:23:57.1867334Z 00:13 +15: D:/a/diMti/diMti/mobile/test/session_core_test.dart: system source returns only integers inside its contract
+2026-11-26T23:23:57.1886616Z 00:13 +16: D:/a/diMti/diMti/mobile/test/session_core_test.dart: production gate never reaches RNG for any model outcome or error
+2026-11-26T23:23:57.1925147Z 00:13 +17: D:/a/diMti/diMti/mobile/test/session_core_test.dart: unsupported language never invokes the model adapter
+2026-11-26T23:23:57.1936446Z 00:13 +18: D:/a/diMti/diMti/mobile/test/session_core_test.dart: editing or cancelling a review requires a fresh explicit confirmation
+2026-11-26T23:23:57.1952809Z 00:13 +19: D:/a/diMti/diMti/mobile/test/session_core_test.dart: review from another session and changed language cannot authorize RNG
+2026-11-26T23:23:57.1966607Z 00:13 +20: D:/a/diMti/diMti/mobile/test/session_core_test.dart: confirmation sends the exact approved text and language
+2026-11-26T23:23:57.1982790Z 00:13 +21: D:/a/diMti/diMti/mobile/test/session_core_test.dart: edit during validation discards the late ALLOW
+2026-11-26T23:23:57.1997883Z 00:13 +22: D:/a/diMti/diMti/mobile/test/session_core_test.dart: language during validation discards the late ALLOW
+2026-11-26T23:23:57.2009732Z 00:13 +23: D:/a/diMti/diMti/mobile/test/session_core_test.dart: background during validation discards the late ALLOW
+2026-11-26T23:23:57.2022209Z 00:13 +24: D:/a/diMti/diMti/mobile/test/session_core_test.dart: timeout and validator failure keep the attempt available without RNG
+2026-11-26T23:23:57.2161843Z 00:13 +25: D:/a/diMti/diMti/mobile/test/session_core_test.dart: double tap invokes one validation and one random draw
+2026-11-26T23:23:57.2175461Z 00:13 +26: D:/a/diMti/diMti/mobile/test/session_core_test.dart: background clears review and disallows submission while inactive
+2026-11-26T23:23:57.2189833Z 00:13 +27: D:/a/diMti/diMti/mobile/test/session_core_test.dart: background during intent persistence cancels before RNG
+2026-11-26T23:23:57.2209013Z 00:13 +28: D:/a/diMti/diMti/mobile/test/session_core_test.dart: answer stays hidden until its persistence is acknowledged
+2026-11-26T23:23:57.2297715Z 00:13 +29: D:/a/diMti/diMti/mobile/test/session_core_test.dart: restart restores the exact answer with no draw or premature timer
+2026-11-26T23:23:57.2298583Z 00:13 +30: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed intent write (committed=false) never calls RNG
+2026-11-26T23:23:57.2299770Z 00:13 +31: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed answer write (committed=false) cannot reroll on recovery
+2026-11-26T23:23:57.2300575Z 00:13 +32: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed cooldown write (committed=false) recovers conservatively
+2026-11-26T23:23:57.2309867Z 00:13 +33: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed intent write (committed=true) never calls RNG
+2026-11-26T23:23:57.2327201Z 00:13 +34: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed answer write (committed=true) cannot reroll on recovery
+2026-11-26T23:23:57.2341508Z 00:13 +35: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed cooldown write (committed=true) recovers conservatively
+2026-11-26T23:23:57.2354787Z 00:13 +36: D:/a/diMti/diMti/mobile/test/session_core_test.dart: CSPRNG errors and invalid values do not fabricate an answer or spend attempt
+2026-11-26T23:23:57.2371917Z 00:13 +37: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed cleanup after RNG error preserves interruption without automatic retry
+2026-11-26T23:23:57.2386715Z 00:13 +38: D:/a/diMti/diMti/mobile/test/session_core_test.dart: cooldown expires at exactly 1800000 ms and duplicate display cannot extend it
+2026-11-26T23:23:57.2406522Z 00:13 +39: D:/a/diMti/diMti/mobile/test/session_core_test.dart: restart and background include elapsed device sleep
+2026-11-26T23:23:57.2422050Z 00:13 +40: D:/a/diMti/diMti/mobile/test/session_core_test.dart: same-boot wall-clock jumps neither shorten nor lengthen pause
+2026-11-26T23:23:57.2443624Z 00:13 +41: D:/a/diMti/diMti/mobile/test/session_core_test.dart: new boot uses UTC then rebases to the new continuous clock
+2026-11-26T23:23:57.2461427Z 00:13 +42: D:/a/diMti/diMti/mobile/test/session_core_test.dart: reboot fallback is bounded to 30 minutes and cannot prove offline wall time
+2026-11-26T23:23:57.2484916Z 00:13 +43: D:/a/diMti/diMti/mobile/test/session_core_test.dart: clock failure or same-boot monotonic regression cannot unlock session
+2026-11-26T23:23:57.2507489Z 00:13 +44: D:/a/diMti/diMti/mobile/test/session_core_test.dart: real small clock regression stays blocked until catch-up
+2026-11-26T23:23:57.2528805Z 00:13 +45: D:/a/diMti/diMti/mobile/test/session_core_test.dart: real clock regression after wall rebase preserves state
+2026-11-26T23:23:57.2547311Z 00:13 +46: D:/a/diMti/diMti/mobile/test/session_core_test.dart: real new clock domain accepts low uptime then guards it
+2026-11-26T23:23:57.2563420Z 00:13 +47: D:/a/diMti/diMti/mobile/test/session_core_test.dart: real failed rebase write retains the accepted clock sample
+2026-11-26T23:23:57.2586274Z 00:13 +48: D:/a/diMti/diMti/mobile/test/session_core_test.dart: real restored controller guards its first clock sample
+2026-11-26T23:23:57.2604291Z 00:13 +49: D:/a/diMti/diMti/mobile/test/session_core_test.dart: diagnostic small clock regression stays blocked until catch-up
+2026-11-26T23:23:57.2625768Z 00:13 +50: D:/a/diMti/diMti/mobile/test/session_core_test.dart: diagnostic clock regression after wall rebase preserves state
+2026-11-26T23:23:57.2642889Z 00:13 +51: D:/a/diMti/diMti/mobile/test/session_core_test.dart: diagnostic new clock domain accepts low uptime then guards it
+2026-11-26T23:23:57.2656804Z 00:13 +52: D:/a/diMti/diMti/mobile/test/session_core_test.dart: diagnostic failed rebase write retains the accepted clock sample
+2026-11-26T23:23:57.2674582Z 00:13 +53: D:/a/diMti/diMti/mobile/test/session_core_test.dart: diagnostic restored controller guards its first clock sample
+2026-11-26T23:23:57.2689543Z 00:13 +54: D:/a/diMti/diMti/mobile/test/session_core_test.dart: unavailable clock after display preserves the same pending answer
+2026-11-26T23:23:57.2705785Z 00:13 +55: D:/a/diMti/diMti/mobile/test/session_core_test.dart: expiry persistence failure does not make another attempt available
+2026-11-26T23:23:57.2723480Z 00:13 +56: D:/a/diMti/diMti/mobile/test/session_core_test.dart: unknown, truncated, extra-field and malformed records fail closed
+2026-11-26T23:23:57.2748814Z 00:13 +57: D:/a/diMti/diMti/mobile/test/session_core_test.dart: notification failure never changes the durable deadline
+2026-11-26T23:23:57.2772429Z 00:13 +58: D:/a/diMti/diMti/mobile/test/session_core_test.dart: restored locale is supplied by preferences, not question persistence
+2026-11-26T23:23:57.2792022Z 00:13 +59: D:/a/diMti/diMti/mobile/test/session_core_test.dart: notification is one replaceable generic request and refresh does not reschedule
+2026-11-26T23:23:57.2958501Z 00:13 +60: loading D:/a/diMti/diMti/mobile/test/session_page_test.dart
+2026-11-26T23:24:01.2878943Z 00:17 +60: D:/a/diMti/diMti/mobile/test/session_page_test.dart: real input requires confirmation and every model result stays closed
+2026-11-26T23:24:02.1931462Z 00:18 +61: D:/a/diMti/diMti/mobile/test/session_page_test.dart: diagnostic stores before showing and restart never selects again
+2026-11-26T23:24:02.3303314Z 00:18 +62: D:/a/diMti/diMti/mobile/test/session_page_test.dart: real reload cannot forget a clock regression
+2026-11-26T23:24:02.4340525Z 00:18 +63: D:/a/diMti/diMti/mobile/test/session_page_test.dart: diagnostic reload cannot forget a clock regression
+2026-11-26T23:24:02.5107340Z 00:18 +64: D:/a/diMti/diMti/mobile/test/session_page_test.dart: real recreated screen retains the observed clock
+2026-11-26T23:24:02.6383214Z 00:18 +65: D:/a/diMti/diMti/mobile/test/session_page_test.dart: diagnostic recreated screen retains the observed clock
+2026-11-26T23:24:02.7760551Z 00:18 +66: D:/a/diMti/diMti/mobile/test/session_page_test.dart: returning to diagnostic route cannot reset clock protection
+2026-11-26T23:24:02.9958057Z 00:19 +67: D:/a/diMti/diMti/mobile/test/session_page_test.dart: replacing the Navigator preserves application clock history
+2026-11-26T23:24:03.0703376Z 00:19 +68: D:/a/diMti/diMti/mobile/test/session_page_test.dart: independent application clock owners do not share history
+2026-11-26T23:24:03.1211965Z 00:19 +69: D:/a/diMti/diMti/mobile/test/session_page_test.dart: background removes review and requires a new edit
+2026-11-26T23:24:03.2461849Z 00:19 +70: D:/a/diMti/diMti/mobile/test/session_page_test.dart: legacy diagnostic pause stays intact until explicit test reset
+2026-11-26T23:24:03.3321233Z 00:19 +71: D:/a/diMti/diMti/mobile/test/session_page_test.dart: notification denial cannot start or reset a timer; locale preserves state
+2026-11-26T23:24:03.4100952Z 00:19 +72: D:/a/diMti/diMti/mobile/test/session_page_test.dart: unavailable clock blocks input with a visible retry
+2026-11-26T23:24:03.4498740Z 00:19 +73: D:/a/diMti/diMti/mobile/test/session_page_test.dart: settings failure is specific and reveals no exception details
+2026-11-26T23:24:03.4890236Z 00:19 +74: D:/a/diMti/diMti/mobile/test/session_page_test.dart: small screen and large text keep confirmation reachable
+2026-11-26T23:24:03.6011007Z 00:19 +75: D:/a/diMti/diMti/mobile/test/session_page_test.dart: diagnostic validator rejects arbitrary questions and unknown language
+2026-11-26T23:24:03.6031345Z 00:19 +76: D:/a/diMti/diMti/mobile/test/session_page_test.dart: native bridge scopes storage and rejects real reset before platform call
+2026-11-26T23:24:03.6299649Z 00:19 +77: loading D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart
+2026-11-26T23:24:04.1709938Z 00:20 +77: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real idle
+2026-11-26T23:24:04.1845440Z 00:20 +78: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real reserved
+2026-11-26T23:24:04.1857694Z 00:20 +79: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real pending yes
+2026-11-26T23:24:04.1869603Z 00:20 +80: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real pending no
+2026-11-26T23:24:04.1880027Z 00:20 +81: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real legacy 30 minute cooldown
+2026-11-26T23:24:04.1905037Z 00:20 +82: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real minute cooldown
+2026-11-26T23:24:04.1922724Z 00:20 +83: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real maximum safe deadlines
+2026-11-26T23:24:04.1936217Z 00:20 +84: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic idle
+2026-11-26T23:24:04.1949154Z 00:20 +85: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic reserved
+2026-11-26T23:24:04.1961631Z 00:20 +86: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic pending yes
+2026-11-26T23:24:04.1971822Z 00:20 +87: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic pending no
+2026-11-26T23:24:04.1985034Z 00:20 +88: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic legacy 30 minute cooldown
+2026-11-26T23:24:04.1997846Z 00:20 +89: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic minute cooldown
+2026-11-26T23:24:04.2010709Z 00:20 +90: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic maximum safe deadlines
+2026-11-26T23:24:04.2023219Z 00:20 +91: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 14
+2026-11-26T23:24:04.2034058Z 00:20 +92: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 15
+2026-11-26T23:24:04.2044228Z 00:20 +93: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 16
+2026-11-26T23:24:04.2054361Z 00:20 +94: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 17
+2026-11-26T23:24:04.2066819Z 00:20 +95: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 18
+2026-11-26T23:24:04.2078934Z 00:20 +96: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 19
+2026-11-26T23:24:04.2094185Z 00:20 +97: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 20
+2026-11-26T23:24:04.2105682Z 00:20 +98: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 21
+2026-11-26T23:24:04.2117287Z 00:20 +99: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 22
+2026-11-26T23:24:04.2134055Z 00:20 +100: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 23
+2026-11-26T23:24:04.2145023Z 00:20 +101: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 24
+2026-11-26T23:24:04.2157384Z 00:20 +102: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 25
+2026-11-26T23:24:04.2168035Z 00:20 +103: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 26
+2026-11-26T23:24:04.2179478Z 00:20 +104: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 27
+2026-11-26T23:24:04.2193034Z 00:20 +105: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 28
+2026-11-26T23:24:04.2203573Z 00:20 +106: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 29
+2026-11-26T23:24:04.2214294Z 00:20 +107: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 30
+2026-11-26T23:24:04.2224387Z 00:20 +108: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 31
+2026-11-26T23:24:04.2236554Z 00:20 +109: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 32
+2026-11-26T23:24:04.2247985Z 00:20 +110: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 33
+2026-11-26T23:24:04.2257984Z 00:20 +111: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 34
+2026-11-26T23:24:04.2271253Z 00:20 +112: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 35
+2026-11-26T23:24:04.2286324Z 00:20 +113: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 36
+2026-11-26T23:24:04.2297059Z 00:20 +114: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 37
+2026-11-26T23:24:04.2308847Z 00:20 +115: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 38
+2026-11-26T23:24:04.2320575Z 00:20 +116: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 39
+2026-11-26T23:24:04.2334841Z 00:20 +117: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 40
+2026-11-26T23:24:04.2347825Z 00:20 +118: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 41
+2026-11-26T23:24:04.2359990Z 00:20 +119: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 42
+2026-11-26T23:24:04.2372028Z 00:20 +120: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 43
+2026-11-26T23:24:04.2381866Z 00:20 +121: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 44
+2026-11-26T23:24:04.2393534Z 00:20 +122: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 45
+2026-11-26T23:24:04.2405895Z 00:20 +123: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 46
+2026-11-26T23:24:04.2419034Z 00:20 +124: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 47
+2026-11-26T23:24:04.2433001Z 00:20 +125: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 48
+2026-11-26T23:24:04.2446589Z 00:20 +126: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 49
+2026-11-26T23:24:04.2458902Z 00:20 +127: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 50
+2026-11-26T23:24:04.2470683Z 00:20 +128: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 51
+2026-11-26T23:24:04.2481770Z 00:20 +129: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 52
+2026-11-26T23:24:04.2496128Z 00:20 +130: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 53
+2026-11-26T23:24:04.2508049Z 00:20 +131: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 54
+2026-11-26T23:24:04.2519179Z 00:20 +132: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for idle
+2026-11-26T23:24:04.2531149Z 00:20 +133: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for reserved
+2026-11-26T23:24:04.2544462Z 00:20 +134: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for pending
+2026-11-26T23:24:04.2560754Z 00:20 +135: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 58
+2026-11-26T23:24:04.2574363Z 00:20 +136: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 59
+2026-11-26T23:24:04.2590376Z 00:20 +137: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 60
+2026-11-26T23:24:04.2606946Z 00:20 +138: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 61
+2026-11-26T23:24:04.2620781Z 00:20 +139: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing version
+2026-11-26T23:24:04.2630630Z 00:20 +140: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing phase
+2026-11-26T23:24:04.2640877Z 00:20 +141: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing utcDeadline
+2026-11-26T23:24:04.2651791Z 00:20 +142: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing continuousDeadline
+2026-11-26T23:24:04.2663826Z 00:20 +143: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing bootToken
+2026-11-26T23:24:04.2676294Z 00:20 +144: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic unexpected input field
+2026-11-26T23:24:04.2690527Z 00:20 +145: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic answer cannot accompany timer
+2026-11-26T23:24:04.2703398Z 00:20 +146: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic oversized text
+2026-11-26T23:24:04.2714353Z 00:20 +147: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic numeric exponent deadline
+2026-11-26T23:24:04.2725490Z 00:20 +148: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic duplicate phase ending valid
+2026-11-26T23:24:04.2737143Z 00:20 +149: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic duplicate phase ending invalid
+2026-11-26T23:24:04.2749481Z 00:20 +150: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic escaped duplicate key
+2026-11-26T23:24:04.2916585Z 00:20 +151: loading D:/a/diMti/diMti/mobile/test/ui_test.dart
+2026-11-26T23:24:04.9738618Z 00:21 +151: D:/a/diMti/diMti/mobile/test/ui_test.dart: unavailable iOS bundle leaves input disabled and language switch usable
+2026-11-26T23:24:05.6575529Z 00:21 +152: D:/a/diMti/diMti/mobile/test/ui_test.dart: real question entry clears text and returns a closed outcome in both languages
+2026-11-26T23:24:11.4128487Z 00:27 +153: D:/a/diMti/diMti/mobile/test/ui_test.dart: only a completed benchmark can copy a report without question text
+2026-11-26T23:24:17.4911316Z 00:33 +154: loading D:/a/diMti/diMti/mobile/test/voice_input_test.dart
+2026-11-26T23:24:18.2781168Z 00:34 +154: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: voice supplies editable text and level without automatic actions
+2026-11-26T23:24:18.2923353Z 00:34 +155: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: stop acknowledgement waits for the final transcript event
+2026-11-26T23:24:18.2948133Z 00:34 +156: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: final event before stop reply survives its late platform error
+2026-11-26T23:24:18.2977292Z 00:34 +157: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: cancel invalidates delayed permission start before native reply
+2026-11-26T23:24:18.2999070Z 00:34 +158: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: restarting in a new language ignores every old event
+2026-11-26T23:24:18.3026219Z 00:34 +159: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: stalled start times out and cleans up a later successful reply
+2026-11-26T23:24:18.3113870Z 00:34 +160: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: missing final event bounds stop even when reply stalls=false
+2026-11-26T23:24:18.3194645Z 00:34 +161: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: missing final event bounds stop even when reply stalls=true
+2026-11-26T23:24:18.3273166Z 00:34 +162: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: permissionDenied leaves a manual draft without leaking platform details
+2026-11-26T23:24:18.3294945Z 00:34 +163: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: unavailable leaves a manual draft without leaking platform details
+2026-11-26T23:24:18.3311993Z 00:34 +164: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: interrupted leaves a manual draft without leaking platform details
+2026-11-26T23:24:18.3327795Z 00:34 +165: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: failed leaves a manual draft without leaking platform details
+2026-11-26T23:24:18.3345059Z 00:34 +166: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: missing plugin is unavailable and manual cancellation remains usable
+2026-11-26T23:24:18.3361755Z 00:34 +167: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: unknown failures use a fixed code and input bounds prevent native start
+2026-11-26T23:24:18.3382709Z 00:34 +168: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: malformed native events never become text or amplitude
+2026-11-26T23:24:18.3417749Z 00:34 +169: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: controller also rejects invalid typed events from a backend
+2026-11-26T23:24:18.3439602Z 00:34 +170: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: dispose invalidates pending start and IDs never repeat in a new owner
+2026-11-26T23:24:18.3458768Z 00:34 +171: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: synchronous listener cancellation cannot launch a native start
+2026-11-26T23:24:18.3473974Z 00:34 +172: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: iOS handler ownership preserves a replacement backend and validates events
+2026-11-26T23:24:18.3731157Z 00:34 +173: loading D:/a/diMti/diMti/mobile/test/voice_page_test.dart
+2026-11-26T23:24:19.0708284Z 00:35 +173: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: ru voice needs stop and confirmation; admission stays closed
+2026-11-26T23:24:19.8347692Z 00:35 +174: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: en voice needs stop and confirmation; admission stays closed
+2026-11-26T23:24:19.9914366Z 00:36 +175: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: explicit voice cancel restores the prior typed draft and ignores late events
+2026-11-26T23:24:20.1157957Z 00:36 +176: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: manual edit ends voice ownership and survives a late final result
+2026-11-26T23:24:20.2096201Z 00:36 +177: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: background clears voice text and resume never restarts the microphone
+2026-11-26T23:24:20.3009796Z 00:36 +178: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: language change cancels the old capture and selects the next locale
+2026-11-26T23:24:20.4224946Z 00:36 +179: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: permissionDenied leaves manual input and closed confirmation available
+2026-11-26T23:24:20.5679987Z 00:36 +180: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: unavailable leaves manual input and closed confirmation available
+2026-11-26T23:24:20.6634496Z 00:36 +181: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: permission dialog inactivity can finish only after returning active
+2026-11-26T23:24:20.7452014Z 00:36 +182: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: background during permission request invalidates the late start
+2026-11-26T23:24:20.8189977Z 00:36 +183: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: diagnostic fixture never creates microphone controls
+2026-11-26T23:24:20.8480454Z 00:36 +184: D:/a/diMti/diMti/mobile/test/voice_page_test.dart: persisted cooldown disables microphone without altering its deadline
+2026-11-26T23:24:20.9144019Z 00:37 +185: loading D:/a/diMti/diMti/mobile/test/voice_star_test.dart
+2026-11-26T23:24:21.7622896Z 00:37 +185: D:/a/diMti/diMti/mobile/test/voice_star_test.dart: measured level changes rendered brightness and creates a preview
+2026-11-26T23:24:22.1917805Z 00:38 +186: D:/a/diMti/diMti/mobile/test/voice_star_test.dart: reduced motion stops the breathing ticker while retaining audio feedback
+2026-11-26T23:24:22.2561593Z 00:38 +187: D:/a/diMti/diMti/mobile/test/voice_star_test.dart: inactive star freezes animation and disabled star does not tick
+2026-11-26T23:24:22.3160187Z 00:38 +188: D:/a/diMti/diMti/mobile/test/voice_star_test.dart: star has button semantics and cannot activate when disabled
+2026-11-26T23:24:22.4047352Z 00:38 +189: D:/a/diMti/diMti/mobile/test/voice_star_test.dart: malformed audio levels render safely and inactive speech ignores stale energy
+2026-11-26T23:24:22.4647821Z 00:38 +190: All tests passed!
+2026-11-26T23:24:22.5621369Z Post job cleanup.
+2026-11-26T23:24:22.6650309Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-11-26T23:24:22.6926274Z git version 2.56.1.windows.1
+2026-11-26T23:24:22.6971648Z Temporarily overriding HOME='D:\a\_temp\66903303-5cc9-473a-ac6f-2eeeed3187c7' before making global git config changes
+2026-11-26T23:24:22.6972332Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-26T23:24:22.6978173Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\diMti\diMti
+2026-11-26T23:24:22.7235845Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-11-26T23:24:22.7489346Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-11-26T23:24:23.1647383Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-26T23:24:23.1875190Z http.https://github.com/.extraheader
+2026-11-26T23:24:23.1905683Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-11-26T23:24:23.2202627Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-11-26T23:24:23.6619026Z Cleaning up orphan processes
+2026-11-26T23:24:23.6814335Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

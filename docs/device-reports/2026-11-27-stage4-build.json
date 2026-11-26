@@ -1,0 +1,380 @@
+{
+  "protocol": "stage4-voice-star-build-v1",
+  "date_moscow": "2026-11-27",
+  "version": "0.4.0",
+  "build": "8",
+  "admission": "closed",
+  "stage_4_accepted": false,
+  "physical_tests": "deferred_by_user",
+  "baseline": {
+    "version": "0.3.5",
+    "build": "7",
+    "source_commit": "ab8eed3b18b26133a344a569ba0fe96141c99c68",
+    "branch_preserved": "stage3-iphone"
+  },
+  "source_commit": "6aec0ea12e7e48aac47bb4d088a709cc6e97dc51",
+  "source_tree": "013b964183aea2255e958731e492f94fbc5e13cd",
+  "source_files": [
+    {
+      "path": "mobile/lib/session_page.dart",
+      "bytes": 28920,
+      "chars": 27195,
+      "sha256": "d5a5f8cdfd386f886c7ceb96a3a5b99f2aaaf2fa0bf7f303d0bfcac6ccfc06a8",
+      "blob_sha": "1629557823cef9580e0fdc6ecf8fce7be404e1dc"
+    },
+    {
+      "path": "mobile/lib/voice_input.dart",
+      "bytes": 11192,
+      "chars": 11192,
+      "sha256": "fb128e94104b6e0ca3a73b81947c0f528903e03e9ac967a50d7271f5e0322a7c",
+      "blob_sha": "3aa0617f0cb10ac6f82783c3f62ff4a4e09ea998"
+    },
+    {
+      "path": "mobile/lib/voice_star.dart",
+      "bytes": 5467,
+      "chars": 5467,
+      "sha256": "3adbeb07c8cea63331a8db2e35d85e18f02741c98fc87b8c88ecae3e8b3ee1ee",
+      "blob_sha": "536dfd7dbb26777bfe3ab9b20d5509c3bcce1cd5"
+    },
+    {
+      "path": "mobile/pubspec.yaml",
+      "bytes": 543,
+      "chars": 543,
+      "sha256": "8a5d4ad425bcbcef8bbebc8f95174d39731e54e2ebd53ff25ddf8c7c98e5eb94",
+      "blob_sha": "d9bff6437190ecb102db87eb54aea36225f5fc14"
+    },
+    {
+      "path": "mobile/test/session_page_test.dart",
+      "bytes": 25352,
+      "chars": 24264,
+      "sha256": "319634555d9505d30d1a4c357a91cdf2a96ea9c9ca9febb1fe8629c32d3fe046",
+      "blob_sha": "6e0f7f16ad36227041d56e7d3259a39ddeda7aae"
+    },
+    {
+      "path": "mobile/test/voice_input_test.dart",
+      "bytes": 15015,
+      "chars": 15015,
+      "sha256": "9b6728c3606b93a32fdbc9c5fc239116077775a145d4622e3a2d43dd010b3cc3",
+      "blob_sha": "347e67b57a263627acc75bdb3224e467981041a1"
+    },
+    {
+      "path": "mobile/test/voice_page_test.dart",
+      "bytes": 14982,
+      "chars": 14849,
+      "sha256": "1462090225a4b12e452eae108b72ee7f073407e917177be1c72f22f05783e39b",
+      "blob_sha": "2b8cdfff624280bb99cd5cfa464b466c44b55ec6"
+    },
+    {
+      "path": "mobile/test/voice_star_test.dart",
+      "bytes": 7008,
+      "chars": 7008,
+      "sha256": "7ece13301a5183f52dda7af80d00ff28b88b2062f6d4a6078a6ed5450962e322",
+      "blob_sha": "9ca68de2766ddb4398c07e896e1ada7874ef3d1f"
+    },
+    {
+      "path": "mobile/ios/Runner/VoiceBridge.swift",
+      "bytes": 13765,
+      "chars": 13765,
+      "sha256": "69a5c7963945ee9b5acd979d40221d981f7f13bc76615f0e9122b9beac71b410",
+      "blob_sha": "0ad949c5c86d6f40e19ce0a0ce2e4e87e2077f24"
+    },
+    {
+      "path": "mobile/ios/Runner/VoicePolicy.swift",
+      "bytes": 2888,
+      "chars": 2888,
+      "sha256": "b032b99c5b4dfe0ea2e3fe7fdba017ef010513d6f821d1ce915574b378f0930b",
+      "blob_sha": "44769c0ee3f89ce6858f058ef7cb86a11f3b3714"
+    },
+    {
+      "path": "mobile/ios/Runner/AppDelegate.swift",
+      "bytes": 803,
+      "chars": 803,
+      "sha256": "eaa3e8ba6f5869b0be672e89961b2cc5e4fd1947471c7c0173511784cd1daed6",
+      "blob_sha": "d286854e853c3f29c833b684742d4f1479fe3fda"
+    },
+    {
+      "path": "mobile/ios/Runner/Info.plist",
+      "bytes": 2600,
+      "chars": 2585,
+      "sha256": "e87145cf45532bdea83c786f8d0e2fe955fd1513c199e264beb4a21b48439e65",
+      "blob_sha": "92145a388163616cb2b130924380474ecb712c7f"
+    },
+    {
+      "path": "mobile/ios/Runner/en.lproj/InfoPlist.strings",
+      "bytes": 261,
+      "chars": 261,
+      "sha256": "60a1015a43448c18e38447dced22e31b7156c056043180c0a0413a695172842e",
+      "blob_sha": "cbc8e1981c1ce743c338ae13aa8a10031a2c3afd"
+    },
+    {
+      "path": "mobile/ios/Runner/ru.lproj/InfoPlist.strings",
+      "bytes": 426,
+      "chars": 273,
+      "sha256": "36d745361046805908a425e9bd92504cc67ede0bcc1175c105e8a33453de4b62",
+      "blob_sha": "c6de48ab33d7b515571a134946891e7910963978"
+    },
+    {
+      "path": "mobile/ios/Runner.xcodeproj/project.pbxproj",
+      "bytes": 30147,
+      "chars": 30147,
+      "sha256": "6936c9df458ddfb49db78877a91fb5efd5375d9ad35ffbe17f345640f562fadc",
+      "blob_sha": "2fcd384c554bd95cd8ddbe4d5557af480e9448e1"
+    },
+    {
+      "path": "mobile/tool/NativeVoiceTests.swift",
+      "bytes": 5504,
+      "chars": 5498,
+      "sha256": "3e30a65e1167f2a7a51036eda83d276f200f50e921e562c7806f6f83e8a2e40e",
+      "blob_sha": "5ed6d3533be321a58d77078f84888a4e6eb8cd3b"
+    },
+    {
+      "path": "mobile/tool/run_native_voice.sh",
+      "bytes": 258,
+      "chars": 258,
+      "sha256": "2a78f5fcecd8adc56b5d2f6c061882d657b6587b3e26de2b4a02e15584b7f4db",
+      "blob_sha": "d6443ee80abedf587517bb790ad88ee4fc7e8f31"
+    },
+    {
+      "path": "mobile/tool/check_app.py",
+      "bytes": 1854,
+      "chars": 1854,
+      "sha256": "586d4aadbaec8b2e950168122ce6781c16b81365e78747d48643a2ac8fb3c97a",
+      "blob_sha": "cd68321cd65c87a05903362e67ac659048b5fa59"
+    },
+    {
+      "path": "mobile/tool/check_xctest_result.py",
+      "bytes": 2133,
+      "chars": 2133,
+      "sha256": "026c21a1b178ea452a4cc4727a6dfe3cb64b404f0e166d0228d244dc9954f729",
+      "blob_sha": "f383a48f1d76a0c21316a2446f3fc068c0a9dd12"
+    },
+    {
+      "path": "mobile/tool/test_xctest_result.py",
+      "bytes": 1922,
+      "chars": 1922,
+      "sha256": "798d76a636793c95871a07c1b4fc982168d0248a7a108fc090537011b4d96378",
+      "blob_sha": "78d16ce4dd4c6143fe4aba05acf6210da074b97d"
+    },
+    {
+      "path": "mobile/tool/run_ios_test.py",
+      "bytes": 7117,
+      "chars": 7117,
+      "sha256": "fe55f8c13a3cb7b7e5a176e8e810ea134f5d7efa748a0010e97bb0ce740d136e",
+      "blob_sha": "da98e2760f9baae6561fe6e72f027063f566f9e4"
+    },
+    {
+      "path": "mobile/integration_test/ios_ci.dart",
+      "bytes": 831,
+      "chars": 831,
+      "sha256": "7e6a7ef1e02645c4e77cd183942b0c692badd18883bc14fdc03a84e78a1b84bf",
+      "blob_sha": "80b252e31d3d1b1056ba01817c2f4211e083668e"
+    },
+    {
+      "path": "mobile/integration_test/ios_voice_test.dart",
+      "bytes": 1809,
+      "chars": 1809,
+      "sha256": "b9498a456502957917f70a1ea27512e68738416789e5d931ada6b76224b26fb3",
+      "blob_sha": "ae63085c2a41e3e9a59244755b0d8b8e6427c234"
+    },
+    {
+      "path": ".github/workflows/stage3-native.yml",
+      "bytes": 2657,
+      "chars": 2657,
+      "sha256": "9d0c3002adc043542fff033d33c936dee23778f5adc48dee5bd7bdc2039f4cd6",
+      "blob_sha": "e8ef85369cf4e74530c0e124565c77253dee7b8a"
+    },
+    {
+      "path": ".github/workflows/stage3-ios.yml",
+      "bytes": 2561,
+      "chars": 2561,
+      "sha256": "2536947365af2f162a04788ef34fe990572a415d27fce9e6fd4348006815b132",
+      "blob_sha": "7d5d87b8ed5d1d5d50a505c4631c2e517e3a307f"
+    }
+  ],
+  "local": {
+    "command": "setup-windows.cmd",
+    "exit_code": 0,
+    "tests_passed": 190,
+    "new_tests": 36,
+    "tests_seconds": 36,
+    "analyze": "No issues found!",
+    "analyze_seconds": 5.6,
+    "report_validator_passed": 8,
+    "log": "setup-windows-stage4-final.log"
+  },
+  "complete_ci": {
+    "run_id": 45910467599,
+    "url": "https://github.com/diMtiHH/diMti/actions/runs/45910467599",
+    "status": "completed",
+    "windows": {
+      "job_id": 140217318418,
+      "conclusion": "success",
+      "tests_passed": 190,
+      "tests_seconds": 38,
+      "analyze_seconds": 7.2,
+      "report_validator_passed": 8
+    },
+    "conclusion": "success",
+    "attempt": 1,
+    "started_at_utc": "2026-11-26T23:21:36Z",
+    "completed_at_utc": "2026-11-26T23:45:18Z",
+    "native": {
+      "job_id": 140217318771,
+      "conclusion": "success",
+      "safety_groups": 16,
+      "storage_groups": 10,
+      "voice_groups": 12,
+      "shared_contract_cases": 74,
+      "process_interruptions": 40,
+      "report_validator_passed": 8
+    },
+    "xctest": {
+      "passed": 5,
+      "flutter_integration": 4,
+      "native_resources": 1,
+      "failed": 0,
+      "skipped": 0,
+      "expected_failures": 0,
+      "test_retries": 0,
+      "boot_attempts": 1,
+      "cases": [
+        "RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()",
+        "UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn",
+        "UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState",
+        "UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery",
+        "UniverseIntegrationTests/testNativeVoiceCapabilityAndCancellationNeverRequestCapture"
+      ],
+      "macos": "15.7.9",
+      "xcode": "16.4",
+      "device": "iPhone 16",
+      "ios": "18.5",
+      "architecture": "x86_64"
+    },
+    "artifact": {
+      "id": 15160862892,
+      "name": "stage3-xctest-results",
+      "size_in_bytes": 87211,
+      "url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15160862892",
+      "archive_download_url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15160862892/zip",
+      "expired": false,
+      "created_at": "2026-11-26T23:45:04Z",
+      "expires_at": "2026-11-27T23:45:03Z",
+      "updated_at": "2026-11-26T23:45:04Z",
+      "digest": "sha256:53989c0f124058ad9a2bd69cacc9f965e7cb99e03d44215d0fad6c13590c2867",
+      "workflow_run": {
+        "id": 45910467599,
+        "repository_id": 720727602,
+        "head_repository_id": 720727602,
+        "head_branch": "stage4-iphone",
+        "head_sha": "6aec0ea12e7e48aac47bb4d088a709cc6e97dc51"
+      },
+      "digest_verified": true,
+      "crc_verified": true,
+      "results_locally_revalidated": true,
+      "local_path": "mobile/build/ci-results/45910467599.zip",
+      "raw_reports": [
+        {
+          "path": "docs/device-reports/2026-11-27-stage4-xctest-summary.json",
+          "bytes": 705,
+          "sha256": "680d8746d3c67693ebd166a47594d80aba0071a41091d49250f122c6a7eb2aac"
+        },
+        {
+          "path": "docs/device-reports/2026-11-27-stage4-xctest-tests.json",
+          "bytes": 2883,
+          "sha256": "0a554992bc927dc99a08aa0f1d3dc798225d1d1ebbb784f0e1cf0dd59735f19c"
+        },
+        {
+          "path": "docs/device-reports/2026-11-27-stage4-xctest-verified.json",
+          "bytes": 609,
+          "sha256": "01a5f4e89c06819b7dd9de3d86538a935388efdfdc7e579571b21562a6c0646f"
+        }
+      ]
+    }
+  },
+  "release_ci": {
+    "run_id": 45910467628,
+    "url": "https://github.com/diMtiHH/diMti/actions/runs/45910467628",
+    "status": "completed",
+    "conclusion": "success",
+    "attempt": 1,
+    "job_id": 140217318167,
+    "started_at_utc": "2026-11-26T23:21:36Z",
+    "completed_at_utc": "2026-11-26T23:28:55Z",
+    "safety_groups": 16,
+    "storage_groups": 10,
+    "voice_groups": 12,
+    "analyze_seconds": 13.8,
+    "xcode": "26.6",
+    "artifact": {
+      "id": 15159249977,
+      "name": "Ask-the-Universe-stage3-iphone",
+      "size_in_bytes": 295681980,
+      "url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15159249977",
+      "archive_download_url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15159249977/zip",
+      "expired": false,
+      "created_at": "2026-11-26T23:28:47Z",
+      "expires_at": "2026-11-27T23:28:40Z",
+      "updated_at": "2026-11-26T23:28:47Z",
+      "digest": "sha256:7bd490d7b588dc3da446a4e65221b83f89d9a5a3cae6483ae90006dc2afbb29a",
+      "workflow_run": {
+        "id": 45910467628,
+        "repository_id": 720727602,
+        "head_repository_id": 720727602,
+        "head_branch": "stage4-iphone",
+        "head_sha": "6aec0ea12e7e48aac47bb4d088a709cc6e97dc51"
+      }
+    },
+    "artifact_digest_verified": true,
+    "artifact_crc_verified": true,
+    "artifact_local_path": "mobile/build/ci-results/45910467628.zip"
+  },
+  "limitations": [
+    "Actual microphone speech, phone calls, airplane mode and energy on the physical iPhone remain untested.",
+    "On-device recognition depends on supported language and installed iOS resources; manual input is the fallback.",
+    "Admission remains closed; voice never confirms a question or chooses an answer."
+  ],
+  "ipa": {
+    "path": "C:\\Users\\user\\Downloads\\Ask-the-Universe-Stage4-0.4.0\\Ask-the-Universe-0.4.0-build8.ipa",
+    "bytes": 295681439,
+    "sha256": "7109bd70daa4d57e854727ebba7b9586689dd7908537b8beb52921ac3eef0a28",
+    "version": "0.4.0",
+    "build": "8",
+    "platform": "iPhoneOS",
+    "unsigned_for_personal_signing": true,
+    "source_commit": "6aec0ea12e7e48aac47bb4d088a709cc6e97dc51",
+    "artifact_zip_sha256": "7bd490d7b588dc3da446a4e65221b83f89d9a5a3cae6483ae90006dc2afbb29a",
+    "app_bytes": 533345290,
+    "assets_sha256": {
+      "model.onnx": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665",
+      "tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+      "head.json": "fc3593cfabdc324d4e37b69c4fd49749e957bb582e42367fcbcb7692feab8ea9"
+    },
+    "english_notifications_approved": false,
+    "verified": [
+      "artifact digest",
+      "artifact and IPA CRC",
+      "source commit",
+      "IPA checksum",
+      "version/build",
+      "iPhoneOS",
+      "model hashes",
+      "privacy manifest",
+      "English notification flag false",
+      "denied sysctl string absent",
+      "microphone and speech permissions RU/EN",
+      "no background modes",
+      "on-device speech selector present"
+    ]
+  },
+  "evidence": {
+    "windows": "2026-11-27-stage4-windows-ci.log",
+    "native": "2026-11-27-stage4-native-ci-excerpt.log",
+    "release": "2026-11-27-stage4-release-ci-excerpt.log",
+    "implementation": "../STAGE_4.md",
+    "baseline": "../STAGE_3_BASELINE.md"
+  },
+  "local_log": {
+    "path": "setup-windows-stage4-final.log",
+    "sha256": "e9b85c290a09bbeb644efd0ef4d2a319d71293892a34e7273be63da4546775a5"
+  }
+}
