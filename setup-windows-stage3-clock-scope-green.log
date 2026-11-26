@@ -1,0 +1,5 @@
+00:00 +0: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart
+00:00 +0: real recreated screen retains the observed clock
+00:00 +1: diagnostic recreated screen retains the observed clock
+00:00 +2: returning to diagnostic route cannot reset clock protection
+00:01 +3: All tests passed!

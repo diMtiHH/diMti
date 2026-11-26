@@ -1,0 +1,248 @@
+{
+  "protocol": "stage3-clock-scope-build-v1",
+  "date_moscow": "2026-11-27",
+  "version": "0.3.5",
+  "build": "7",
+  "admission": "closed",
+  "stage_3_accepted": false,
+  "physical_tests": "deferred_by_user",
+  "source_commit": "ab8eed3b18b26133a344a569ba0fe96141c99c68",
+  "source_tree": "2d0a9c46d3f5cdb5f3e23015de1959158b58f688",
+  "base_commit": "37fc3ed96b9dc701423755e6b6447e292638b6bc",
+  "source_files": [
+    {
+      "path": "mobile/lib/session_core.dart",
+      "chars": 18582,
+      "bytes": 18614,
+      "sha256": "257c8a45be210e5c06e31b7eb81d7cd27b50fd7a64816b0773b40c8bdd50e2ca",
+      "blob_sha": "f88c5b38ed43c87fe6b29801eeef43d410dacad5"
+    },
+    {
+      "path": "mobile/lib/session_clock_scope.dart",
+      "chars": 1269,
+      "bytes": 1269,
+      "sha256": "41b8e81aceef7fa8f17a73676384c72abfab70f20c070f04c47d68ee551bc869",
+      "blob_sha": "9fd91f5bb5947ccab244f98da8eb12fb7b29fd5a"
+    },
+    {
+      "path": "mobile/lib/session_page.dart",
+      "chars": 21640,
+      "bytes": 22951,
+      "sha256": "c04cf6f086526b0d6c81118ed8dc565d077fea85d3d05c1a489f89e47a02b805",
+      "blob_sha": "ba926025a4e22d83e2dc558698dc9157bd9b83e7"
+    },
+    {
+      "path": "mobile/test/session_page_test.dart",
+      "chars": 23904,
+      "bytes": 24992,
+      "sha256": "3ff53cd913c1ec7f0810e388221a589174f69e381a444388052717a1059a5f54",
+      "blob_sha": "6b5364602038c4d1e41a99571f9a3708423a9db5"
+    },
+    {
+      "path": "mobile/integration_test/ios_session_test.dart",
+      "chars": 5622,
+      "bytes": 5622,
+      "sha256": "1b5b534b9d448367a73fe6467f350ff8a420ff483a7278b674ca4a87aa239945",
+      "blob_sha": "4d05a8b76a2fdb6dac103c27f1ae21c8ee2af0d7"
+    },
+    {
+      "path": "mobile/pubspec.yaml",
+      "chars": 543,
+      "bytes": 543,
+      "sha256": "4b8ffdd5945a61fbb33dc5e9d6d0676cb5137497dc7774c52446af149831f1ee",
+      "blob_sha": "ee033c2254a0ec1886e53ea6d6101793c48b552c"
+    }
+  ],
+  "local": {
+    "command": "setup-windows.cmd",
+    "exit_code": 0,
+    "analysis": "No issues found!",
+    "analysis_seconds": 6.4,
+    "tests_passed": 154,
+    "tests_seconds": 32,
+    "new_widget_tests": 5,
+    "regression_before_fix_failed": 3,
+    "regression_after_fix_passed": 3,
+    "log": "setup-windows-stage3-clock-scope-final.log"
+  },
+  "complete_ci": {
+    "run_id": 45906118097,
+    "url": "https://github.com/diMtiHH/diMti/actions/runs/45906118097",
+    "status": "completed",
+    "conclusion": "success",
+    "attempt": 1,
+    "windows": {
+      "job_id": 140203129299,
+      "conclusion": "success",
+      "passed": 154,
+      "test_seconds": 45,
+      "analyze_seconds": 8.7,
+      "report_validator_passed": 8
+    },
+    "started_at_utc": "2026-11-26T22:38:53Z",
+    "completed_at_utc": "2026-11-26T22:55:55Z",
+    "native": {
+      "job_id": 140203129522,
+      "conclusion": "success",
+      "safety_groups": 16,
+      "storage_groups": 10,
+      "shared_contract_cases": 74,
+      "process_interruptions": 40,
+      "report_validator_passed": 8
+    },
+    "xctest": {
+      "passed": 4,
+      "flutter_integration": 3,
+      "native_resources": 1,
+      "failed": 0,
+      "skipped": 0,
+      "expected_failures": 0,
+      "test_retries": 0,
+      "boot_attempts": 1,
+      "cases": [
+        "RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()",
+        "UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn",
+        "UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState",
+        "UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery"
+      ],
+      "macos": "15.7.9",
+      "xcode": "16.4",
+      "device": "iPhone 16",
+      "ios": "18.5",
+      "architecture": "x86_64"
+    },
+    "artifact": {
+      "id": 15159016084,
+      "name": "stage3-xctest-results",
+      "size_in_bytes": 83636,
+      "url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15159016084",
+      "archive_download_url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15159016084/zip",
+      "expired": false,
+      "created_at": "2026-11-26T22:55:44Z",
+      "expires_at": "2026-11-27T22:55:42Z",
+      "updated_at": "2026-11-26T22:55:44Z",
+      "digest": "sha256:224063673255fa0db51d81ee7e21a402e9b9e2b6793d9d342475de611b29bdb5",
+      "workflow_run": {
+        "id": 45906118097,
+        "repository_id": 720727602,
+        "head_repository_id": 720727602,
+        "head_branch": "stage3-iphone",
+        "head_sha": "ab8eed3b18b26133a344a569ba0fe96141c99c68"
+      },
+      "digest_verified": true,
+      "crc_verified": true,
+      "results_locally_revalidated": true,
+      "local_path": "mobile/build/ci-results/45906118097.zip",
+      "raw_reports": [
+        {
+          "path": "docs/device-reports/2026-11-27-stage3-clock-scope-xctest-summary.json",
+          "bytes": 705,
+          "sha256": "236fcfdf22733fc344c62a0492080e3491f67b8175cc1ae9221649943c297dbd"
+        },
+        {
+          "path": "docs/device-reports/2026-11-27-stage3-clock-scope-xctest-tests.json",
+          "bytes": 2461,
+          "sha256": "42ef5e4ed6dc1fbdd0c998295fecf0b190147a6050364f4078b4ed139b4ca4d0"
+        },
+        {
+          "path": "docs/device-reports/2026-11-27-stage3-clock-scope-xctest-verified.json",
+          "bytes": 517,
+          "sha256": "66e44264bf1f0062cb0a85220d02a2d88261e2f55f28ca6e25e38955f35aba7b"
+        }
+      ]
+    }
+  },
+  "release_ci": {
+    "run_id": 45906118002,
+    "url": "https://github.com/diMtiHH/diMti/actions/runs/45906118002",
+    "status": "completed",
+    "conclusion": "success",
+    "attempt": 1,
+    "job_id": 140203128771,
+    "artifact": {
+      "id": 15158540608,
+      "name": "Ask-the-Universe-stage3-iphone",
+      "size_in_bytes": 295628195,
+      "url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15158540608",
+      "archive_download_url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15158540608/zip",
+      "expired": false,
+      "created_at": "2026-11-26T22:45:08Z",
+      "expires_at": "2026-11-27T22:45:02Z",
+      "updated_at": "2026-11-26T22:45:08Z",
+      "digest": "sha256:82d6c0c9346cd76f70fc231eb663ac0abade9e26eb5136d3d9cfed46f33bdbe3",
+      "workflow_run": {
+        "id": 45906118002,
+        "repository_id": 720727602,
+        "head_repository_id": 720727602,
+        "head_branch": "stage3-iphone",
+        "head_sha": "ab8eed3b18b26133a344a569ba0fe96141c99c68"
+      }
+    },
+    "started_at_utc": "2026-11-26T22:38:53Z",
+    "completed_at_utc": "2026-11-26T22:45:17Z",
+    "safety_groups": 16,
+    "storage_groups": 10,
+    "analyze": "No issues found!",
+    "analyze_seconds": 14.6,
+    "xcode": "26.6",
+    "artifact_digest_verified": true,
+    "artifact_crc_verified": true,
+    "artifact_local_path": "mobile/build/ci-results/45906118002.zip"
+  },
+  "ipa": {
+    "path": "C:\\Users\\user\\Downloads\\Ask-the-Universe-Stage3-0.3.5\\Ask-the-Universe-0.3.5-build7.ipa",
+    "bytes": 295627654,
+    "sha256": "042ff653ca44202a7f39d60c7e200bc668e1352e1678c8367f38532529877878",
+    "version": "0.3.5",
+    "build": "7",
+    "platform": "iPhoneOS",
+    "unsigned_for_personal_signing": true,
+    "source_commit": "ab8eed3b18b26133a344a569ba0fe96141c99c68",
+    "artifact_zip_sha256": "82d6c0c9346cd76f70fc231eb663ac0abade9e26eb5136d3d9cfed46f33bdbe3",
+    "app_bytes": 533199359,
+    "assets_sha256": {
+      "model.onnx": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665",
+      "tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+      "head.json": "fc3593cfabdc324d4e37b69c4fd49749e957bb582e42367fcbcb7692feab8ea9"
+    },
+    "english_notifications_approved": false,
+    "verified": [
+      "artifact digest",
+      "artifact and IPA CRC",
+      "source commit",
+      "IPA checksum",
+      "version/build",
+      "iPhoneOS",
+      "model hashes",
+      "privacy manifest",
+      "English notification flag false",
+      "denied sysctl string absent"
+    ]
+  },
+  "limitations": [
+    "Clock observations survive screen and Navigator recreation within the same application owner.",
+    "Replacing the whole application tree or process loses the in-memory baseline.",
+    "Reboot and fallback UTC recovery retain their documented limits.",
+    "Physical iPhone checks are deferred; English notifications remain disabled pending text approval."
+  ],
+  "evidence": {
+    "windows": "2026-11-27-stage3-clock-scope-windows-ci.log",
+    "native": "2026-11-27-stage3-clock-scope-native-ci-excerpt.log",
+    "release": "2026-11-27-stage3-clock-scope-release-ci-excerpt.log",
+    "implementation": "../STAGE_3_CLOCK_SCOPE.md"
+  },
+  "local_logs": [
+    {
+      "path": "setup-windows-stage3-clock-scope-red.log",
+      "sha256": "365afd202bf2394b514bfda750778676e094e87d8b67779d3b965f2ac184fba9"
+    },
+    {
+      "path": "setup-windows-stage3-clock-scope-green.log",
+      "sha256": "844d0b3b35f1971b56284b2a1561284ed6f8642ef93954a8ea754157e282dbf3"
+    },
+    {
+      "path": "setup-windows-stage3-clock-scope-final.log",
+      "sha256": "b00d1b67edab04b93a1a1c880112c3e06c1b576ec391da9d01f28337873e568a"
+    }
+  ]
+}

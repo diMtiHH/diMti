@@ -1,0 +1,45 @@
+Run: https://github.com/diMtiHH/diMti/actions/runs/45906118002
+Commit: ab8eed3b18b26133a344a569ba0fe96141c99c68
+Job: 140203128771
+Selected unmodified GitHub log lines.
+
+2026-11-26T22:38:57.9928810Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +ab8eed3b18b26133a344a569ba0fe96141c99c68:refs/remotes/origin/stage3-iphone
+2026-11-26T22:38:58.4676190Z  * [new ref]         ab8eed3b18b26133a344a569ba0fe96141c99c68 -> origin/stage3-iphone
+2026-11-26T22:38:58.5322570Z ab8eed3b18b26133a344a569ba0fe96141c99c68
+2026-11-26T22:39:13.6100660Z PASS 1: commit token before creating kernel marker
+2026-11-26T22:39:13.6114380Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-26T22:39:13.6142260Z PASS 3: simulated reboot rotates token
+2026-11-26T22:39:13.6143520Z PASS 4: failed write recovery
+2026-11-26T22:39:13.6144150Z PASS 5: ambiguous committed write recovery
+2026-11-26T22:39:13.6146040Z PASS 6: crash between persisted token and kernel creation
+2026-11-26T22:39:13.6147670Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-26T22:39:13.6148480Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-26T22:39:13.6149500Z PASS 9: strict private marker validation
+2026-11-26T22:39:13.6151060Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-26T22:39:13.6153380Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-26T22:39:13.6154600Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-26T22:39:13.6156450Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-26T22:39:13.6157940Z PASS 14: notification callback success/error and duplicate completion
+2026-11-26T22:39:13.6161450Z PASS 15: missing OS callback releases the serial queue
+2026-11-26T22:39:13.6163020Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-26T22:39:13.6164680Z Native safety checks: 16/16 passed
+2026-11-26T22:39:14.8737540Z PASS storage 1: shared Dart/Swift state contract: 74 cases; rejected input preserves bytes
+2026-11-26T22:39:14.8743890Z PASS storage 2: notification preference and channel switch require actual booleans
+2026-11-26T22:39:14.8752040Z PASS storage 3: invalid preferences cannot overwrite saved opt-in
+2026-11-26T22:39:19.5856570Z PASS storage 4: 40 process exits across 5 write checkpoints and both scopes
+2026-11-26T22:39:19.5900710Z PASS storage 5: first uncommitted reservation is never loaded from staging
+2026-11-26T22:39:19.5939000Z PASS storage 6: error after rename propagates; reload recovers the committed timer
+2026-11-26T22:39:19.5992300Z PASS storage 7: corrupt, invalid UTF-8 and oversized committed files never use pending data
+2026-11-26T22:39:19.6030300Z PASS storage 8: diagnostic reset isolation and answer removal in committed cooldown
+2026-11-26T22:39:19.6044730Z PASS storage 9: ambiguous preferences rejected; canonical state committed without leftover staging
+2026-11-26T22:39:19.6055670Z PASS storage 10: both private scope directories excluded from backup
+2026-11-26T22:39:19.6068190Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T22:39:34.6561030Z Xcode 26.6
+2026-11-26T22:40:43.3441610Z No issues found! (ran in 14.6s)
+2026-11-26T22:43:30.2718540Z ✓ Built build/ios/iphoneos/Runner.app (533.2MB)
+2026-11-26T22:43:31.5344080Z model.onnx: verified in Runner.app
+2026-11-26T22:43:31.5616000Z tokenizer.json: verified in Runner.app
+2026-11-26T22:43:31.5657630Z head.json: verified in Runner.app
+2026-11-26T22:43:31.5760290Z App bytes: 533199359
+2026-11-26T22:45:08.0898500Z Artifact Ask-the-Universe-stage3-iphone.zip successfully finalized. Artifact ID 15158540608
+2026-11-26T22:45:08.0903440Z Artifact Ask-the-Universe-stage3-iphone has been successfully uploaded! Final size is 295628195 bytes. Artifact ID is 15158540608

@@ -1,0 +1,13 @@
+{
+  "protocol": "stage3-xctest-v1",
+  "flutter_integration_tests_passed": 3,
+  "native_resource_tests_passed": 1,
+  "cases": [
+    "RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()",
+    "UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn",
+    "UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState",
+    "UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery"
+  ],
+  "runner": "x86_64",
+  "test_retries": 0
+}
