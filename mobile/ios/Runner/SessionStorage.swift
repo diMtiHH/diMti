@@ -29,9 +29,13 @@ struct SessionStorage {
 
   private func read(_ scope: SessionScope, _ name: SessionFile) throws -> String? {
     let url = try folder(scope).appendingPathComponent(name.rawValue + ".json")
-    let file: FileHandle
-    do { file = try FileHandle(forReadingFrom: url) }
-    catch let error as NSError where error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError { return nil }
+    let descriptor = Darwin.open(url.path, O_RDONLY | O_NOFOLLOW)
+    if descriptor < 0 {
+      let code = errno
+      if code == ENOENT { return nil }
+      throw SessionStorageError.system(code)
+    }
+    let file = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
     defer { try? file.close() }
     // Read at most the allowed size plus one byte, including a possible short
     // read. A malformed or oversized committed file never falls back to staging.

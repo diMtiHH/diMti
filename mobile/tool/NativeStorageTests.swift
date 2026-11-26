@@ -41,7 +41,11 @@ struct NativeStorageTests {
     defer { try? FileManager.default.removeItem(at: root) }
     let store = SessionStorage(root: root)
     var passed = 0
-    func pass(_ label: String) { passed += 1; print("PASS storage \(passed): \(label)") }
+    func pass(_ label: String) {
+      passed += 1
+      print("PASS storage \(passed): \(label)")
+      fflush(stdout)
+    }
     func path(_ scope: SessionScope, _ name: String) -> URL {
       root.appendingPathComponent(scope.rawValue).appendingPathComponent(name)
     }
