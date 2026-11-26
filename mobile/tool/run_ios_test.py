@@ -92,8 +92,8 @@ def main():
         # does not compete with the Dart compiler and Xcode for resources.
         checked(['xcodebuild', 'build-for-testing', '-workspace', 'ios/Runner.xcworkspace',
                  '-scheme', 'Runner', '-configuration', 'Debug', '-sdk', 'iphonesimulator',
-                 '-destination', 'generic/platform=iOS Simulator', '-arch', platform.machine(),
-                 '-derivedDataPath', str(derived), 'ONLY_ACTIVE_ARCH=YES',
+                 '-destination', 'generic/platform=iOS Simulator',
+                 '-derivedDataPath', str(derived), f'ARCHS={platform.machine()}', 'ONLY_ACTIVE_ARCH=YES',
                  'CODE_SIGNING_ALLOWED=NO', 'COMPILER_INDEX_STORE_ENABLE=NO'],
                 'build', output, 1200)
         products = list((derived / 'Build/Products').glob('*.xctestrun'))
