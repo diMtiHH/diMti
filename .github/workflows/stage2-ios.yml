@@ -34,7 +34,22 @@ jobs:
           ditto build/ios/iphoneos/Runner.app "$RUNNER_TEMP/ipa/Payload/Runner.app"
           ditto -c -k --keepParent "$RUNNER_TEMP/ipa/Payload" "$RUNNER_TEMP/ipa/Ask-the-Universe.ipa"
           printf '%s\n' "$GITHUB_SHA" > "$RUNNER_TEMP/ipa/SOURCE_COMMIT.txt"
+      - name: Checksum installable archive
+        working-directory: ${{ runner.temp }}/ipa
+        run: shasum -a 256 Ask-the-Universe.ipa > SHA256SUMS
+      - name: Save built IPA for physical device testing
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Ask-the-Universe-unsigned-iphone
+          path: |
+            ${{ runner.temp }}/ipa/Ask-the-Universe.ipa
+            ${{ runner.temp }}/ipa/SHA256SUMS
+            ${{ runner.temp }}/ipa/SOURCE_COMMIT.txt
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
       - name: Run bundled model in an iPhone simulator
+        timeout-minutes: 24
         working-directory: mobile
         run: |
           xcrun simctl list devices available --json > "$RUNNER_TEMP/simulators.json"
@@ -50,19 +65,4 @@ jobs:
           print(device['udid'])
           PY
           )
-          xcrun simctl bootstatus "$simulator_id" -b
-          flutter test --no-pub -d "$simulator_id" integration_test/ios_model_test.dart
-      - name: Checksum installable archive
-        working-directory: ${{ runner.temp }}/ipa
-        run: shasum -a 256 Ask-the-Universe.ipa > SHA256SUMS
-      - name: Save IPA after successful simulator check
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
-        with:
-          name: Ask-the-Universe-unsigned-iphone
-          path: |
-            ${{ runner.temp }}/ipa/Ask-the-Universe.ipa
-            ${{ runner.temp }}/ipa/SHA256SUMS
-            ${{ runner.temp }}/ipa/SOURCE_COMMIT.txt
-          if-no-files-found: error
-          compression-level: 0
-          retention-days: 1
+          python3 tool/run_ios_test.py "$simulator_id"
