@@ -108,7 +108,7 @@ def main():
         bundle = output / 'Tests.xcresult'
         checked(['xcodebuild', 'test-without-building', '-xctestrun', str(products[0]),
                  '-destination', f'id={device}', '-destination-timeout', '120',
-                 '-parallel-testing-enabled', 'NO', '-test-iterations', '1',
+                 '-parallel-testing-enabled', 'NO',
                  '-resultBundlePath', str(bundle)], 'test', output, 600)
         for kind in ('summary', 'tests'):
             result = subprocess.run(['xcrun', 'xcresulttool', 'get', 'test-results', kind,
