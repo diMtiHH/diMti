@@ -29,20 +29,32 @@ enum SessionSchema {
     guard text.utf8.count <= maxBytes,
       let data = text.data(using: .utf8),
       let value = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any] else { throw SessionDataError.invalid }
-    // JSONSerialization can erase the distinction between 1, 1.0 and 1e0.
-    // Syntax was checked above; reject fractional/exponent number tokens while
-    // skipping strings and escapes. All numeric fields in this schema are int.
+    // Syntax was checked above. Reject duplicate (also escaped) keys instead
+    // of relying on Foundation/Dart's different duplicate-key choices. Numeric
+    // fields must also retain integer syntax: 1.0 and 1e0 are not Dart ints.
     let bytes = Array(text.utf8)
+    var keys: Set<String> = []
     var i = 0
-    var inString = false
     while i < bytes.count {
       let byte = bytes[i]
-      if inString {
-        if byte == 92 { i += 2; continue }
-        if byte == 34 { inString = false }
-      } else if byte == 34 {
-        inString = true
-      } else if byte == 45 || (48...57).contains(byte) {
+      if byte == 34 {
+        let start = i
+        i += 1
+        while i < bytes.count {
+          if bytes[i] == 92 { i += 2; continue }
+          if bytes[i] == 34 { break }
+          i += 1
+        }
+        i += 1
+        var next = i
+        while next < bytes.count && [9, 10, 13, 32].contains(bytes[next]) { next += 1 }
+        if next < bytes.count && bytes[next] == 58 {
+          guard let key = try JSONSerialization.jsonObject(with: Data(bytes[start..<i]), options: [.fragmentsAllowed]) as? String,
+            keys.insert(key).inserted else { throw SessionDataError.invalid }
+        }
+        continue
+      }
+      if byte == 45 || (48...57).contains(byte) {
         while i < bytes.count && ([45, 43, 46, 69, 101].contains(bytes[i]) ||
                                  (48...57).contains(bytes[i])) {
           if [46, 69, 101].contains(bytes[i]) { throw SessionDataError.invalid }

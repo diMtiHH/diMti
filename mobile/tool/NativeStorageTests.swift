@@ -144,11 +144,15 @@ struct NativeStorageTests {
     try check(!saved.contains("answer") && !saved.contains("question"), "cooldown contains private input or answer")
     pass("diagnostic reset isolation and answer removal in committed cooldown")
 
-    try store.writeState(.diagnostic, "{\"version\":1,\"phase\":\"fixture-discarded-value\",\"phase\":\"idle\"}")
+    for raw in ["{\"language\":\"ru\",\"notifications\":true,\"notifications\":false}",
+                "{\"language\":\"ru\",\"language\":\"en\",\"notifications\":false}"] {
+      try mustReject("ambiguous preferences accepted") { _ = try SessionSchema.preferences(raw) }
+    }
+    try store.writeState(.diagnostic, " { \"version\" : 1, \"phase\" : \"\\u0069dle\" } ")
     let canonicalBytes = try Data(contentsOf: path(.diagnostic, "state.json"))
-    try check(!String(decoding: canonicalBytes, as: UTF8.self).contains("fixture-discarded-value"), "unused raw JSON value persisted")
+    try check(String(decoding: canonicalBytes, as: UTF8.self) == (try canonical(0, .diagnostic)), "unchecked raw formatting persisted")
     try check(!FileManager.default.fileExists(atPath: path(.diagnostic, "state.pending").path), "successful commit left staging data")
-    pass("canonical write keeps only validated values and consumes staging file")
+    pass("ambiguous preferences rejected; canonical state committed without leftover staging")
 
     for scope in [SessionScope.real, .diagnostic] {
       let values = try root.appendingPathComponent(scope.rawValue).resourceValues(forKeys: [.isExcludedFromBackupKey])

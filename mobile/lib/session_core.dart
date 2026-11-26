@@ -98,6 +98,39 @@ class NoPauseNotifications implements PauseNotifications {
 
 enum _RecordKind { idle, reserved, pending, cooldown }
 
+// Call only after jsonDecode has checked syntax. Records are flat objects;
+// reject duplicate keys (including escaped spellings) before interpreting them.
+// Foundation and Dart must not select different states from ambiguous JSON.
+void _rejectDuplicateKeys(String raw) {
+  final keys = <String>{};
+  var i = 0;
+  while (i < raw.length) {
+    if (raw.codeUnitAt(i) != 34) {
+      i++;
+      continue;
+    }
+    final start = i++;
+    while (i < raw.length) {
+      if (raw.codeUnitAt(i) == 92) {
+        i += 2;
+        continue;
+      }
+      if (raw.codeUnitAt(i) == 34) break;
+      i++;
+    }
+    i++;
+    var next = i;
+    while (next < raw.length &&
+        [9, 10, 13, 32].contains(raw.codeUnitAt(next))) {
+      next++;
+    }
+    if (next < raw.length && raw.codeUnitAt(next) == 58) {
+      final key = jsonDecode(raw.substring(start, i)) as String;
+      if (!keys.add(key)) throw const FormatException('Duplicate state field');
+    }
+  }
+}
+
 class _Record {
   final _RecordKind kind;
   final Answer? answer;
@@ -127,6 +160,7 @@ class _Record {
     if (raw == null) return const _Record(_RecordKind.idle);
     if (raw.length > 1024) throw const FormatException('Invalid state');
     final decoded = jsonDecode(raw);
+    _rejectDuplicateKeys(raw);
     if (decoded is! Map<String, dynamic> ||
         ![1, 2].contains(decoded['version']) ||
         decoded['version'] is! int) {

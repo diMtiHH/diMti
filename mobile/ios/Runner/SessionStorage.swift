@@ -80,7 +80,7 @@ struct SessionStorage {
 
   func writeState(_ scope: SessionScope, _ raw: String) throws {
     // Validate before touching the existing files; store only checked values.
-    // Re-encoding also removes discarded duplicate JSON fields and whitespace.
+    // Re-encoding keeps one canonical form, without unchecked raw formatting.
     let value = try SessionSchema.encode(SessionSchema.state(raw, scope: scope))
     try write(scope, .state, value)
   }

@@ -424,5 +424,23 @@
     "scope": "diagnostic",
     "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":19e5,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
     "valid": false
+  },
+  {
+    "name": "duplicate phase ending valid",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"fixture-invalid\",\"phase\":\"idle\"}",
+    "valid": false
+  },
+  {
+    "name": "duplicate phase ending invalid",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"idle\",\"phase\":\"fixture-invalid\"}",
+    "valid": false
+  },
+  {
+    "name": "escaped duplicate key",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"idle\",\"\\u0076ersion\":1}",
+    "valid": false
   }
 ]

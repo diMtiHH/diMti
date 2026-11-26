@@ -100,6 +100,8 @@ void main() {
         '{"version":true,"phase":"idle"}',
         '{"version":1.0,"phase":"idle"}',
         '{"version":1e0,"phase":"idle"}',
+        '{"version":1,"phase":"idle","phase":"reserved"}',
+        r'{"version":1,"\u0076ersion":1,"phase":"idle"}',
         '{"version":1,"phase":"idle","question":"fixture-only"}',
         savedPause.replaceFirst('60000', '60000.0'),
         ' ' * 2049,
