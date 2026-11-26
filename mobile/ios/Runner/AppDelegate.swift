@@ -4,6 +4,7 @@ import UIKit
 @main
 @objc class AppDelegate: FlutterAppDelegate, FlutterImplicitEngineDelegate {
   private var sessionBridge: SessionBridge?
+  private var voiceBridge: VoiceBridge?
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
@@ -14,5 +15,6 @@ import UIKit
   func didInitializeImplicitFlutterEngine(_ engineBridge: FlutterImplicitEngineBridge) {
     GeneratedPluginRegistrant.register(with: engineBridge.pluginRegistry)
     sessionBridge = SessionBridge(messenger: engineBridge.applicationRegistrar.messenger())
+    voiceBridge = VoiceBridge(messenger: engineBridge.applicationRegistrar.messenger())
   }
 }

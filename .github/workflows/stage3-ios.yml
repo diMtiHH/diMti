@@ -1,7 +1,7 @@
-name: Stage 3 iPhone release build
+name: iPhone release build
 on:
   push:
-    branches: [stage3-iphone]
+    branches: [stage3-iphone, stage4-iphone]
   workflow_dispatch:
 permissions:
   contents: read
@@ -15,6 +15,8 @@ jobs:
         run: bash mobile/tool/run_native_safety.sh
       - name: Test native state validation and interrupted writes
         run: bash mobile/tool/run_native_storage.sh
+      - name: Test microphone signal and capture lifetime
+        run: bash mobile/tool/run_native_voice.sh
       - name: Install pinned Flutter SDK
         run: |
           git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"

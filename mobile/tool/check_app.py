@@ -1,6 +1,7 @@
 """Verify the packaged iOS asset location used by the Flutter isolate."""
 import hashlib
 import json
+import plistlib
 from pathlib import Path
 import sys
 
@@ -24,3 +25,13 @@ for name, expected in {
         raise SystemExit(f'Wrong bytes in app: {name}')
     print(f'{name}: verified in Runner.app')
 print('App bytes:', sum(p.stat().st_size for p in app.rglob('*') if p.is_file()))
+info = plistlib.loads((app / 'Info.plist').read_bytes())
+assert info.get('UniverseEnglishNoticeApproved') is False
+for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription'):
+    assert isinstance(info.get(key), str) and info[key].strip(), key
+for language in ('ru', 'en'):
+    localized = plistlib.loads((app / f'{language}.lproj/InfoPlist.strings').read_bytes())
+    for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription'):
+        assert localized.get(key, '').strip(), (language, key)
+assert not info.get('UIBackgroundModes'), 'Background recording is not authorized'
+print('Local speech permission descriptions RU/EN and closed notification flag: verified')

@@ -71,6 +71,17 @@ class TestRandom implements AnswerSource {
 }
 
 void main() {
+  setUp(() {
+    TestWidgetsFlutterBinding.ensureInitialized()
+        .platformDispatcher
+        .accessibilityFeaturesTestValue = const FakeAccessibilityFeatures(
+      disableAnimations: true,
+    );
+  });
+  tearDown(() {
+    TestWidgetsFlutterBinding.ensureInitialized().platformDispatcher
+        .clearAccessibilityFeaturesTestValue();
+  });
   Widget app(Widget page) => SessionClockScope(child: MaterialApp(home: page));
 
   Future<void> show(WidgetTester tester, Widget page) async {

@@ -15,7 +15,7 @@ class XCTestResultContract(unittest.TestCase):
         return {'testNodes': [{'nodeType': 'Test Suite', 'children': self.cases if cases is None else cases}]}
 
     def test_all_required_cases(self):
-        self.assertEqual(len(validate(self.report())), 4)
+        self.assertEqual(len(validate(self.report())), 5)
 
     def test_empty_report_cannot_pass(self):
         with self.assertRaises(ValueError):

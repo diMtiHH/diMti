@@ -1,0 +1,2 @@
+"NSMicrophoneUsageDescription" = "Use the microphone to turn your spoken question into text on this iPhone. Audio is not saved.";
+"NSSpeechRecognitionUsageDescription" = "Recognize your question on this iPhone so you can review and edit it before continuing.";

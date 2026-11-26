@@ -4,6 +4,7 @@ import 'package:integration_test/integration_test.dart';
 
 import 'ios_model_test.dart' as model;
 import 'ios_session_test.dart' as session;
+import 'ios_voice_test.dart' as voice;
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -16,5 +17,6 @@ void main() {
   tearDown(binding.platformDispatcher.clearSemanticsEnabledTestValue);
 
   session.main();
+  voice.main();
   model.main();
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'closed_model_gate.dart';
@@ -9,6 +10,8 @@ import 'ios_session.dart';
 import 'session_core.dart';
 import 'session_clock_scope.dart';
 import 'worker.dart';
+import 'voice_input.dart';
+import 'voice_star.dart';
 
 enum _LoadStage { preferences, clock, model, state }
 
@@ -20,6 +23,7 @@ class UniverseApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Спроси Вселенную',
       theme: ThemeData(
+        scaffoldBackgroundColor: const Color(0xff050507),
         colorScheme: ColorScheme.fromSeed(
           seedColor: const Color(0xff86a7df),
           brightness: Brightness.dark,
@@ -35,12 +39,14 @@ class SessionPage extends StatefulWidget {
   final SessionBackend? backend;
   final Future<Reading> Function(String, String)? inspector;
   final AnswerSource? random;
+  final VoiceBackend? voiceBackend;
   const SessionPage({
     super.key,
     this.diagnostic = false,
     this.backend,
     this.inspector,
     this.random,
+    this.voiceBackend,
   });
   @override
   State<SessionPage> createState() => _SessionPageState();
@@ -48,6 +54,9 @@ class SessionPage extends StatefulWidget {
 
 class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   final _input = TextEditingController();
+  VoiceInputController? _voice;
+  bool _voiceRevisionActive = false;
+  String _beforeVoice = '';
   late final ClockContinuityGuard _clockGuard;
   bool _started = false;
   late final SessionBackend _backend;
@@ -93,6 +102,11 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     super.initState();
     _backend =
         widget.backend ?? IosSessionBackend(diagnostic: widget.diagnostic);
+    if (!widget.diagnostic) {
+      _voice = VoiceInputController(
+        backend: widget.voiceBackend ?? IosVoiceBackend(),
+      )..addListener(_voiceChanged);
+    }
     _foreground =
         WidgetsBinding.instance.lifecycleState == null ||
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
@@ -113,6 +127,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
 
   Future<void> _load() async {
     if (_loadRunning) return;
+    _discardVoice();
     _loadRunning = true;
     _session?.onChanged = null;
     _session = null;
@@ -189,6 +204,9 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
 
   void _changed() {
     if (!mounted) return;
+    if (_session?.phase != SessionPhase.ready && _voice?.busy == true) {
+      _discardVoice();
+    }
     if (_session?.phase != SessionPhase.review) _review = null;
     if (_session?.phase != SessionPhase.pending &&
         _session?.phase != SessionPhase.cooldown) {
@@ -198,7 +216,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     setState(() {});
   }
 
-  void _hidePrivateView() {
+  void _hidePrivateView({bool keepPermissionRequest = false}) {
+    if (!keepPermissionRequest) _discardVoice();
     _input.clear();
     _review = null;
     _visibleAnswer = null;
@@ -211,7 +230,11 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _foreground = state == AppLifecycleState.resumed;
     if (!_foreground) {
-      _hidePrivateView();
+      _hidePrivateView(
+        keepPermissionRequest:
+            state == AppLifecycleState.inactive &&
+            _voice?.state == VoiceInputState.starting,
+      );
     } else if (!_covered) {
       _session?.setActive(true);
       _resume();
@@ -230,7 +253,11 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
 
   void _prepare() {
     final session = _session!;
-    if (session.busy || session.phase != SessionPhase.ready) return;
+    if (session.busy ||
+        session.phase != SessionPhase.ready ||
+        _voice?.busy == true)
+      return;
+    _discardVoice();
     if (widget.diagnostic) session.edit(diagnosticFixture, language: _language);
     final review = session.review();
     setState(() {
@@ -246,6 +273,96 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     _review = null;
     final result = await _session!.confirm(review);
     if (mounted && _foreground && !_covered) setState(() => _result = result);
+  }
+
+  void _voiceChanged() {
+    if (!mounted) return;
+    final voice = _voice!;
+    final session = _session;
+    if (_voiceRevisionActive &&
+        _foreground &&
+        !_covered &&
+        session?.phase == SessionPhase.ready) {
+      if (_input.text != voice.text) {
+        _input.value = TextEditingValue(
+          text: voice.text,
+          selection: TextSelection.collapsed(offset: voice.text.length),
+        );
+        session!.edit(voice.text, language: _language);
+        _result = null;
+      }
+    }
+    if (!voice.busy) _voiceRevisionActive = false;
+    setState(() {});
+  }
+
+  void _discardVoice() {
+    _voiceRevisionActive = false;
+    _beforeVoice = '';
+    unawaited(_voice?.cancel());
+  }
+
+  Future<void> _startVoice() async {
+    if (!_foreground ||
+        _covered ||
+        _settingsBusy ||
+        _voice?.busy == true ||
+        _session?.phase != SessionPhase.ready ||
+        _session?.busy == true)
+      return;
+    FocusScope.of(context).unfocus();
+    unawaited(HapticFeedback.selectionClick());
+    _beforeVoice = _input.text;
+    _voiceRevisionActive = true;
+    await _voice!.start(_language, initialText: _beforeVoice);
+  }
+
+  void _cancelVoice() {
+    final original = _beforeVoice;
+    _discardVoice();
+    _input.text = original;
+    _session?.edit(original, language: _language);
+    setState(() {});
+  }
+
+  String get _voiceStatus {
+    final voice = _voice!;
+    if (voice.state == VoiceInputState.starting) {
+      return t('Подключаем микрофон…', 'Preparing microphone…');
+    }
+    if (voice.state == VoiceInputState.listening) {
+      return t(
+        'Слушаю. Нажми на звезду, чтобы закончить.',
+        'Listening. Tap the star to finish.',
+      );
+    }
+    if (voice.state == VoiceInputState.stopping) {
+      return t('Завершаем распознавание…', 'Finishing transcription…');
+    }
+    if (voice.state == VoiceInputState.error) {
+      return switch (voice.errorCode) {
+        'permissionDenied' => t(
+          'Нет разрешения на микрофон или речь. Можно написать вопрос или изменить разрешения в настройках iPhone.',
+          'Microphone or speech permission is off. Type your question or change permissions in iPhone Settings.',
+        ),
+        'unavailable' => t(
+          'Распознавание на устройстве недоступно для этого языка. Напиши вопрос.',
+          'On-device recognition is unavailable for this language. Type your question.',
+        ),
+        'interrupted' => t(
+          'Запись прервана. Проверь текст или начни снова.',
+          'Recording interrupted. Review the text or start again.',
+        ),
+        _ => t(
+          'Не удалось распознать речь. Можно написать вопрос.',
+          'Speech could not be recognized. You can type your question.',
+        ),
+      };
+    }
+    return t(
+      'Коснись звезды и задай вопрос голосом',
+      'Touch the star and speak your question',
+    );
   }
 
   Future<void> _languageTo(String language) async {
@@ -445,6 +562,15 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
         return Column(
           children: [
+            if (!widget.diagnostic)
+              VoiceStar(
+                enabled: false,
+                active: false,
+                label: t(
+                  'Микрофон недоступен во время паузы',
+                  'Microphone unavailable during the pause',
+                ),
+              ),
             if (_visibleAnswer != null) _answer(_visibleAnswer!),
             Text(
               session.currentPauseDurationMs == diagnosticCooldownMs
@@ -489,16 +615,49 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                 autocorrect: false,
                 decoration: InputDecoration(
                   labelText: t('Твой вопрос', 'Your question'),
+                  border: InputBorder.none,
                 ),
+                onTap: () {
+                  if (_voice?.busy == true) _discardVoice();
+                },
                 onChanged: (value) {
+                  _discardVoice();
                   session.edit(value, language: _language);
                   _result = null;
                 },
               ),
+            if (!widget.diagnostic) ...[
+              VoiceStar(
+                level: _voice!.level,
+                listening: _voice!.recording,
+                active: _foreground && !_covered,
+                enabled:
+                    !_settingsBusy &&
+                    !session.busy &&
+                    (_voice!.state == VoiceInputState.idle ||
+                        _voice!.state == VoiceInputState.error ||
+                        _voice!.state == VoiceInputState.listening),
+                label: _voice!.recording
+                    ? t('Остановить запись', 'Stop recording')
+                    : t('Задать вопрос голосом', 'Speak your question'),
+                onPressed: _voice!.recording ? _voice!.stop : _startVoice,
+              ),
+              Text(
+                _voiceStatus,
+                textAlign: TextAlign.center,
+                key: const ValueKey('voice-status'),
+              ),
+              if (_voice!.busy)
+                TextButton(
+                  onPressed: _cancelVoice,
+                  child: Text(t('Отменить запись', 'Cancel recording')),
+                ),
+            ],
             const SizedBox(height: 16),
             FilledButton(
               onPressed:
                   session.busy ||
+                      _voice?.busy == true ||
                       (!widget.diagnostic && session.draft.trim().isEmpty)
                   ? null
                   : _prepare,
@@ -655,6 +814,9 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     _session?.onChanged = null;
     _session?.setActive(false);
     _worker?.close();
+    _voiceRevisionActive = false;
+    _voice?.removeListener(_voiceChanged);
+    _voice?.dispose();
     _input.dispose();
     super.dispose();
   }

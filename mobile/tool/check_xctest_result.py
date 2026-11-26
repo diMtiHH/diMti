@@ -12,6 +12,8 @@ EXPECTED = {
         'UniverseIntegrationTests',
     'testiosrunnerloadsthebundledmodelandchecksruanden':
         'UniverseIntegrationTests',
+    'testnativevoicecapabilityandcancellationneverrequestcapture':
+        'UniverseIntegrationTests',
     'bundledmodelisaccessibletotheflutterworker': 'RunnerTests',
 }
 
@@ -31,7 +33,7 @@ def test_cases(value):
 def validate(document):
     cases = list(test_cases(document))
     if len(cases) != len(EXPECTED):
-        raise ValueError(f'Expected exactly 4 XCTest cases, found {len(cases)}')
+        raise ValueError(f'Expected exactly {len(EXPECTED)} XCTest cases, found {len(cases)}')
     found = set()
     identifiers = []
     for case in cases:
@@ -50,6 +52,6 @@ def validate(document):
 
 if __name__ == '__main__':
     passed = validate(json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')))
-    print('Verified XCTest results: 3 Flutter integration cases + 1 native resource case passed.')
+    print('Verified XCTest results: 4 Flutter integration cases + 1 native resource case passed.')
     for name in passed:
         print(f'PASS {name}')

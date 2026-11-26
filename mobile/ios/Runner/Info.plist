@@ -28,6 +28,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Use the microphone to turn your spoken question into text on this iPhone. Audio is not saved.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Recognize your question on this iPhone so you can review and edit it before continuing.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
