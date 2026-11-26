@@ -189,5 +189,18 @@
     ],
     "exact_vm_service_cause_established": false,
     "timeouts_are_not_counted_as_passes": true
+  },
+  "report_scope": "Historical 0.3.4 release and original CI attempts. The later complete CI resolution is recorded in ci_follow_up.",
+  "ci_follow_up": {
+    "local_date": "2026-11-27",
+    "report": "2026-11-27-stage3-complete-ci.json",
+    "run_id": 45899779278,
+    "commit": "62419b6a2bbb02e93b9374388fe8faa628638330",
+    "workflow_status": "success",
+    "windows_tests_passed": 137,
+    "ios_cases_passed": 4,
+    "ios_failed": 0,
+    "ios_skipped": 0,
+    "admission": "closed"
   }
 }

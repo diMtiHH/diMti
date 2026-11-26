@@ -1,0 +1,156 @@
+Run: 45899779278 (attempt 1)
+Commit: 62419b6a2bbb02e93b9374388fe8faa628638330
+Job: 140182438070, Windows application tests, success
+Selected original log lines; the GitHub job completed successfully.
+2026-11-26T21:40:59.1597859Z Ran 8 tests in 0.001s
+2026-11-26T21:42:00.9583782Z Flutter SDK: C:\Users\runneradmin\AppData\Local\AskTheUniverse\flutter-3.50.1
+2026-11-26T21:42:04.8301344Z model.onnx: verified (470268510 bytes)
+2026-11-26T21:42:04.8301662Z tokenizer.json: verified (17082730 bytes)
+2026-11-26T21:43:12.2660145Z No issues found! (ran in 10.4s)
+2026-11-26T21:43:14.2545070Z 00:00 +0: loading D:/a/diMti/diMti/mobile/test/device_report_test.dart
+2026-11-26T21:43:21.7697603Z 00:00 +0: D:/a/diMti/diMti/mobile/test/device_report_test.dart: report preserves units, UTC time, build mode and verified asset identity
+2026-11-26T21:43:21.8913119Z 00:00 +1: loading D:/a/diMti/diMti/mobile/test/device_run_test.dart
+2026-11-26T21:43:22.8916007Z 00:01 +1: D:/a/diMti/diMti/mobile/test/device_run_test.dart: device measurement uses nearest-rank percentiles and checks both outcomes
+2026-11-26T21:43:22.9125123Z 00:01 +2: D:/a/diMti/diMti/mobile/test/device_run_test.dart: a failed check cannot yield a successful benchmark
+2026-11-26T21:43:22.9196329Z 00:01 +3: D:/a/diMti/diMti/mobile/test/device_run_test.dart: interruption during check 1 discards the run
+2026-11-26T21:43:22.9231938Z 00:01 +4: D:/a/diMti/diMti/mobile/test/device_run_test.dart: interruption during check 20 discards the run
+2026-11-26T21:43:23.0030601Z 00:01 +5: loading D:/a/diMti/diMti/mobile/test/engine_test.dart
+2026-11-26T21:43:23.7859043Z 00:02 +5: D:/a/diMti/diMti/mobile/test/engine_test.dart: (setUpAll)
+2026-11-26T21:43:31.5393149Z 00:09 +5: D:/a/diMti/diMti/mobile/test/engine_test.dart: FP32 Dart path agrees with the frozen Python implementation, one full question per run
+2026-11-26T21:43:32.1198138Z 00:10 +6: D:/a/diMti/diMti/mobile/test/engine_test.dart: full input is required
+2026-11-26T21:43:32.1393399Z 00:10 +7: D:/a/diMti/diMti/mobile/test/engine_test.dart: missing or corrupt model fails at startup
+2026-11-26T21:43:32.1529455Z 00:10 +8: D:/a/diMti/diMti/mobile/test/engine_test.dart: UI worker runs the bundled model off the UI isolate
+2026-11-26T21:43:39.2624693Z 00:17 +9: D:/a/diMti/diMti/mobile/test/engine_test.dart: (tearDownAll)
+2026-11-26T21:43:39.3368746Z 00:17 +9: loading D:/a/diMti/diMti/mobile/test/session_core_test.dart
+2026-11-26T21:43:40.1445045Z 00:18 +9: D:/a/diMti/diMti/mobile/test/session_core_test.dart: diagnostic pause restores and expires at exactly one minute
+2026-11-26T21:43:40.1737288Z 00:18 +10: D:/a/diMti/diMti/mobile/test/session_core_test.dart: short pause keeps its duration through reboot and clock rebasing
+2026-11-26T21:43:40.1789183Z 00:18 +11: D:/a/diMti/diMti/mobile/test/session_core_test.dart: a real session rejects the diagnostic record without altering it
+2026-11-26T21:43:40.1828098Z 00:18 +12: D:/a/diMti/diMti/mobile/test/session_core_test.dart: upgrading diagnostic mode preserves a legacy thirty minute deadline
+2026-11-26T21:43:40.1874278Z 00:18 +13: D:/a/diMti/diMti/mobile/test/session_core_test.dart: short timer schema rejects unsupported durations and extra fields
+2026-11-26T21:43:40.1938662Z 00:18 +14: D:/a/diMti/diMti/mobile/test/session_core_test.dart: all 100 values map to exactly 50 YES and 50 NO
+2026-11-26T21:43:40.1990611Z 00:18 +15: D:/a/diMti/diMti/mobile/test/session_core_test.dart: system source returns only integers inside its contract
+2026-11-26T21:43:40.2029636Z 00:18 +16: D:/a/diMti/diMti/mobile/test/session_core_test.dart: production gate never reaches RNG for any model outcome or error
+2026-11-26T21:43:40.2108744Z 00:18 +17: D:/a/diMti/diMti/mobile/test/session_core_test.dart: unsupported language never invokes the model adapter
+2026-11-26T21:43:40.2138124Z 00:18 +18: D:/a/diMti/diMti/mobile/test/session_core_test.dart: editing or cancelling a review requires a fresh explicit confirmation
+2026-11-26T21:43:40.2177306Z 00:18 +19: D:/a/diMti/diMti/mobile/test/session_core_test.dart: review from another session and changed language cannot authorize RNG
+2026-11-26T21:43:40.2205045Z 00:18 +20: D:/a/diMti/diMti/mobile/test/session_core_test.dart: confirmation sends the exact approved text and language
+2026-11-26T21:43:40.2232842Z 00:18 +21: D:/a/diMti/diMti/mobile/test/session_core_test.dart: edit during validation discards the late ALLOW
+2026-11-26T21:43:40.2265968Z 00:18 +22: D:/a/diMti/diMti/mobile/test/session_core_test.dart: language during validation discards the late ALLOW
+2026-11-26T21:43:40.2290393Z 00:18 +23: D:/a/diMti/diMti/mobile/test/session_core_test.dart: background during validation discards the late ALLOW
+2026-11-26T21:43:40.2314105Z 00:18 +24: D:/a/diMti/diMti/mobile/test/session_core_test.dart: timeout and validator failure keep the attempt available without RNG
+2026-11-26T21:43:40.2476374Z 00:18 +25: D:/a/diMti/diMti/mobile/test/session_core_test.dart: double tap invokes one validation and one random draw
+2026-11-26T21:43:40.2508193Z 00:18 +26: D:/a/diMti/diMti/mobile/test/session_core_test.dart: background clears review and disallows submission while inactive
+2026-11-26T21:43:40.2533560Z 00:18 +27: D:/a/diMti/diMti/mobile/test/session_core_test.dart: background during intent persistence cancels before RNG
+2026-11-26T21:43:40.2562397Z 00:18 +28: D:/a/diMti/diMti/mobile/test/session_core_test.dart: answer stays hidden until its persistence is acknowledged
+2026-11-26T21:43:40.2592060Z 00:18 +29: D:/a/diMti/diMti/mobile/test/session_core_test.dart: restart restores the exact answer with no draw or premature timer
+2026-11-26T21:43:40.2635098Z 00:18 +30: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed intent write (committed=false) never calls RNG
+2026-11-26T21:43:40.2668943Z 00:18 +31: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed answer write (committed=false) cannot reroll on recovery
+2026-11-26T21:43:40.2781008Z 00:18 +32: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed cooldown write (committed=false) recovers conservatively
+2026-11-26T21:43:40.2781974Z 00:18 +33: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed intent write (committed=true) never calls RNG
+2026-11-26T21:43:40.2784870Z 00:18 +34: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed answer write (committed=true) cannot reroll on recovery
+2026-11-26T21:43:40.2815812Z 00:18 +35: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed cooldown write (committed=true) recovers conservatively
+2026-11-26T21:43:40.2843947Z 00:18 +36: D:/a/diMti/diMti/mobile/test/session_core_test.dart: CSPRNG errors and invalid values do not fabricate an answer or spend attempt
+2026-11-26T21:43:40.2877092Z 00:18 +37: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed cleanup after RNG error preserves interruption without automatic retry
+2026-11-26T21:43:40.2907729Z 00:18 +38: D:/a/diMti/diMti/mobile/test/session_core_test.dart: cooldown expires at exactly 1800000 ms and duplicate display cannot extend it
+2026-11-26T21:43:40.2941544Z 00:18 +39: D:/a/diMti/diMti/mobile/test/session_core_test.dart: restart and background include elapsed device sleep
+2026-11-26T21:43:40.2975433Z 00:18 +40: D:/a/diMti/diMti/mobile/test/session_core_test.dart: same-boot wall-clock jumps neither shorten nor lengthen pause
+2026-11-26T21:43:40.3020236Z 00:18 +41: D:/a/diMti/diMti/mobile/test/session_core_test.dart: new boot uses UTC then rebases to the new continuous clock
+2026-11-26T21:43:40.3054556Z 00:18 +42: D:/a/diMti/diMti/mobile/test/session_core_test.dart: reboot fallback is bounded to 30 minutes and cannot prove offline wall time
+2026-11-26T21:43:40.3089774Z 00:18 +43: D:/a/diMti/diMti/mobile/test/session_core_test.dart: clock failure or same-boot monotonic regression cannot unlock session
+2026-11-26T21:43:40.3127777Z 00:18 +44: D:/a/diMti/diMti/mobile/test/session_core_test.dart: unavailable clock after display preserves the same pending answer
+2026-11-26T21:43:40.3155950Z 00:18 +45: D:/a/diMti/diMti/mobile/test/session_core_test.dart: expiry persistence failure does not make another attempt available
+2026-11-26T21:43:40.3185672Z 00:18 +46: D:/a/diMti/diMti/mobile/test/session_core_test.dart: unknown, truncated, extra-field and malformed records fail closed
+2026-11-26T21:43:40.3223029Z 00:18 +47: D:/a/diMti/diMti/mobile/test/session_core_test.dart: notification failure never changes the durable deadline
+2026-11-26T21:43:40.3256502Z 00:18 +48: D:/a/diMti/diMti/mobile/test/session_core_test.dart: restored locale is supplied by preferences, not question persistence
+2026-11-26T21:43:40.3287441Z 00:18 +49: D:/a/diMti/diMti/mobile/test/session_core_test.dart: notification is one replaceable generic request and refresh does not reschedule
+2026-11-26T21:43:40.3487755Z 00:18 +50: loading D:/a/diMti/diMti/mobile/test/session_page_test.dart
+2026-11-26T21:43:45.9185588Z 00:24 +50: D:/a/diMti/diMti/mobile/test/session_page_test.dart: real input requires confirmation and every model result stays closed
+2026-11-26T21:43:47.3889326Z 00:25 +51: D:/a/diMti/diMti/mobile/test/session_page_test.dart: diagnostic stores before showing and restart never selects again
+2026-11-26T21:43:47.6654372Z 00:25 +52: D:/a/diMti/diMti/mobile/test/session_page_test.dart: background removes review and requires a new edit
+2026-11-26T21:43:47.8485419Z 00:26 +53: D:/a/diMti/diMti/mobile/test/session_page_test.dart: legacy diagnostic pause stays intact until explicit test reset
+2026-11-26T21:43:48.0295747Z 00:26 +54: D:/a/diMti/diMti/mobile/test/session_page_test.dart: notification denial cannot start or reset a timer; locale preserves state
+2026-11-26T21:43:48.2516932Z 00:26 +55: D:/a/diMti/diMti/mobile/test/session_page_test.dart: unavailable clock blocks input with a visible retry
+2026-11-26T21:43:48.3463325Z 00:26 +56: D:/a/diMti/diMti/mobile/test/session_page_test.dart: settings failure is specific and reveals no exception details
+2026-11-26T21:43:48.4291532Z 00:26 +57: D:/a/diMti/diMti/mobile/test/session_page_test.dart: small screen and large text keep confirmation reachable
+2026-11-26T21:43:48.6570808Z 00:26 +58: D:/a/diMti/diMti/mobile/test/session_page_test.dart: diagnostic validator rejects arbitrary questions and unknown language
+2026-11-26T21:43:48.6597261Z 00:26 +59: D:/a/diMti/diMti/mobile/test/session_page_test.dart: native bridge scopes storage and rejects real reset before platform call
+2026-11-26T21:43:48.6942111Z 00:26 +60: loading D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart
+2026-11-26T21:43:49.4768606Z 00:27 +60: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real idle
+2026-11-26T21:43:49.4999273Z 00:27 +61: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real reserved
+2026-11-26T21:43:49.5022014Z 00:27 +62: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real pending yes
+2026-11-26T21:43:49.5039613Z 00:27 +63: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real pending no
+2026-11-26T21:43:49.5056911Z 00:27 +64: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real legacy 30 minute cooldown
+2026-11-26T21:43:49.5091540Z 00:27 +65: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real minute cooldown
+2026-11-26T21:43:49.5114664Z 00:27 +66: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: real maximum safe deadlines
+2026-11-26T21:43:49.5133463Z 00:27 +67: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic idle
+2026-11-26T21:43:49.5155487Z 00:27 +68: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic reserved
+2026-11-26T21:43:49.5173207Z 00:27 +69: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic pending yes
+2026-11-26T21:43:49.5191933Z 00:27 +70: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic pending no
+2026-11-26T21:43:49.5210233Z 00:27 +71: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic legacy 30 minute cooldown
+2026-11-26T21:43:49.5231907Z 00:27 +72: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic minute cooldown
+2026-11-26T21:43:49.5252299Z 00:27 +73: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic maximum safe deadlines
+2026-11-26T21:43:49.5270641Z 00:27 +74: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 14
+2026-11-26T21:43:49.5289105Z 00:27 +75: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 15
+2026-11-26T21:43:49.5305771Z 00:27 +76: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 16
+2026-11-26T21:43:49.5323067Z 00:27 +77: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 17
+2026-11-26T21:43:49.5341672Z 00:27 +78: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 18
+2026-11-26T21:43:49.5358546Z 00:27 +79: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 19
+2026-11-26T21:43:49.5378400Z 00:27 +80: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 20
+2026-11-26T21:43:49.5398456Z 00:27 +81: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 21
+2026-11-26T21:43:49.5418039Z 00:27 +82: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 22
+2026-11-26T21:43:49.5439207Z 00:27 +83: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 23
+2026-11-26T21:43:49.5457509Z 00:27 +84: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 24
+2026-11-26T21:43:49.5475582Z 00:27 +85: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 25
+2026-11-26T21:43:49.5493571Z 00:27 +86: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 26
+2026-11-26T21:43:49.5513944Z 00:27 +87: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 27
+2026-11-26T21:43:49.5534935Z 00:27 +88: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 28
+2026-11-26T21:43:49.5554995Z 00:27 +89: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 29
+2026-11-26T21:43:49.5574684Z 00:27 +90: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 30
+2026-11-26T21:43:49.5593400Z 00:27 +91: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 31
+2026-11-26T21:43:49.5613437Z 00:27 +92: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 32
+2026-11-26T21:43:49.5631521Z 00:27 +93: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 33
+2026-11-26T21:43:49.5651576Z 00:27 +94: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 34
+2026-11-26T21:43:49.5673510Z 00:27 +95: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 35
+2026-11-26T21:43:49.5700516Z 00:27 +96: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 36
+2026-11-26T21:43:49.5722041Z 00:27 +97: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 37
+2026-11-26T21:43:49.5742058Z 00:27 +98: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 38
+2026-11-26T21:43:49.5771695Z 00:27 +99: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 39
+2026-11-26T21:43:49.5791649Z 00:27 +100: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 40
+2026-11-26T21:43:49.5815867Z 00:27 +101: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 41
+2026-11-26T21:43:49.5834779Z 00:27 +102: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 42
+2026-11-26T21:43:49.5851126Z 00:27 +103: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 43
+2026-11-26T21:43:49.5868718Z 00:27 +104: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 44
+2026-11-26T21:43:49.5884503Z 00:27 +105: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 45
+2026-11-26T21:43:49.5899323Z 00:27 +106: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 46
+2026-11-26T21:43:49.5917951Z 00:27 +107: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 47
+2026-11-26T21:43:49.5935945Z 00:27 +108: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 48
+2026-11-26T21:43:49.5954835Z 00:27 +109: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 49
+2026-11-26T21:43:49.5970314Z 00:27 +110: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 50
+2026-11-26T21:43:49.5988668Z 00:27 +111: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 51
+2026-11-26T21:43:49.6006703Z 00:27 +112: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 52
+2026-11-26T21:43:49.6027480Z 00:27 +113: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 53
+2026-11-26T21:43:49.6049847Z 00:27 +114: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 54
+2026-11-26T21:43:49.6070236Z 00:27 +115: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for idle
+2026-11-26T21:43:49.6088120Z 00:27 +116: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for reserved
+2026-11-26T21:43:49.6105390Z 00:27 +117: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for pending
+2026-11-26T21:43:49.6127416Z 00:27 +118: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 58
+2026-11-26T21:43:49.6148259Z 00:27 +119: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 59
+2026-11-26T21:43:49.6178911Z 00:27 +120: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 60
+2026-11-26T21:43:49.6205302Z 00:27 +121: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 61
+2026-11-26T21:43:49.6226976Z 00:27 +122: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing version
+2026-11-26T21:43:49.6246909Z 00:27 +123: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing phase
+2026-11-26T21:43:49.6266863Z 00:27 +124: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing utcDeadline
+2026-11-26T21:43:49.6289302Z 00:27 +125: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing continuousDeadline
+2026-11-26T21:43:49.6308529Z 00:27 +126: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing bootToken
+2026-11-26T21:43:49.6328794Z 00:27 +127: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic unexpected input field
+2026-11-26T21:43:49.6349677Z 00:27 +128: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic answer cannot accompany timer
+2026-11-26T21:43:49.6368266Z 00:27 +129: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic oversized text
+2026-11-26T21:43:49.6385726Z 00:27 +130: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic numeric exponent deadline
+2026-11-26T21:43:49.6403869Z 00:27 +131: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic duplicate phase ending valid
+2026-11-26T21:43:49.6421855Z 00:27 +132: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic duplicate phase ending invalid
+2026-11-26T21:43:49.6440426Z 00:27 +133: D:/a/diMti/diMti/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic escaped duplicate key
+2026-11-26T21:43:49.6638728Z 00:27 +134: loading D:/a/diMti/diMti/mobile/test/ui_test.dart
+2026-11-26T21:43:50.7060128Z 00:28 +134: D:/a/diMti/diMti/mobile/test/ui_test.dart: unavailable iOS bundle leaves input disabled and language switch usable
+2026-11-26T21:43:51.7705412Z 00:30 +135: D:/a/diMti/diMti/mobile/test/ui_test.dart: real question entry clears text and returns a closed outcome in both languages
+2026-11-26T21:44:00.3170981Z 00:38 +136: D:/a/diMti/diMti/mobile/test/ui_test.dart: only a completed benchmark can copy a report without question text
+2026-11-26T21:44:08.9307741Z 00:47 +137: All tests passed!

@@ -1,0 +1,59 @@
+Run: 45899779278 (attempt 1), success
+Commit: 62419b6a2bbb02e93b9374388fe8faa628638330
+Job: 140182437595, iOS XCTest and native checks, success
+Selected original log lines. No test retries; all four cases verified from Tests.xcresult.
+2026-11-26T21:41:11.1260240Z PASS 1: commit token before creating kernel marker
+2026-11-26T21:41:11.1269770Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-26T21:41:11.1271640Z PASS 3: simulated reboot rotates token
+2026-11-26T21:41:11.1275170Z PASS 4: failed write recovery
+2026-11-26T21:41:11.1288350Z PASS 5: ambiguous committed write recovery
+2026-11-26T21:41:11.1289920Z PASS 6: crash between persisted token and kernel creation
+2026-11-26T21:41:11.1291790Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-26T21:41:11.1310000Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-26T21:41:11.1311590Z PASS 9: strict private marker validation
+2026-11-26T21:41:11.1313050Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-26T21:41:11.1314680Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-26T21:41:11.1316320Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-26T21:41:11.1317890Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-26T21:41:11.1319550Z PASS 14: notification callback success/error and duplicate completion
+2026-11-26T21:41:11.1321120Z PASS 15: missing OS callback releases the serial queue
+2026-11-26T21:41:11.1322820Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-26T21:41:11.1324580Z Native safety checks: 16/16 passed
+2026-11-26T21:41:13.1720700Z PASS storage 1: shared Dart/Swift state contract: 74 cases; rejected input preserves bytes
+2026-11-26T21:41:13.1722460Z PASS storage 2: notification preference and channel switch require actual booleans
+2026-11-26T21:41:13.1741460Z PASS storage 3: invalid preferences cannot overwrite saved opt-in
+2026-11-26T21:41:18.8348610Z PASS storage 4: 40 process exits across 5 write checkpoints and both scopes
+2026-11-26T21:41:18.8373370Z PASS storage 5: first uncommitted reservation is never loaded from staging
+2026-11-26T21:41:18.8418280Z PASS storage 6: error after rename propagates; reload recovers the committed timer
+2026-11-26T21:41:18.8499920Z PASS storage 7: corrupt, invalid UTF-8 and oversized committed files never use pending data
+2026-11-26T21:41:18.8542160Z PASS storage 8: diagnostic reset isolation and answer removal in committed cooldown
+2026-11-26T21:41:18.8561990Z PASS storage 9: ambiguous preferences rejected; canonical state committed without leftover staging
+2026-11-26T21:41:18.8571710Z PASS storage 10: both private scope directories excluded from backup
+2026-11-26T21:41:18.8587780Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T21:41:19.3105960Z Ran 8 tests in 0.001s
+2026-11-26T21:41:37.5428140Z Xcode 16.4
+2026-11-26T21:41:37.5429090Z Build version 16F6
+2026-11-26T21:43:24.1447750Z CI STEP configure: starting (limit 600s)
+2026-11-26T21:43:55.6316790Z CI STEP configure: exit 0
+2026-11-26T21:43:55.6652130Z CI STEP build: starting (limit 1200s)
+2026-11-26T21:45:46.2259520Z ** TEST BUILD SUCCEEDED **
+2026-11-26T21:45:46.2624190Z CI STEP build: exit 0
+2026-11-26T21:45:48.3336180Z CI STEP boot-1: starting (limit 300s)
+2026-11-26T21:48:22.8097990Z CI STEP boot-1: exit 0
+2026-11-26T21:48:22.8098420Z CI STEP test: starting (limit 600s)
+2026-11-26T21:50:00.2446070Z 2026-11-26 21:49:59.812244+0000 Runner[18127:57501] flutter: 00:00 +0: native iOS storage, clock and notification cancellation preserve recovery
+2026-11-26T21:50:01.4103280Z 2026-11-26 21:50:01.323899+0000 Runner[18127:57501] flutter: 00:01 +1: native invalid records and malformed settings preserve saved state
+2026-11-26T21:50:04.3142770Z 2026-11-26 21:50:04.209757+0000 Runner[18127:57501] flutter: 00:04 +2: iOS Runner loads the bundled model and checks RU and EN
+2026-11-26T21:50:38.1541210Z 2026-11-26 21:50:38.105505+0000 Runner[18127:57501] flutter: 00:38 +3: (tearDownAll)
+2026-11-26T21:50:38.2542970Z 2026-11-26 21:50:38.118238+0000 Runner[18127:57501] flutter: 00:38 +4: All tests passed!
+2026-11-26T21:50:39.2530890Z Test Case '-[UniverseIntegrationTests testNativeIosStorageClockAndNotificationCancellationPreserveRecovery]' passed (0.006 seconds).
+2026-11-26T21:50:39.2547360Z Test Case '-[UniverseIntegrationTests testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState]' passed (0.002 seconds).
+2026-11-26T21:50:39.2564090Z Test Case '-[UniverseIntegrationTests testIosRunnerLoadsTheBundledModelAndChecksRuAndEn]' passed (0.002 seconds).
+2026-11-26T21:50:39.3622140Z ✔ Test bundledModelIsAccessibleToTheFlutterWorker() passed after 0.001 seconds.
+2026-11-26T21:50:39.3637280Z ✔ Test run with 1 test passed after 0.003 seconds.
+2026-11-26T21:50:40.4243440Z CI STEP test: exit 0
+2026-11-26T21:50:43.4622550Z VERIFIED: all 3 Flutter integration tests and 1 native resource test passed in one XCTest run.
+2026-11-26T21:50:43.4624530Z PASS RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()
+2026-11-26T21:50:43.4626660Z PASS UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn
+2026-11-26T21:50:43.4633810Z PASS UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState
+2026-11-26T21:50:43.4635350Z PASS UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery

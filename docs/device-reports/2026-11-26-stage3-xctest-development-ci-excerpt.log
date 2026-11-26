@@ -1,0 +1,140 @@
+CI migration development attempts. Original log excerpts, timestamps UTC.
+All seven workflows failed; these are not accepted as the required complete run.
+
+Run 45894200808; commit 2d747091b573c24a71f7560d6788261e796c295e
+Windows job 140163940028; native job 140163939687. Overall failure; no iOS integration pass claimed.
+Missing Windows setup files; Xcode architecture argument conflict.
+2026-11-26T20:53:02.5808474Z 'setup-windows.cmd' is not recognized as an internal or external command,
+2026-11-26T20:53:15.1859050Z Native safety checks: 16/16 passed
+2026-11-26T20:53:23.4331710Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T20:55:35.3739430Z CI STEP configure: starting (limit 600s)
+2026-11-26T20:56:05.3623720Z CI STEP configure: exit 0
+2026-11-26T20:56:05.3631570Z CI STEP build: starting (limit 1200s)
+2026-11-26T20:56:07.6160840Z xcodebuild: error: destination implies architecture, architecture must not also be specified.
+2026-11-26T20:56:07.6593450Z CI STEP build: exit 70
+2026-11-26T20:56:07.6594980Z CI FAILED: build failed with exit code 70
+
+Run 45894534747; commit edc1fa9fcf793afe39ce164ce1f3d854d6a58992
+Windows job 140165046185; native job 140165046435. Overall failure; no iOS integration pass claimed.
+Windows checkout changed checksum-verified text bytes; Xcode architecture argument conflict.
+2026-11-26T20:56:53.4795400Z ValueError: Bundled classifier checksum mismatch
+2026-11-26T20:56:26.5048770Z Native safety checks: 16/16 passed
+2026-11-26T20:56:34.7598090Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T20:59:39.6816890Z CI STEP configure: starting (limit 600s)
+2026-11-26T21:00:20.1590570Z CI STEP configure: exit 0
+2026-11-26T21:00:20.1594340Z CI STEP build: starting (limit 1200s)
+2026-11-26T21:00:22.4663190Z xcodebuild: error: destination implies architecture, architecture must not also be specified.
+2026-11-26T21:00:22.5055330Z CI STEP build: exit 70
+2026-11-26T21:00:22.5056360Z CI FAILED: build failed with exit code 70
+
+Run 45894683662; commit 4b15ddde8d18d7764b356facc5e0ea75bb50e0f1
+Windows job 140165549559; native job 140165549312. Overall failure; no iOS integration pass claimed.
+Windows checksum guard; Xcode rejected test-iterations=1 before executing tests.
+2026-11-26T20:58:12.1969618Z ValueError: Bundled classifier checksum mismatch
+2026-11-26T20:57:24.8618280Z Native safety checks: 16/16 passed
+2026-11-26T20:57:31.2815920Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T20:59:24.5764350Z CI STEP configure: starting (limit 600s)
+2026-11-26T20:59:50.5214930Z CI STEP configure: exit 0
+2026-11-26T20:59:50.5216590Z CI STEP build: starting (limit 1200s)
+2026-11-26T21:01:14.4651660Z CI STEP build: exit 0
+2026-11-26T21:01:16.8346780Z CI STEP boot-1: starting (limit 300s)
+2026-11-26T21:03:31.3124410Z CI STEP boot-1: exit 0
+2026-11-26T21:03:31.4235070Z CI STEP test: starting (limit 600s)
+2026-11-26T21:03:55.4976040Z xcodebuild: error: Must specify -test-iterations with more than 1 iteration.
+2026-11-26T21:03:55.5981800Z CI STEP test: exit 64
+2026-11-26T21:03:55.6985560Z CI FAILED: test failed with exit code 64
+2026-11-26T21:03:55.7988650Z CI STEP device-diagnostics: starting (limit 20s)
+2026-11-26T21:04:15.7339550Z CI STEP device-diagnostics: timeout; stopping its process group.
+2026-11-26T21:04:19.9320350Z CI STEP device-diagnostics: exit 124
+
+Run 45894808424; commit 3bb1d69d259b84efc6d8fc9d666757573bd44c53
+Windows job 140165974081; native job 140165973712. Overall failure; no iOS integration pass claimed.
+Windows passed 133 tests; four local model tests were missing from the remote inventory. Xcode rejected test-iterations=1.
+2026-11-26T21:00:56.7966810Z No issues found! (ran in 10.2s)
+2026-11-26T21:01:40.1021015Z 00:33 +133: All tests passed!
+2026-11-26T20:58:33.9581130Z Native safety checks: 16/16 passed
+2026-11-26T20:58:39.7532760Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T21:00:38.1947110Z CI STEP configure: starting (limit 600s)
+2026-11-26T21:01:00.5894130Z CI STEP configure: exit 0
+2026-11-26T21:01:00.5896250Z CI STEP build: starting (limit 1200s)
+2026-11-26T21:02:28.8221550Z CI STEP build: exit 0
+2026-11-26T21:02:30.6889570Z CI STEP boot-1: starting (limit 300s)
+2026-11-26T21:04:55.2563160Z CI STEP boot-1: exit 0
+2026-11-26T21:05:02.6621470Z CI STEP test: starting (limit 600s)
+2026-11-26T21:05:34.7650540Z xcodebuild: error: Must specify -test-iterations with more than 1 iteration.
+2026-11-26T21:05:34.8652520Z CI STEP test: exit 64
+2026-11-26T21:05:34.9655920Z CI FAILED: test failed with exit code 64
+2026-11-26T21:05:35.1706690Z CI STEP device-diagnostics: starting (limit 20s)
+2026-11-26T21:05:40.8480780Z CI STEP device-diagnostics: exit 0
+
+Run 45895304091; commit a23e1a30a874ed911554f460971e84589192aefc
+Windows job 140167600007; native job 140167600309. Overall failure; no iOS integration pass claimed.
+Windows passed all 137 tests; Xcode rejected test-iterations=1. Superseded by the default single-execution runner.
+2026-11-26T21:07:32.6712419Z No issues found! (ran in 10.7s)
+2026-11-26T21:08:37.7625489Z 00:54 +137: All tests passed!
+2026-11-26T21:02:43.3832130Z Native safety checks: 16/16 passed
+2026-11-26T21:02:50.3642700Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T21:04:31.9877460Z CI STEP configure: starting (limit 600s)
+2026-11-26T21:04:57.1644920Z CI STEP configure: exit 0
+2026-11-26T21:04:57.1648030Z CI STEP build: starting (limit 1200s)
+2026-11-26T21:06:14.3928690Z CI STEP build: exit 0
+2026-11-26T21:06:16.6745840Z CI STEP boot-1: starting (limit 300s)
+2026-11-26T21:08:41.6385390Z CI STEP boot-1: exit 0
+2026-11-26T21:08:41.9385240Z CI STEP test: starting (limit 600s)
+2026-11-26T21:09:05.1998930Z xcodebuild: error: Must specify -test-iterations with more than 1 iteration.
+2026-11-26T21:09:05.3002620Z CI STEP test: exit 64
+2026-11-26T21:09:05.4005770Z CI FAILED: test failed with exit code 64
+2026-11-26T21:09:05.5033280Z CI STEP device-diagnostics: starting (limit 20s)
+2026-11-26T21:09:14.7909350Z CI STEP device-diagnostics: exit 0
+
+Run 45895655184; commit b9d3f7ea920d463aefffbba9580fcac8e4380027
+Windows job 140168767702; native job 140168767335. Overall failure; no iOS integration pass claimed.
+Windows passed all 137 tests. Xcode destination selection rejected the lower-case UUID while listing its upper-case form as available; no iOS tests ran.
+2026-11-26T21:07:42.5386879Z No issues found! (ran in 9.0s)
+2026-11-26T21:08:45.0454559Z 00:53 +137: All tests passed!
+2026-11-26T21:05:45.9160060Z Native safety checks: 16/16 passed
+2026-11-26T21:05:53.8148310Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T21:08:18.9454040Z CI STEP configure: starting (limit 600s)
+2026-11-26T21:08:50.2803540Z CI STEP configure: exit 0
+2026-11-26T21:08:50.2805530Z CI STEP build: starting (limit 1200s)
+2026-11-26T21:10:37.0371860Z CI STEP build: exit 0
+2026-11-26T21:10:39.8955840Z CI STEP boot-1: starting (limit 300s)
+2026-11-26T21:13:38.9015370Z CI STEP boot-1: exit 0
+2026-11-26T21:13:39.0019310Z CI STEP test: starting (limit 600s)
+2026-11-26T21:16:18.2380600Z xcodebuild: error: Unable to find a device matching the provided destination specifier:
+2026-11-26T21:16:18.3119450Z 		{ id:bdb04e37-4029-434a-8afb-2fe73f062c8b }
+2026-11-26T21:16:21.1380740Z 		{ platform:iOS Simulator, arch:x86_64, id:BDB04E37-4029-434A-8AFB-2FE73F062C8B, OS:18.5, name:Universe XCTest 18.5 }
+2026-11-26T21:16:21.2623500Z CI STEP test: exit 70
+2026-11-26T21:16:21.2624240Z CI FAILED: test failed with exit code 70
+2026-11-26T21:16:21.2625260Z CI STEP device-diagnostics: starting (limit 20s)
+2026-11-26T21:16:26.4654930Z CI STEP device-diagnostics: exit 0
+
+Run 45897084091; commit 4002ae917f805becbba81dbdadb741400785cb72
+Windows job 140173540226; native job 140173540691. Overall failure; 4 iOS cases executed, 3 passed, 1 failed.
+Windows 137 passed. All four iOS cases executed: two Flutter cases and the native resource case passed; first Flutter case failed the semantics-handle invariant during native accessibility startup. No VM-service discovery timeout.
+2026-11-26T21:23:48.3066858Z No issues found! (ran in 11.7s)
+2026-11-26T21:24:42.3415134Z 00:44 +137: All tests passed!
+2026-11-26T21:18:16.0903630Z Native safety checks: 16/16 passed
+2026-11-26T21:18:28.8800200Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T21:21:57.7878830Z CI STEP configure: starting (limit 600s)
+2026-11-26T21:22:53.0547490Z CI STEP configure: exit 0
+2026-11-26T21:22:53.0570950Z CI STEP build: starting (limit 1200s)
+2026-11-26T21:26:24.5501360Z CI STEP build: exit 0
+2026-11-26T21:26:27.8738490Z CI STEP boot-1: starting (limit 300s)
+2026-11-26T21:29:54.5078710Z CI STEP boot-1: exit 0
+2026-11-26T21:29:54.6180040Z CI STEP test: starting (limit 600s)
+2026-11-26T21:34:43.6784750Z 2026-11-26 21:34:43.161177+0000 Runner[20931:64895] flutter: A SemanticsHandle was active at the end of the test.
+2026-11-26T21:35:53.4971660Z Test Case '-[UniverseIntegrationTests testNativeIosStorageClockAndNotificationCancellationPreserveRecovery]' started.
+2026-11-26T21:36:07.9297530Z A SemanticsHandle was active at the end of the test.
+2026-11-26T21:36:09.0857890Z Test Case '-[UniverseIntegrationTests testNativeIosStorageClockAndNotificationCancellationPreserveRecovery]' failed (14.552 seconds).
+2026-11-26T21:36:09.1865250Z Test Case '-[UniverseIntegrationTests testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState]' started.
+2026-11-26T21:36:09.2876050Z Test Case '-[UniverseIntegrationTests testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState]' passed (0.003 seconds).
+2026-11-26T21:36:09.3886850Z Test Case '-[UniverseIntegrationTests testIosRunnerLoadsTheBundledModelAndChecksRuAndEn]' started.
+2026-11-26T21:36:09.4892750Z Test Case '-[UniverseIntegrationTests testIosRunnerLoadsTheBundledModelAndChecksRuAndEn]' passed (0.003 seconds).
+2026-11-26T21:36:10.6812800Z ✔ Test bundledModelIsAccessibleToTheFlutterWorker() passed after 0.002 seconds.
+2026-11-26T21:36:10.8827850Z ✔ Test run with 1 test passed after 0.006 seconds.
+2026-11-26T21:38:18.4466760Z CI STEP test: exit 65
+2026-11-26T21:38:18.5472730Z CI FAILED: test failed with exit code 65
+2026-11-26T21:38:18.6476170Z CI STEP device-diagnostics: starting (limit 20s)
+2026-11-26T21:38:35.6408360Z 2026-11-26 21:34:42.918 Df Runner[20931:fd7f] (Flutter) flutter: A SemanticsHandle was active at the end of the test.
+2026-11-26T21:38:35.6827450Z CI STEP device-diagnostics: exit 0
