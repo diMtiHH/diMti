@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/services.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:universe_lab/ios_session.dart';
 import 'package:universe_lab/session_core.dart';
@@ -31,6 +32,7 @@ void main() {
       expect(nextClock.continuousMs, greaterThan(firstClock.continuousMs));
       final random = OneDraw();
       QuestionSession create() => QuestionSession(
+        diagnostic: true,
         store: backend,
         clock: const BackendClock(backend),
         random: random,
@@ -53,7 +55,13 @@ void main() {
       session = create();
       await session.initialize();
       expect(session.phase, SessionPhase.cooldown);
-      expect(session.remainingMs, inInclusiveRange(1700000, cooldownMs));
+      expect(
+        session.remainingMs,
+        inInclusiveRange(50000, diagnosticCooldownMs),
+      );
+      expect(session.currentPauseDurationMs, diagnosticCooldownMs);
+      await expectLater(real.replace(raw!), throwsA(isA<PlatformException>()));
+      expect(await real.read(), originalReal);
       await backend.setLanguage('en');
       expect((await backend.preferences()).language, 'en');
       await backend.setLanguage('ru');

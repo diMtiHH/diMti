@@ -94,8 +94,10 @@ class Fixture {
   Future<void> start({
     QuestionValidator? validator,
     String language = 'ru',
+    bool diagnostic = false,
   }) async {
     session = QuestionSession(
+      diagnostic: diagnostic,
       store: store,
       clock: clock,
       random: random,
@@ -124,6 +126,105 @@ class Fixture {
 }
 
 void main() {
+  test('diagnostic pause restores and expires at exactly one minute', () async {
+    final f = Fixture();
+    await f.start(diagnostic: true);
+    await f.pause();
+    expect(f.session.remainingMs, 60000);
+    expect(f.notifications.pending!.remainingMs, 60000);
+    expect(f.store.record['version'], 2);
+    expect(f.store.record['durationMs'], 60000);
+    expect(f.store.record.containsKey('answer'), isFalse);
+    f.clock.advance(15000);
+    await f.start(diagnostic: true);
+    expect(f.session.remainingMs, 45000);
+    expect(f.random.calls, 1);
+    f.clock.advance(44999);
+    await f.session.refresh();
+    expect(f.session.phase, SessionPhase.cooldown);
+    expect(f.session.remainingMs, 1);
+    f.clock.advance(1);
+    await f.session.refresh();
+    expect(f.session.phase, SessionPhase.ready);
+    expect(f.store.record, {'version': 1, 'phase': 'idle'});
+    expect(f.notifications.pending, isNull);
+  });
+
+  test(
+    'short pause keeps its duration through reboot and clock rebasing',
+    () async {
+      final f = Fixture();
+      await f.start(diagnostic: true);
+      await f.pause();
+      f.clock.advance(10000);
+      f.clock.boot = 'new-boot';
+      f.clock.continuous = 1000;
+      await f.start(diagnostic: true);
+      expect(f.session.remainingMs, 50000);
+      expect(f.store.record['durationMs'], 60000);
+      f.clock.utc += 3600000;
+      await f.session.refresh();
+      expect(f.session.remainingMs, 50000);
+      expect(f.store.record['version'], 2);
+      await f.start(diagnostic: true);
+      expect(f.session.remainingMs, 50000);
+      f.clock.boot = 'another-boot';
+      f.clock.continuous = 10;
+      f.clock.utc -= 3600000;
+      await f.start(diagnostic: true);
+      expect(f.session.remainingMs, 60000);
+    },
+  );
+
+  test(
+    'a real session rejects the diagnostic record without altering it',
+    () async {
+      final f = Fixture();
+      await f.start(diagnostic: true);
+      await f.pause();
+      final saved = f.store.value, writes = f.store.writes.length;
+      await f.start();
+      expect(f.session.phase, SessionPhase.failed);
+      expect(f.store.value, saved);
+      expect(f.store.writes.length, writes);
+      expect(f.random.calls, 1);
+    },
+  );
+
+  test(
+    'upgrading diagnostic mode preserves a legacy thirty minute deadline',
+    () async {
+      final f = Fixture();
+      await f.start();
+      await f.pause();
+      final deadline = f.store.record['utcDeadline'];
+      f.clock.advance(10000);
+      await f.start(diagnostic: true);
+      expect(f.session.remainingMs, 1790000);
+      expect(f.session.currentPauseDurationMs, cooldownMs);
+      expect(f.store.record['utcDeadline'], deadline);
+      expect(f.store.record['version'], 1);
+    },
+  );
+
+  test(
+    'short timer schema rejects unsupported durations and extra fields',
+    () async {
+      final f = Fixture();
+      await f.start(diagnostic: true);
+      await f.pause();
+      final valid = f.store.record;
+      for (final duration in [0, 1, 60000.0, 1800000, '60000', null]) {
+        f.store.value = jsonEncode({...valid, 'durationMs': duration});
+        await f.start(diagnostic: true);
+        expect(f.session.phase, SessionPhase.failed);
+      }
+      f.store.value = jsonEncode({...valid, 'question': 'forbidden'});
+      await f.start(diagnostic: true);
+      expect(f.session.phase, SessionPhase.failed);
+    },
+  );
+
   test('all 100 values map to exactly 50 YES and 50 NO', () {
     final answers = List.generate(100, answerFor);
     expect(answers.where((a) => a == Answer.yes), hasLength(50));
