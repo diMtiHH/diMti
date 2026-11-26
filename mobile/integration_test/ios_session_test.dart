@@ -36,10 +36,12 @@ void main() {
       expect(nextClock.bootToken, firstClock.bootToken);
       expect(nextClock.continuousMs, greaterThan(firstClock.continuousMs));
       final random = OneDraw();
+      final clockGuard = ClockContinuityGuard();
       QuestionSession create() => QuestionSession(
         diagnostic: true,
         store: backend,
         clock: const BackendClock(backend),
+        clockGuard: clockGuard,
         random: random,
         validateQuestion: validateDiagnosticFixture,
         notifications: const BackendNotifications(backend),

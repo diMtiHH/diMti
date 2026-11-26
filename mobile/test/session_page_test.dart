@@ -6,11 +6,13 @@ import 'package:material_ui/material_ui.dart';
 import 'package:universe_lab/engine.dart';
 import 'package:universe_lab/ios_session.dart';
 import 'package:universe_lab/session_core.dart';
+import 'package:universe_lab/session_clock_scope.dart';
 import 'package:universe_lab/session_page.dart';
 
 class TestBackend implements SessionBackend {
   String? value;
   String language = 'ru';
+  String boot = 'test-boot';
   bool enabled = false, denied = false, fails = false;
   bool preferencesFail = false;
   int utc = 1800000000000, continuous = 5000000;
@@ -26,7 +28,7 @@ class TestBackend implements SessionBackend {
   @override
   Future<ClockSample> readClock() async {
     if (fails) throw StateError('Test failure');
-    return ClockSample(utc, continuous, 'test-boot');
+    return ClockSample(utc, continuous, boot);
   }
 
   @override
@@ -69,12 +71,14 @@ class TestRandom implements AnswerSource {
 }
 
 void main() {
+  Widget app(Widget page) => SessionClockScope(child: MaterialApp(home: page));
+
   Future<void> show(WidgetTester tester, Widget page) async {
     tester.view.physicalSize = const Size(1000, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    await tester.pumpWidget(MaterialApp(home: page));
+    await tester.pumpWidget(app(page));
     await tester.pumpAndSettle();
   }
 
@@ -138,7 +142,7 @@ void main() {
       expect(backend.value, isNot(contains(diagnosticFixture)));
       expect(random.calls, 1);
       await tester.pumpWidget(const SizedBox());
-      await tester.pumpWidget(MaterialApp(home: page()));
+      await tester.pumpWidget(app(page()));
       await tester.pumpAndSettle();
       expect(random.calls, 1);
       expect(find.text('Показать сохранённый ответ'), findsOneWidget);
@@ -152,7 +156,7 @@ void main() {
       backend.utc += 15000;
       backend.continuous += 15000;
       await tester.pumpWidget(const SizedBox());
-      await tester.pumpWidget(MaterialApp(home: page()));
+      await tester.pumpWidget(app(page()));
       await tester.pumpAndSettle();
       expect(find.text('0:45'), findsOneWidget);
       expect(find.byKey(const ValueKey('answer')), findsNothing);
@@ -163,7 +167,9 @@ void main() {
 
   for (final diagnostic in [false, true]) {
     final mode = diagnostic ? 'diagnostic' : 'real';
-    testWidgets('$mode reload cannot forget a clock regression', (tester) async {
+    testWidgets('$mode reload cannot forget a clock regression', (
+      tester,
+    ) async {
       final backend = TestBackend(), random = TestRandom();
       final duration = diagnostic ? diagnosticCooldownMs : cooldownMs;
       backend.value = jsonEncode({
@@ -224,6 +230,227 @@ void main() {
       await tester.pumpWidget(const SizedBox());
     });
   }
+
+  for (final diagnostic in [false, true]) {
+    final mode = diagnostic ? 'diagnostic' : 'real';
+    testWidgets('$mode recreated screen retains the observed clock', (
+      tester,
+    ) async {
+      final backend = TestBackend(), random = TestRandom();
+      final generation = ValueNotifier(0);
+      addTearDown(generation.dispose);
+      final duration = diagnostic ? diagnosticCooldownMs : cooldownMs;
+      backend.value = jsonEncode({
+        'version': diagnostic ? 2 : 1,
+        'phase': 'cooldown',
+        'utcDeadline': backend.utc + duration,
+        'continuousDeadline': backend.continuous + duration,
+        'bootToken': backend.boot,
+        if (diagnostic) 'durationMs': duration,
+      });
+      await show(
+        tester,
+        ValueListenableBuilder<int>(
+          valueListenable: generation,
+          builder: (_, revision, _) => SessionPage(
+            key: ValueKey(revision),
+            diagnostic: diagnostic,
+            backend: backend,
+            random: random,
+            inspector: (_, _) async => const Reading(Outcome.held, 'fixture'),
+          ),
+        ),
+      );
+      backend.utc += 10000;
+      backend.continuous += 10000;
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      final saved = backend.value, writes = backend.writes;
+      final schedules = backend.schedules;
+      backend.continuous -= 1;
+      for (var attempt = 0; attempt < 2; attempt++) {
+        generation.value++;
+        await tester.pumpAndSettle();
+        expect(
+          find.text(
+            'Не удалось получить системное время для таймера. Проверка заблокирована.',
+          ),
+          findsOneWidget,
+        );
+        expect(find.byKey(const ValueKey('answer')), findsNothing);
+        expect(backend.value, saved);
+        expect(backend.writes, writes);
+        expect(backend.schedules, schedules);
+        expect(random.calls, 0);
+      }
+      backend.continuous += 1;
+      generation.value++;
+      await tester.pumpAndSettle();
+      expect(find.text(diagnostic ? '0:50' : '29:50'), findsOneWidget);
+      expect(backend.value, saved);
+      expect(backend.writes, writes);
+      expect(random.calls, 0);
+      // A genuine new comparison domain still uses bounded UTC recovery.
+      backend.boot = 'next-boot';
+      backend.utc += 1000;
+      backend.continuous = 1000;
+      generation.value++;
+      await tester.pumpAndSettle();
+      expect(find.text(diagnostic ? '0:49' : '29:49'), findsOneWidget);
+      expect(random.calls, 0);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
+
+  testWidgets('returning to diagnostic route cannot reset clock protection', (
+    tester,
+  ) async {
+    final clock = TestBackend();
+    final diagnostic = TestBackend();
+    diagnostic.value = jsonEncode({
+      'version': 2,
+      'phase': 'cooldown',
+      'durationMs': diagnosticCooldownMs,
+      'utcDeadline': clock.utc + diagnosticCooldownMs,
+      'continuousDeadline': clock.continuous + diagnosticCooldownMs,
+      'bootToken': clock.boot,
+    });
+    final messenger =
+        TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
+    messenger.setMockMethodCallHandler(IosSessionBackend.channel, (call) async {
+      final scope = (call.arguments as Map)['scope'];
+      final backend = scope == 'diagnostic' ? diagnostic : clock;
+      switch (call.method) {
+        case 'preferences':
+          return {
+            'language': 'ru',
+            'notifications': false,
+            'englishNotifications': false,
+          };
+        case 'clock':
+          return {
+            'utcMs': clock.utc,
+            'continuousMs': clock.continuous,
+            'bootToken': clock.boot,
+          };
+        case 'readState':
+          return backend.value;
+        case 'writeState':
+          await backend.replace((call.arguments as Map)['value'] as String);
+          return null;
+        case 'scheduleNotification':
+        case 'cancelNotification':
+          return null;
+        default:
+          throw StateError('Unexpected native call: ${call.method}');
+      }
+    });
+    addTearDown(
+      () => messenger.setMockMethodCallHandler(IosSessionBackend.channel, null),
+    );
+    await show(
+      tester,
+      SessionPage(
+        inspector: (_, _) async => const Reading(Outcome.held, 'fixture'),
+      ),
+    );
+    await tester.tap(find.text('Проверка ядра'));
+    await tester.pumpAndSettle();
+    expect(find.text('1:00'), findsOneWidget);
+    clock.utc += 10000;
+    clock.continuous += 10000;
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+    expect(find.text('0:50'), findsOneWidget);
+    final saved = diagnostic.value;
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+    clock.continuous -= 1;
+    await tester.tap(find.text('Проверка ядра'));
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'Не удалось получить системное время для таймера. Проверка заблокирована.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('answer')), findsNothing);
+    expect(diagnostic.value, saved);
+    expect(diagnostic.writes, 0);
+    expect(clock.value, isNull);
+    expect(clock.writes, 0);
+    clock.continuous += 1;
+    await tester.tap(find.text('Повторить загрузку'));
+    await tester.pumpAndSettle();
+    expect(find.text('0:50'), findsOneWidget);
+    expect(diagnostic.value, saved);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('replacing the Navigator preserves application clock history', (
+    tester,
+  ) async {
+    final backend = TestBackend();
+    final generation = ValueNotifier(0);
+    addTearDown(generation.dispose);
+    await show(
+      tester,
+      ValueListenableBuilder<int>(
+        valueListenable: generation,
+        builder: (_, revision, _) => MaterialApp(
+          key: ValueKey(revision),
+          home: SessionPage(diagnostic: true, backend: backend),
+        ),
+      ),
+    );
+    expect(find.text('Подготовить тестовый ответ'), findsOneWidget);
+    backend.continuous -= 1;
+    generation.value++;
+    await tester.pumpAndSettle();
+    expect(
+      find.text(
+        'Не удалось получить системное время для таймера. Проверка заблокирована.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Подготовить тестовый ответ'), findsNothing);
+    expect(backend.value, isNull);
+    expect(backend.writes, 0);
+    backend.continuous += 1;
+    await tester.tap(find.text('Повторить загрузку'));
+    await tester.pumpAndSettle();
+    expect(find.text('Подготовить тестовый ответ'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('independent application clock owners do not share history', (
+    tester,
+  ) async {
+    final first = TestBackend(), second = TestBackend();
+    second.continuous = 100;
+    await show(
+      tester,
+      Row(
+        children: [
+          Expanded(
+            child: SessionClockScope(
+              child: SessionPage(diagnostic: true, backend: first),
+            ),
+          ),
+          Expanded(
+            child: SessionClockScope(
+              child: SessionPage(diagnostic: true, backend: second),
+            ),
+          ),
+        ],
+      ),
+    );
+    expect(find.text('Подготовить тестовый ответ'), findsNWidgets(2));
+    expect(find.text('Повторить загрузку'), findsNothing);
+    expect(first.writes, 0);
+    expect(second.writes, 0);
+    await tester.pumpWidget(const SizedBox());
+  });
 
   testWidgets('background removes review and requires a new edit', (
     tester,
@@ -362,15 +589,17 @@ void main() {
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
     await tester.pumpWidget(
-      MaterialApp(
-        builder: (context, child) => MediaQuery(
-          data: MediaQuery.of(context)
-              .copyWith(textScaler: const TextScaler.linear(1.6)),
-          child: child!,
-        ),
-        home: SessionPage(
-          backend: TestBackend(),
-          inspector: (_, _) async => const Reading(Outcome.held, 'fixture'),
+      SessionClockScope(
+        child: MaterialApp(
+          builder: (context, child) => MediaQuery(
+            data: MediaQuery.of(context)
+                .copyWith(textScaler: const TextScaler.linear(1.6)),
+            child: child!,
+          ),
+          home: SessionPage(
+            backend: TestBackend(),
+            inspector: (_, _) async => const Reading(Outcome.held, 'fixture'),
+          ),
         ),
       ),
     );

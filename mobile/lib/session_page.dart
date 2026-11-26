@@ -7,6 +7,7 @@ import 'closed_model_gate.dart';
 import 'engine.dart';
 import 'ios_session.dart';
 import 'session_core.dart';
+import 'session_clock_scope.dart';
 import 'worker.dart';
 
 enum _LoadStage { preferences, clock, model, state }
@@ -14,16 +15,18 @@ enum _LoadStage { preferences, clock, model, state }
 class UniverseApp extends StatelessWidget {
   const UniverseApp({super.key});
   @override
-  Widget build(BuildContext context) => MaterialApp(
-    debugShowCheckedModeBanner: false,
-    title: 'Спроси Вселенную',
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: const Color(0xff86a7df),
-        brightness: Brightness.dark,
+  Widget build(BuildContext context) => SessionClockScope(
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Спроси Вселенную',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xff86a7df),
+          brightness: Brightness.dark,
+        ),
       ),
+      home: const SessionPage(),
     ),
-    home: const SessionPage(),
   );
 }
 
@@ -45,7 +48,8 @@ class SessionPage extends StatefulWidget {
 
 class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   final _input = TextEditingController();
-  final _clockGuard = ClockContinuityGuard();
+  late final ClockContinuityGuard _clockGuard;
+  bool _started = false;
   late final SessionBackend _backend;
   QuestionSession? _session;
   ModelWorker? _worker;
@@ -93,10 +97,18 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         WidgetsBinding.instance.lifecycleState == null ||
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
     WidgetsBinding.instance.addObserver(this);
-    _load();
     _tick = Timer.periodic(const Duration(seconds: 1), (_) {
       if (_foreground && !_covered) _session?.refresh();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_started) return;
+    _clockGuard = SessionClockScope.of(context);
+    _started = true;
+    _load();
   }
 
   Future<void> _load() async {

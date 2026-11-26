@@ -64,7 +64,7 @@ abstract interface class SessionClock {
   Future<ClockSample> read();
 }
 
-/// Retain this guard when replacing a session owner on the same screen.
+/// Retain this guard above navigation when replacing screens/session owners.
 /// It observes only clock samples; no user input or persisted state is kept.
 class ClockContinuityGuard {
   ClockSample? _last;
