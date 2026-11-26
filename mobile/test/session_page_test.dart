@@ -92,6 +92,8 @@ void main() {
         await tester.enterText(find.byType(TextField), 'not a real question');
         await tester.pump();
         await tester.tap(find.text('Продолжить'));
+        // A second tap before the next frame must not erase the review snapshot.
+        await tester.tap(find.text('Продолжить'));
         await tester.pumpAndSettle();
         expect(inspections, 0);
         expect(find.text('Подтверди формулировку'), findsOneWidget);
@@ -213,6 +215,44 @@ void main() {
     expect(find.byType(TextField), findsNothing);
     expect(find.text('Повторить загрузку'), findsOneWidget);
     expect(find.textContaining('Проверка заблокирована.'), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('small screen and large text keep confirmation reachable', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(390, 844);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      MaterialApp(
+        builder: (context, child) => MediaQuery(
+          data: MediaQuery.of(context)
+              .copyWith(textScaler: const TextScaler.linear(1.6)),
+          child: child!,
+        ),
+        home: SessionPage(
+          backend: TestBackend(),
+          inspector: (_, _) async => const Reading(Outcome.held, 'fixture'),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.byType(TextField),
+      'Стоит ли мне сегодня почитать роман?',
+    );
+    await tester.pump();
+    await tester.ensureVisible(find.text('Продолжить'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Продолжить'));
+    await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Подтверждаю'));
+    await tester.tap(find.text('Подтверждаю'));
+    await tester.pumpAndSettle();
+    expect(find.text('Проверка завершена. Допуск закрыт.'), findsOneWidget);
+    expect(tester.takeException(), isNull);
     await tester.pumpWidget(const SizedBox());
   });
 

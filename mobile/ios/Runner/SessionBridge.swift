@@ -11,6 +11,9 @@ final class SessionBridge {
   private let center = UNUserNotificationCenter.current()
   private let fileManager = FileManager.default
   private let channel: FlutterMethodChannel
+  private var englishNoticeApproved: Bool {
+    Bundle.main.object(forInfoDictionaryKey: "UniverseEnglishNoticeApproved") as? Bool == true
+  }
   private enum BridgeError: Error { case invalid, storage, clock }
 
   init(messenger: FlutterBinaryMessenger) {
@@ -141,6 +144,7 @@ final class SessionBridge {
 
   private func schedule(_ scope: String) async throws {
     let prefs = try preferences(scope)
+    if prefs["language"] as? String == "en" && !englishNoticeApproved { cancel(scope); return }
     let settings = await center.notificationSettings()
     guard prefs["notifications"] as? Bool == true else { cancel(scope); return }
     guard [.authorized, .provisional, .ephemeral].contains(settings.authorizationStatus) else {
@@ -177,19 +181,25 @@ final class SessionBridge {
       try write(scope, "state", value)
       return nil
     case "clock": return try clock()
-    case "preferences": return try preferences(scope)
+    case "preferences":
+      var prefs = try preferences(scope)
+      prefs["englishNotifications"] = englishNoticeApproved
+      return prefs
     case "setLanguage":
       guard let language = args["language"] as? String, ["ru", "en"].contains(language) else { throw BridgeError.invalid }
       var prefs = try preferences(scope)
       prefs["language"] = language
       try savePreferences(scope, prefs)
-      try await schedule(scope)
+      // Notification delivery is optional, including after permission revocation.
+      // The core reconciles again on load and reports notification-only failures.
+      try? await schedule(scope)
       return nil
     case "setNotifications":
       guard let enabled = args["enabled"] as? Bool else { throw BridgeError.invalid }
+      var prefs = try preferences(scope)
+      if enabled && prefs["language"] as? String == "en" && !englishNoticeApproved { return false }
       var granted = false
       if enabled { granted = try await center.requestAuthorization(options: [.alert, .sound]) }
-      var prefs = try preferences(scope)
       prefs["notifications"] = enabled && granted
       try savePreferences(scope, prefs)
       if enabled && granted { try await schedule(scope) } else { cancel(scope) }

@@ -52,7 +52,9 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   SubmitResult? _result;
   String _language = 'ru';
   bool _loading = true, _failed = false, _settingsBusy = false;
+  bool _loadRunning = false;
   bool _notifications = false, _notificationError = false;
+  bool _englishNotifications = false;
   bool _foreground = true,
       _covered = false,
       _reveal = false,
@@ -75,6 +77,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   }
 
   Future<void> _load() async {
+    if (_loadRunning) return;
+    _loadRunning = true;
     _session?.onChanged = null;
     _session = null;
     _worker?.close();
@@ -96,6 +100,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
       if (!mounted) return;
       _language = prefs.language;
       _notifications = prefs.notifications;
+      _englishNotifications = prefs.englishNotifications;
       late QuestionValidator validator;
       if (widget.diagnostic) {
         validator = validateDiagnosticFixture;
@@ -134,6 +139,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     } catch (_) {
       _failed = true;
       _worker?.close();
+    } finally {
+      _loadRunning = false;
     }
     if (mounted) setState(() => _loading = false);
   }
@@ -181,6 +188,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
 
   void _prepare() {
     final session = _session!;
+    if (session.busy || session.phase != SessionPhase.ready) return;
     if (widget.diagnostic) session.edit(diagnosticFixture, language: _language);
     final review = session.review();
     setState(() {
@@ -214,6 +222,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   }
 
   Future<void> _toggleNotifications(bool enabled) async {
+    if (_settingsBusy || _session?.busy == true) return;
     setState(() => _settingsBusy = true);
     try {
       final accepted = await _backend.setNotifications(enabled);
@@ -230,6 +239,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   }
 
   Future<void> _diagnostic() async {
+    if (_covered || _settingsBusy || _session?.busy == true) return;
     _covered = true;
     _hidePrivateView();
     await Navigator.of(context).push(
@@ -244,6 +254,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   }
 
   Future<void> _resetDiagnostic() async {
+    if (_settingsBusy || _session?.busy == true) return;
     setState(() => _settingsBusy = true);
     try {
       await _backend.resetDiagnostic();
@@ -541,11 +552,18 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                     'One notification without the question or answer',
                   ),
                 ),
-                value: _notifications,
-                onChanged: _settingsBusy || session?.busy == true
+                value:
+                    _notifications &&
+                    (_language == 'ru' || _englishNotifications),
+                onChanged:
+                    _settingsBusy ||
+                        session?.busy == true ||
+                        (_language == 'en' && !_englishNotifications)
                     ? null
                     : _toggleNotifications,
               ),
+            if (_language == 'en' && !_englishNotifications)
+              const Text('Reminders are currently available in Russian.'),
             if (_notificationError || session?.notificationFailed == true)
               Text(
                 t(

@@ -16,7 +16,12 @@ Future<Admission> validateDiagnosticFixture(
 class SessionPreferences {
   final String language;
   final bool notifications;
-  const SessionPreferences(this.language, this.notifications);
+  final bool englishNotifications;
+  const SessionPreferences(
+    this.language,
+    this.notifications, {
+    this.englishNotifications = false,
+  });
 }
 
 abstract interface class SessionBackend implements SessionStore {
@@ -73,6 +78,7 @@ class IosSessionBackend implements SessionBackend {
     return SessionPreferences(
       values['language'] as String,
       values['notifications'] as bool,
+      englishNotifications: values['englishNotifications'] == true,
     );
   }
 
