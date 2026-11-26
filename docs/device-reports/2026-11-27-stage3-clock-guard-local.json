@@ -1,0 +1,103 @@
+{
+  "protocol": "stage3-clock-guard-local-v1",
+  "date_moscow": "2026-11-27",
+  "completed_at_utc": "2026-11-26T22:04:22.469244+00:00",
+  "base_commit": "294ccf0f04c03773700d6672394fa57ea4e7cd30",
+  "requirement": "R08",
+  "scope": "Reject small continuous-clock regression within a live screen/session owner, including reload and ambiguous persistence failure.",
+  "admission": "closed",
+  "stage_3_accepted": false,
+  "requirement_fully_closed": false,
+  "source_files": [
+    {
+      "path": "mobile/lib/session_core.dart",
+      "bytes": 18609,
+      "sha256": "12a63c7e211cbb589e81c51044506202aba0df95939fa94f2043830c27c3fac9"
+    },
+    {
+      "path": "mobile/lib/session_page.dart",
+      "bytes": 22654,
+      "sha256": "49bee113527f08879823f7b0838079d9c4686fde11f02c678ee025b02dbcbf56"
+    },
+    {
+      "path": "mobile/test/session_core_test.dart",
+      "bytes": 34109,
+      "sha256": "1e438d2bbe083c5e77d7d90d897c591eb7464aa46f37045d85bb0c1e53c699d4"
+    },
+    {
+      "path": "mobile/test/session_page_test.dart",
+      "bytes": 16728,
+      "sha256": "547bfdf4a7185b02c9ea439c242465a087a5431c1d9ae9e56cd060b96afc48df"
+    }
+  ],
+  "regression_demonstration": {
+    "before_fix_failed": 8,
+    "after_initial_fix_passed": 8
+  },
+  "final_new_tests": {
+    "core": 10,
+    "widget": 2
+  },
+  "windows": {
+    "command": "setup-windows.cmd",
+    "exit_code": 0,
+    "analyze": "No issues found!",
+    "passed": 149,
+    "failed": 0,
+    "test_duration_seconds": 31,
+    "single_full_run": true,
+    "log": "setup-windows-stage3-clock-guard-final.log"
+  },
+  "xctest_report_validator": {
+    "command": "python -m unittest discover -s mobile/tool -p test_xctest_result.py -v",
+    "passed": 8,
+    "failed": 0,
+    "exit_code": 0,
+    "platform": "Windows"
+  },
+  "logs": [
+    {
+      "path": "setup-windows-stage3-clock-guard-red.log",
+      "bytes": 4279,
+      "sha256": "e2454e165ce3a608f9c5ca55a36fe8d9f90372bfa88c8e85663305d2c5c2ec5f"
+    },
+    {
+      "path": "setup-windows-stage3-clock-guard-green.log",
+      "bytes": 682,
+      "sha256": "9b5a9610283acfdc071c1e9953d06e8bef41f7c2f25a14fbeb6459a337419b5d"
+    },
+    {
+      "path": "setup-windows-stage3-clock-guard.log",
+      "bytes": 23522,
+      "sha256": "39f3cd652df744b195be95079530c04533f05b81a6eb32178af96b3d6ad667cc"
+    },
+    {
+      "path": "setup-windows-stage3-clock-guard-final.log",
+      "bytes": 24094,
+      "sha256": "0fafbf8f20245d946ccb05c8216e9447c62881ba8df74d39feae049837b784ae"
+    }
+  ],
+  "ci": {
+    "new_run": null,
+    "source_upload_completed": false,
+    "reason": "Automatic approval review rejected uploading source and tests to diMtiHH/diMti without explicit permission for this transfer. No alternate upload attempted."
+  },
+  "ci_follow_up": {
+    "report": "2026-11-27-stage3-clock-guard-ci.json",
+    "user_authorized_upload": true,
+    "run_id": 45903178353,
+    "conclusion": "success",
+    "note": "The ci section above preserves the initial local-only snapshot before authorization."
+  },
+  "ipa": {
+    "new_build": false,
+    "last_verified_version": "0.3.4+6",
+    "contains_this_change": false
+  },
+  "limitations": [
+    "Guard baseline is in memory and owned by the current screen/session.",
+    "A new screen or process starts a new baseline.",
+    "Reboot and fallback UTC recovery do not prove trusted external time.",
+    "No physical iPhone checks were requested or performed."
+  ]
+}

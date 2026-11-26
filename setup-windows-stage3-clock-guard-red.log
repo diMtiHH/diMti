@@ -1,0 +1,81 @@
+00:00 +0: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart
+00:00 +0: real small clock regression stays blocked until catch-up
+00:00 +0 -1: real small clock regression stays blocked until catch-up [E]
+  Expected: SessionPhase:<SessionPhase.failed>
+    Actual: SessionPhase:<SessionPhase.cooldown>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\session_core_test.dart 748:7                   main.<fn>
+  
+00:00 +0 -1: real clock regression after wall rebase preserves state
+00:00 +0 -2: real clock regression after wall rebase preserves state [E]
+  Expected: SessionPhase:<SessionPhase.failed>
+    Actual: SessionPhase:<SessionPhase.cooldown>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\session_core_test.dart 794:9                   main.<fn>
+  
+00:00 +0 -2: real new clock domain accepts low uptime then guards it
+00:00 +0 -3: real new clock domain accepts low uptime then guards it [E]
+  Expected: SessionPhase:<SessionPhase.failed>
+    Actual: SessionPhase:<SessionPhase.cooldown>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\session_core_test.dart 820:7                   main.<fn>
+  
+00:00 +0 -3: real restored controller guards its first clock sample
+00:00 +0 -4: real restored controller guards its first clock sample [E]
+  Expected: SessionPhase:<SessionPhase.failed>
+    Actual: SessionPhase:<SessionPhase.cooldown>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\session_core_test.dart 838:7                   main.<fn>
+  
+00:00 +0 -4: diagnostic small clock regression stays blocked until catch-up
+00:00 +0 -5: diagnostic small clock regression stays blocked until catch-up [E]
+  Expected: SessionPhase:<SessionPhase.failed>
+    Actual: SessionPhase:<SessionPhase.cooldown>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\session_core_test.dart 748:7                   main.<fn>
+  
+00:00 +0 -5: diagnostic clock regression after wall rebase preserves state
+00:00 +0 -6: diagnostic clock regression after wall rebase preserves state [E]
+  Expected: SessionPhase:<SessionPhase.failed>
+    Actual: SessionPhase:<SessionPhase.cooldown>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\session_core_test.dart 794:9                   main.<fn>
+  
+00:00 +0 -6: diagnostic new clock domain accepts low uptime then guards it
+00:00 +0 -7: diagnostic new clock domain accepts low uptime then guards it [E]
+  Expected: SessionPhase:<SessionPhase.failed>
+    Actual: SessionPhase:<SessionPhase.cooldown>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\session_core_test.dart 820:7                   main.<fn>
+  
+00:00 +0 -7: diagnostic restored controller guards its first clock sample
+00:00 +0 -8: diagnostic restored controller guards its first clock sample [E]
+  Expected: SessionPhase:<SessionPhase.failed>
+    Actual: SessionPhase:<SessionPhase.cooldown>
+  
+  package:matcher                                     expect
+  package:flutter_test/src/widget_tester.dart 473:18  expect
+  test\session_core_test.dart 838:7                   main.<fn>
+  
+00:00 +0 -8: Some tests failed.
+
+Failing tests:
+  C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic clock regression after wall rebase preserves state
+  C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic new clock domain accepts low uptime then guards it
+  C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic restored controller guards its first clock sample
+  C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic small clock regression stays blocked until catch-up
+  ... and 4 more

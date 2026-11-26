@@ -1,0 +1,168 @@
+Flutter SDK: C:\Users\user\AppData\Local\AskTheUniverse\flutter-3.50.1
+model.onnx: verified (470268510 bytes)
+tokenizer.json: verified (17082730 bytes)
+Resolving dependencies...
+Downloading packages...
+  crypto 3.0.7 (3.0.8 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.14 (0.7.15 available)
+Got dependencies!
+3 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing mobile...                                             
+No issues found! (ran in 6.5s)
+00:00 +0: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_report_test.dart
+00:00 +0: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_report_test.dart: report preserves units, UTC time, build mode and verified asset identity
+00:00 +1: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart
+00:00 +1: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart: device measurement uses nearest-rank percentiles and checks both outcomes
+00:00 +2: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart: a failed check cannot yield a successful benchmark
+00:00 +3: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart: interruption during check 1 discards the run
+00:00 +4: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart: interruption during check 20 discards the run
+00:00 +5: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart
+00:00 +5: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: (setUpAll)
+00:06 +5: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: FP32 Dart path agrees with the frozen Python implementation, one full question per run
+00:07 +6: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: full input is required
+00:07 +7: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: missing or corrupt model fails at startup
+00:07 +8: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: UI worker runs the bundled model off the UI isolate
+00:13 +9: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: (tearDownAll)
+00:13 +9: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart
+00:13 +9: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic pause restores and expires at exactly one minute
+00:13 +10: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: short pause keeps its duration through reboot and clock rebasing
+00:13 +11: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: a real session rejects the diagnostic record without altering it
+00:13 +12: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: upgrading diagnostic mode preserves a legacy thirty minute deadline
+00:13 +13: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: short timer schema rejects unsupported durations and extra fields
+00:13 +14: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: all 100 values map to exactly 50 YES and 50 NO
+00:13 +15: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: system source returns only integers inside its contract
+00:13 +16: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: production gate never reaches RNG for any model outcome or error
+00:13 +17: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: unsupported language never invokes the model adapter
+00:13 +18: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: editing or cancelling a review requires a fresh explicit confirmation
+00:13 +19: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: review from another session and changed language cannot authorize RNG
+00:13 +20: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: confirmation sends the exact approved text and language
+00:13 +21: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: edit during validation discards the late ALLOW
+00:13 +22: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: language during validation discards the late ALLOW
+00:13 +23: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: background during validation discards the late ALLOW
+00:13 +24: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: timeout and validator failure keep the attempt available without RNG
+00:13 +25: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: double tap invokes one validation and one random draw
+00:13 +26: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: background clears review and disallows submission while inactive
+00:13 +27: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: background during intent persistence cancels before RNG
+00:13 +28: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: answer stays hidden until its persistence is acknowledged
+00:13 +29: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: restart restores the exact answer with no draw or premature timer
+00:13 +30: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed intent write (committed=false) never calls RNG
+00:13 +31: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed answer write (committed=false) cannot reroll on recovery
+00:13 +32: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed cooldown write (committed=false) recovers conservatively
+00:13 +33: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed intent write (committed=true) never calls RNG
+00:13 +34: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed answer write (committed=true) cannot reroll on recovery
+00:13 +35: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed cooldown write (committed=true) recovers conservatively
+00:13 +36: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: CSPRNG errors and invalid values do not fabricate an answer or spend attempt
+00:13 +37: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed cleanup after RNG error preserves interruption without automatic retry
+00:13 +38: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: cooldown expires at exactly 1800000 ms and duplicate display cannot extend it
+00:13 +39: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: restart and background include elapsed device sleep
+00:13 +40: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: same-boot wall-clock jumps neither shorten nor lengthen pause
+00:13 +41: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: new boot uses UTC then rebases to the new continuous clock
+00:13 +42: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: reboot fallback is bounded to 30 minutes and cannot prove offline wall time
+00:13 +43: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: clock failure or same-boot monotonic regression cannot unlock session
+00:13 +44: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: real small clock regression stays blocked until catch-up
+00:13 +45: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: real clock regression after wall rebase preserves state
+00:13 +46: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: real new clock domain accepts low uptime then guards it
+00:13 +47: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: real restored controller guards its first clock sample
+00:13 +48: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic small clock regression stays blocked until catch-up
+00:13 +49: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic clock regression after wall rebase preserves state
+00:13 +50: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic new clock domain accepts low uptime then guards it
+00:13 +51: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic restored controller guards its first clock sample
+00:13 +52: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: unavailable clock after display preserves the same pending answer
+00:13 +53: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: expiry persistence failure does not make another attempt available
+00:13 +54: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: unknown, truncated, extra-field and malformed records fail closed
+00:13 +55: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: notification failure never changes the durable deadline
+00:13 +56: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: restored locale is supplied by preferences, not question persistence
+00:13 +57: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: notification is one replaceable generic request and refresh does not reschedule
+00:13 +58: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart
+00:17 +58: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: real input requires confirmation and every model result stays closed
+00:18 +59: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: diagnostic stores before showing and restart never selects again
+00:18 +60: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: background removes review and requires a new edit
+00:18 +61: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: legacy diagnostic pause stays intact until explicit test reset
+00:18 +62: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: notification denial cannot start or reset a timer; locale preserves state
+00:18 +63: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: unavailable clock blocks input with a visible retry
+00:18 +64: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: settings failure is specific and reveals no exception details
+00:18 +65: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: small screen and large text keep confirmation reachable
+00:18 +66: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: diagnostic validator rejects arbitrary questions and unknown language
+00:18 +67: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: native bridge scopes storage and rejects real reset before platform call
+00:18 +68: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart
+00:19 +68: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real idle
+00:19 +69: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real reserved
+00:19 +70: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real pending yes
+00:19 +71: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real pending no
+00:19 +72: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real legacy 30 minute cooldown
+00:19 +73: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real minute cooldown
+00:19 +74: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real maximum safe deadlines
+00:19 +75: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic idle
+00:19 +76: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic reserved
+00:19 +77: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic pending yes
+00:19 +78: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic pending no
+00:19 +79: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic legacy 30 minute cooldown
+00:19 +80: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic minute cooldown
+00:19 +81: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic maximum safe deadlines
+00:19 +82: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 14
+00:19 +83: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 15
+00:19 +84: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 16
+00:19 +85: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 17
+00:19 +86: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 18
+00:19 +87: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 19
+00:19 +88: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 20
+00:19 +89: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 21
+00:19 +90: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 22
+00:19 +91: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 23
+00:19 +92: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 24
+00:19 +93: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 25
+00:19 +94: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 26
+00:19 +95: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 27
+00:19 +96: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 28
+00:19 +97: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 29
+00:19 +98: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 30
+00:19 +99: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 31
+00:19 +100: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 32
+00:19 +101: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 33
+00:19 +102: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 34
+00:19 +103: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 35
+00:19 +104: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 36
+00:19 +105: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 37
+00:19 +106: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 38
+00:19 +107: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 39
+00:19 +108: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 40
+00:19 +109: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 41
+00:19 +110: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 42
+00:19 +111: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 43
+00:19 +112: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 44
+00:19 +113: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 45
+00:19 +114: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 46
+00:19 +115: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 47
+00:19 +116: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 48
+00:19 +117: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 49
+00:19 +118: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 50
+00:19 +119: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 51
+00:19 +120: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 52
+00:19 +121: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 53
+00:19 +122: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 54
+00:19 +123: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for idle
+00:19 +124: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for reserved
+00:19 +125: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for pending
+00:19 +126: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 58
+00:19 +127: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 59
+00:19 +128: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 60
+00:19 +129: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 61
+00:19 +130: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing version
+00:19 +131: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing phase
+00:19 +132: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing utcDeadline
+00:19 +133: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing continuousDeadline
+00:19 +134: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing bootToken
+00:19 +135: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic unexpected input field
+00:19 +136: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic answer cannot accompany timer
+00:19 +137: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic oversized text
+00:19 +138: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic numeric exponent deadline
+00:19 +139: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic duplicate phase ending valid
+00:19 +140: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic duplicate phase ending invalid
+00:19 +141: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic escaped duplicate key
+00:19 +142: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ui_test.dart
+00:19 +142: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ui_test.dart: unavailable iOS bundle leaves input disabled and language switch usable
+00:20 +143: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ui_test.dart: real question entry clears text and returns a closed outcome in both languages
+00:27 +144: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ui_test.dart: only a completed benchmark can copy a report without question text
+00:34 +145: All tests passed!

@@ -1,0 +1,10 @@
+00:00 +0: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart
+00:00 +0: real small clock regression stays blocked until catch-up
+00:00 +1: real clock regression after wall rebase preserves state
+00:00 +2: real new clock domain accepts low uptime then guards it
+00:00 +3: real restored controller guards its first clock sample
+00:00 +4: diagnostic small clock regression stays blocked until catch-up
+00:00 +5: diagnostic clock regression after wall rebase preserves state
+00:00 +6: diagnostic new clock domain accepts low uptime then guards it
+00:00 +7: diagnostic restored controller guards its first clock sample
+00:00 +8: All tests passed!

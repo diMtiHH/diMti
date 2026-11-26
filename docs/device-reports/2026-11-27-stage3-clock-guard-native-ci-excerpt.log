@@ -1,0 +1,60 @@
+Run: https://github.com/diMtiHH/diMti/actions/runs/45903178353
+Commit: da3cac9f925bae5101230260f7db1fd6dfe90ddf
+Job: 140193586380
+Selected unmodified log lines; compiler command lines omitted.
+2026-11-26T22:11:43.2157260Z Complete job name: iOS XCTest and native checks
+2026-11-26T22:11:59.7032760Z PASS 1: commit token before creating kernel marker
+2026-11-26T22:11:59.7034510Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-26T22:11:59.7037490Z PASS 3: simulated reboot rotates token
+2026-11-26T22:11:59.7039480Z PASS 4: failed write recovery
+2026-11-26T22:11:59.7040940Z PASS 5: ambiguous committed write recovery
+2026-11-26T22:11:59.7044180Z PASS 6: crash between persisted token and kernel creation
+2026-11-26T22:11:59.7052160Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-26T22:11:59.7064930Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-26T22:11:59.7066090Z PASS 9: strict private marker validation
+2026-11-26T22:11:59.7068950Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-26T22:11:59.7073320Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-26T22:11:59.7076080Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-26T22:11:59.7078510Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-26T22:11:59.7086890Z PASS 14: notification callback success/error and duplicate completion
+2026-11-26T22:11:59.7091240Z PASS 15: missing OS callback releases the serial queue
+2026-11-26T22:11:59.7093970Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-26T22:11:59.7096710Z Native safety checks: 16/16 passed
+2026-11-26T22:12:01.7218570Z PASS storage 1: shared Dart/Swift state contract: 74 cases; rejected input preserves bytes
+2026-11-26T22:12:01.7220170Z PASS storage 2: notification preference and channel switch require actual booleans
+2026-11-26T22:12:01.7240230Z PASS storage 3: invalid preferences cannot overwrite saved opt-in
+2026-11-26T22:12:06.4289720Z PASS storage 4: 40 process exits across 5 write checkpoints and both scopes
+2026-11-26T22:12:06.5136620Z PASS storage 5: first uncommitted reservation is never loaded from staging
+2026-11-26T22:12:06.5593630Z PASS storage 6: error after rename propagates; reload recovers the committed timer
+2026-11-26T22:12:06.5676170Z PASS storage 7: corrupt, invalid UTF-8 and oversized committed files never use pending data
+2026-11-26T22:12:06.5743450Z PASS storage 8: diagnostic reset isolation and answer removal in committed cooldown
+2026-11-26T22:12:06.5772730Z PASS storage 9: ambiguous preferences rejected; canonical state committed without leftover staging
+2026-11-26T22:12:06.5785200Z PASS storage 10: both private scope directories excluded from backup
+2026-11-26T22:12:06.5806540Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T22:12:07.4039300Z test_empty_report_cannot_pass (test_xctest_result.XCTestResultContract.test_empty_report_cannot_pass) ... ok
+2026-11-26T22:12:07.4043520Z test_failed_case_cannot_pass (test_xctest_result.XCTestResultContract.test_failed_case_cannot_pass) ... ok
+2026-11-26T22:12:07.4046460Z test_missing_case_cannot_pass (test_xctest_result.XCTestResultContract.test_missing_case_cannot_pass) ... ok
+2026-11-26T22:12:07.4050120Z test_same_name_from_wrong_suite_cannot_pass (test_xctest_result.XCTestResultContract.test_same_name_from_wrong_suite_cannot_pass) ... ok
+2026-11-26T22:12:07.4052240Z test_skipped_case_cannot_pass (test_xctest_result.XCTestResultContract.test_skipped_case_cannot_pass) ... ok
+2026-11-26T22:12:07.4054960Z Ran 8 tests in 0.001s
+2026-11-26T22:14:24.7051960Z CI STEP configure: starting (limit 600s)
+2026-11-26T22:14:51.4467850Z CI STEP configure: exit 0
+2026-11-26T22:14:51.4472280Z CI STEP build: starting (limit 1200s)
+2026-11-26T22:16:22.8482940Z CI STEP build: exit 0
+2026-11-26T22:16:25.8349410Z CI STEP boot-1: starting (limit 300s)
+2026-11-26T22:18:53.6333330Z CI STEP boot-1: exit 0
+2026-11-26T22:18:53.7391350Z CI STEP test: starting (limit 600s)
+2026-11-26T22:21:27.7050480Z 2026-11-26 22:21:27.373191+0000 Runner[12078:43999] flutter: 00:38 +4: All tests passed!
+2026-11-26T22:21:28.7731940Z Test Case '-[UniverseIntegrationTests testNativeIosStorageClockAndNotificationCancellationPreserveRecovery]' passed (0.008 seconds).
+2026-11-26T22:21:29.0124750Z Test Case '-[UniverseIntegrationTests testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState]' passed (0.002 seconds).
+2026-11-26T22:21:29.2136360Z Test Case '-[UniverseIntegrationTests testIosRunnerLoadsTheBundledModelAndChecksRuAndEn]' passed (0.002 seconds).
+2026-11-26T22:21:29.4161720Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 0.012 (0.023) seconds
+2026-11-26T22:21:29.6166710Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 0.012 (0.024) seconds
+2026-11-26T22:21:29.8188820Z 	 Executed 3 tests, with 0 failures (0 unexpected) in 0.012 (0.028) seconds
+2026-11-26T22:21:29.9211790Z ✔ Suite RunnerTests passed after 0.003 seconds.
+2026-11-26T22:21:29.9241040Z CI STEP test: exit 0
+2026-11-26T22:21:33.0434110Z VERIFIED: all 3 Flutter integration tests and 1 native resource test passed in one XCTest run.
+2026-11-26T22:21:33.0503730Z PASS RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()
+2026-11-26T22:21:33.0507860Z PASS UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn
+2026-11-26T22:21:33.0510790Z PASS UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState
+2026-11-26T22:21:33.0513340Z PASS UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery

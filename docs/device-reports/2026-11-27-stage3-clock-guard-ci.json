@@ -1,0 +1,140 @@
+{
+  "protocol": "stage3-clock-guard-ci-v1",
+  "date_moscow": "2026-11-27",
+  "admission": "closed",
+  "stage_3_accepted": false,
+  "authorization": "User explicitly authorized upload to diMtiHH/diMti and CI on 2026-11-27.",
+  "base_commit": "294ccf0f04c03773700d6672394fa57ea4e7cd30",
+  "source_commit": "da3cac9f925bae5101230260f7db1fd6dfe90ddf",
+  "source_tree": "b7498636a4181b02c69a3f4c49e5612f5d569543",
+  "source_blobs": [
+    {
+      "path": "mobile/test/session_page_test.dart",
+      "git_blob_sha": "ab40dedb30fe9b135f63eac797e701149042ae23"
+    },
+    {
+      "path": "mobile/lib/session_core.dart",
+      "git_blob_sha": "2349a1dcffcaede510e00d8746cc131b3afab3c0"
+    },
+    {
+      "path": "mobile/test/session_core_test.dart",
+      "git_blob_sha": "d95c6fc95292c6fecd6dcfb364bff9baab831c1d"
+    },
+    {
+      "path": "mobile/lib/session_page.dart",
+      "git_blob_sha": "b8050e497196ba682e57b27dbc8e8bd9f62ad3ca"
+    }
+  ],
+  "run": {
+    "id": 45903178353,
+    "url": "https://github.com/diMtiHH/diMti/actions/runs/45903178353",
+    "attempt": 1,
+    "status": "completed",
+    "conclusion": "success",
+    "started_at_utc": "2026-11-26T22:11:38Z",
+    "completed_at_utc": "2026-11-26T22:21:47Z"
+  },
+  "previous_submission": {
+    "run_id": 45903050265,
+    "commit": "c5bbca5f99e9756f3203b7fea8f6f9b476671ffe",
+    "reason": "Console encoding altered non-ASCII source bytes. Corrected using ASCII-escaped JSON, then verified all four blob hashes against local files before starting the replacement run.",
+    "counts_as_validation": false,
+    "windows_job_id": 140193171859,
+    "windows_passed": 147,
+    "windows_failed": 2,
+    "evidence": "2026-11-27-stage3-clock-guard-development-ci-excerpt.log"
+  },
+  "results": {
+    "windows": {
+      "job_id": 140193586621,
+      "conclusion": "success",
+      "passed": 149,
+      "failed": 0,
+      "test_duration_seconds": 55,
+      "analyze_seconds": 11.3,
+      "analyze": "No issues found!",
+      "new_clock_guard_tests": 12,
+      "log": "2026-11-27-stage3-clock-guard-windows-ci.log"
+    },
+    "native": {
+      "job_id": 140193586380,
+      "conclusion": "success",
+      "safety_groups": 16,
+      "storage_groups": 10,
+      "shared_contract_cases": 74,
+      "process_interruptions": 40,
+      "log": "2026-11-27-stage3-clock-guard-native-ci-excerpt.log"
+    },
+    "xctest": {
+      "flutter_integration": 3,
+      "native_resources": 1,
+      "total": 4,
+      "failed": 0,
+      "skipped": 0,
+      "expected_failures": 0,
+      "test_retries": 0,
+      "simulator_boot_attempts": 1,
+      "cases": [
+        "RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()",
+        "UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn",
+        "UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState",
+        "UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery"
+      ],
+      "device": "iPhone 16",
+      "ios": "18.5",
+      "xcode": "16.4",
+      "macos": "15.7.9",
+      "architecture": "x86_64"
+    },
+    "report_validator": {
+      "windows": 8,
+      "macos": 8,
+      "failed": 0
+    }
+  },
+  "local_evidence": "2026-11-27-stage3-clock-guard-local.json",
+  "new_ipa": false,
+  "source_audit": {
+    "base_tree": "7455e190c684ce5ed3684f8a71f90e17dfd28f25",
+    "head_tree": "b7498636a4181b02c69a3f4c49e5612f5d569543",
+    "changed_files": [
+      "mobile/lib/session_core.dart",
+      "mobile/lib/session_page.dart",
+      "mobile/test/session_core_test.dart",
+      "mobile/test/session_page_test.dart"
+    ],
+    "unchanged_files": 127
+  },
+  "artifact": {
+    "id": 15156882817,
+    "name": "stage3-xctest-results",
+    "size_bytes": 84192,
+    "sha256": "8d2ed456d06189a67378838caf3ab7bf823a81ef388f828f9a10e158cfa39e05",
+    "digest_verified": true,
+    "zip_crc_verified": true,
+    "local_path": "mobile/build/ci-results/45903178353.zip",
+    "raw_reports": [
+      {
+        "path": "docs/device-reports/2026-11-27-stage3-clock-guard-xctest-summary.json",
+        "sha256": "e84e6ea336c432a2acd781d144298f59af725af4a134ea0779b38e446db63935",
+        "bytes": 705
+      },
+      {
+        "path": "docs/device-reports/2026-11-27-stage3-clock-guard-xctest-tests.json",
+        "sha256": "b7dd693ca3071bd17966207e872bb42333d14f8a479d28b047fb88740ff6220c",
+        "bytes": 2463
+      },
+      {
+        "path": "docs/device-reports/2026-11-27-stage3-clock-guard-xctest-verified.json",
+        "sha256": "66e44264bf1f0062cb0a85220d02a2d88261e2f55f28ca6e25e38955f35aba7b",
+        "bytes": 517
+      }
+    ],
+    "results_locally_revalidated": true
+  },
+  "limitations": [
+    "R08 is partially implemented; a new screen/process loses the in-memory baseline, reboot UTC limitations remain.",
+    "No manual iPhone checks were requested or performed.",
+    "Last verified IPA 0.3.4+6 does not contain this change; no new release was built."
+  ]
+}

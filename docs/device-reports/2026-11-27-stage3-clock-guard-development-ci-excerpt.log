@@ -1,0 +1,16 @@
+Run: https://github.com/diMtiHH/diMti/actions/runs/45903050265
+Commit: c5bbca5f99e9756f3203b7fea8f6f9b476671ffe
+Windows job: 140193171859
+This superseded submission altered non-ASCII source bytes through console encoding.
+The corrected submission was verified against all four local Git blob hashes before CI.
+These results are not counted as validation of the final source.
+
+2026-11-26T22:13:20.1669798Z No issues found! (ran in 10.3s)
+2026-11-26T22:14:01.4125124Z Expected: no matching candidates
+2026-11-26T22:14:01.4126194Z   Actual: _TextContainingWidgetFinder:<Found 7 widgets with text containing ������: [
+2026-11-26T22:14:01.4143492Z 00:30 +67 -1: D:/a/diMti/diMti/mobile/test/session_page_test.dart: unavailable clock blocks input with a visible retry [E]
+2026-11-26T22:14:01.5256728Z Expected: no matching candidates
+2026-11-26T22:14:01.5258351Z   Actual: _TextContainingWidgetFinder:<Found 7 widgets with text containing ������: [
+2026-11-26T22:14:01.5302642Z 00:30 +67 -2: D:/a/diMti/diMti/mobile/test/session_page_test.dart: settings failure is specific and reveals no exception details [E]
+2026-11-26T22:14:24.8332451Z 00:53 +147 -2: Some tests failed.
+2026-11-26T22:14:24.9449514Z ##[error]Process completed with exit code 1.
