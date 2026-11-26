@@ -64,6 +64,24 @@ abstract interface class SessionClock {
   Future<ClockSample> read();
 }
 
+/// Retain this guard when replacing a session owner on the same screen.
+/// It observes only clock samples; no user input or persisted state is kept.
+class ClockContinuityGuard {
+  ClockSample? _last;
+
+  void accept(ClockSample now) {
+    now.validate();
+    final previous = _last;
+    if (previous != null &&
+        now.bootToken == previous.bootToken &&
+        now.continuousMs < previous.continuousMs) {
+      throw const FormatException('Continuous clock moved backwards');
+    }
+    // A rejected sample never lowers the baseline, even after a retry.
+    _last = now;
+  }
+}
+
 abstract interface class SessionStore {
   Future<String?> read();
 
@@ -78,7 +96,7 @@ class PauseNotification {
   final String language;
   const PauseNotification(this.remainingMs, this.language);
   String get body => language == 'ru'
-      ? 'Вселенная снова готова тебя услышать'
+      ? '��������� ����� ������ ���� ��������'
       : 'The Universe is ready to hear you again';
 }
 
@@ -243,6 +261,7 @@ class QuestionSession {
   final QuestionValidator validateQuestion;
   final PauseNotifications notifications;
   final Duration validationTimeout;
+  final ClockContinuityGuard _clockGuard;
   // Fixed fixture + isolated backend only. Real sessions always use the default.
   final bool diagnostic;
   void Function()? onChanged;
@@ -252,11 +271,13 @@ class QuestionSession {
     required this.clock,
     required this.random,
     required this.validateQuestion,
+    ClockContinuityGuard? clockGuard,
     PauseNotifications? notifications,
     String initialLanguage = 'ru',
     this.validationTimeout = const Duration(seconds: 45),
     this.diagnostic = false,
-  }) : notifications = notifications ?? NoPauseNotifications(),
+  }) : _clockGuard = clockGuard ?? ClockContinuityGuard(),
+       notifications = notifications ?? NoPauseNotifications(),
        _language = initialLanguage {
     if (initialLanguage != 'ru' && initialLanguage != 'en') {
       throw ArgumentError.value(initialLanguage, 'initialLanguage');
@@ -356,7 +377,7 @@ class QuestionSession {
 
   Future<ClockSample> _now() async {
     final now = await clock.read();
-    now.validate();
+    _clockGuard.accept(now);
     return now;
   }
 

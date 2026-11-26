@@ -16,7 +16,7 @@ class UniverseApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
     debugShowCheckedModeBanner: false,
-    title: 'Спроси Вселенную',
+    title: '������ ���������',
     theme: ThemeData(
       colorScheme: ColorScheme.fromSeed(
         seedColor: const Color(0xff86a7df),
@@ -45,6 +45,7 @@ class SessionPage extends StatefulWidget {
 
 class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   final _input = TextEditingController();
+  final _clockGuard = ClockContinuityGuard();
   late final SessionBackend _backend;
   QuestionSession? _session;
   ModelWorker? _worker;
@@ -66,19 +67,19 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
 
   String get _loadFailure => switch (_loadStage) {
     _LoadStage.preferences => t(
-      'Не удалось прочитать настройки. Проверка заблокирована.',
+      '�� ������� ��������� ���������. �������� �������������.',
       'Could not read settings. Checking is blocked.',
     ),
     _LoadStage.clock => t(
-      'Не удалось получить системное время для таймера. Проверка заблокирована.',
+      '�� ������� �������� ��������� ����� ��� �������. �������� �������������.',
       'Could not read the system clock for the timer. Checking is blocked.',
     ),
     _LoadStage.model => t(
-      'Не удалось загрузить модель. Проверка заблокирована.',
+      '�� ������� ��������� ������. �������� �������������.',
       'Could not load the model. Checking is blocked.',
     ),
     _LoadStage.state => t(
-      'Не удалось восстановить состояние. Проверка заблокирована.',
+      '�� ������� ������������ ���������. �������� �������������.',
       'Could not restore the session. Checking is blocked.',
     ),
   };
@@ -120,8 +121,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
       final prefs = await _backend.preferences();
       _language = prefs.language;
       _loadStage = _LoadStage.clock;
-      await _backend
-          .readClock(); // Preflight: no fallback to process-only time.
+      // Reloading the worker/session must not forget the last valid clock.
+      _clockGuard.accept(await _backend.readClock());
       if (!mounted) return;
       _language = prefs.language;
       _notifications = prefs.notifications;
@@ -154,6 +155,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         diagnostic: widget.diagnostic,
         store: _backend,
         clock: BackendClock(_backend),
+        clockGuard: _clockGuard,
         random: widget.random ?? SystemAnswerSource(),
         validateQuestion: validator,
         notifications: BackendNotifications(_backend),
@@ -313,15 +315,15 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
 
   String _outcome(SubmitResult result) => switch (result) {
     SubmitResult.held => t(
-      'Проверка завершена. Допуск закрыт.',
+      '�������� ���������. ������ ������.',
       'Check complete. Admission is closed.',
     ),
     SubmitResult.risk => t(
-      'Модель отметила возможный риск. Допуск закрыт.',
+      '������ �������� ��������� ����. ������ ������.',
       'The model flagged possible risk. Admission is closed.',
     ),
     SubmitResult.unavailable || SubmitResult.failed => t(
-      'Не удалось выполнить проверку. Ответ не выбран.',
+      '�� ������� ��������� ��������. ����� �� ������.',
       'The check could not complete. No answer was selected.',
     ),
     _ => '',
@@ -336,7 +338,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
           children: [
             const CircularProgressIndicator(),
             const SizedBox(height: 16),
-            Text(t('Проверяем…', 'Checking…')),
+            Text(t('���������', 'Checking�')),
           ],
         );
       case SessionPhase.failed:
@@ -344,13 +346,13 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
           children: [
             Text(
               t(
-                'Не удалось восстановить состояние. Новая попытка заблокирована.',
+                '�� ������� ������������ ���������. ����� ������� �������������.',
                 'Could not restore the session. A new attempt is blocked.',
               ),
             ),
             TextButton(
               onPressed: _load,
-              child: Text(t('Повторить загрузку', 'Retry loading')),
+              child: Text(t('��������� ��������', 'Retry loading')),
             ),
           ],
         );
@@ -359,13 +361,13 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
           children: [
             Text(
               t(
-                'Попытка прервана до сохранения ответа. Новый ответ автоматически не выбирается.',
+                '������� �������� �� ���������� ������. ����� ����� ������������� �� ����������.',
                 'The attempt stopped before its answer was saved. No new answer is selected automatically.',
               ),
             ),
             FilledButton(
               onPressed: session.busy ? null : session.dismissInterrupted,
-              child: Text(t('Понятно', 'Understood')),
+              child: Text(t('�������', 'Understood')),
             ),
           ],
         );
@@ -376,14 +378,14 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              t('Подтверди формулировку', 'Confirm the wording'),
+              t('��������� ������������', 'Confirm the wording'),
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
             Text(
               widget.diagnostic
                   ? t(
-                      'Фиксированный технический пример. Это не ответ на личный вопрос.',
+                      '������������� ����������� ������. ��� �� ����� �� ������ ������.',
                       'Fixed technical fixture. This is not an answer to a personal question.',
                     )
                   : review.text,
@@ -391,11 +393,11 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             const SizedBox(height: 16),
             FilledButton(
               onPressed: _confirm,
-              child: Text(t('Подтверждаю', 'Confirm')),
+              child: Text(t('�����������', 'Confirm')),
             ),
             TextButton(
               onPressed: session.cancelReview,
-              child: Text(t('Изменить', 'Edit')),
+              child: Text(t('��������', 'Edit')),
             ),
           ],
         );
@@ -405,7 +407,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             children: [
               Text(
                 t(
-                  'Тестовый ответ сохранён и ещё не показан. Можно полностью закрыть приложение и открыть «Проверку ядра» снова.',
+                  '�������� ����� �������� � ��� �� �������. ����� ��������� ������� ���������� � ������� ��������� ���� �����.',
                   'The test answer is saved but not shown yet. You can fully close the app, then reopen Core check.',
                 ),
               ),
@@ -415,7 +417,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                     ? null
                     : () => setState(() => _reveal = true),
                 child: Text(
-                  t('Показать сохранённый ответ', 'Show saved answer'),
+                  t('�������� ����������� �����', 'Show saved answer'),
                 ),
               ),
             ],
@@ -434,19 +436,19 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             if (_visibleAnswer != null) _answer(_visibleAnswer!),
             Text(
               session.currentPauseDurationMs == diagnosticCooldownMs
-                  ? t('Тестовая пауза — одна минута', 'Test pause — one minute')
-                  : t('Тридцать минут тишины', 'Thirty minutes of quiet'),
+                  ? t('�������� ����� � ���� ������', 'Test pause � one minute')
+                  : t('�������� ����� ������', 'Thirty minutes of quiet'),
             ),
             if (widget.diagnostic &&
                 session.currentPauseDurationMs == cooldownMs)
               Text(
                 t(
-                  'Продолжается прежний тест. Для нового минутного теста нажми «Сбросить только тест».',
+                  '������������ ������� ����. ��� ������ ��������� ����� ����� ��������� ������ ����.',
                   'An earlier test is still running. Use Reset test only to start a new one-minute test.',
                 ),
               ),
             Semantics(
-              label: t('Осталось $time', '$time remaining'),
+              label: t('�������� $time', '$time remaining'),
               child: Text(
                 time,
                 key: const ValueKey('cooldown'),
@@ -462,7 +464,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             if (widget.diagnostic)
               Text(
                 t(
-                  'Один тестовый результат, сохранение и пауза 1 минута. Обычная пауза — 30 минут. Личные вопросы здесь не принимаются.',
+                  '���� �������� ���������, ���������� � ����� 1 ������. ������� ����� � 30 �����. ������ ������� ����� �� �����������.',
                   'One test result, persistence and a 1-minute pause. The normal pause is 30 minutes. Personal questions are not accepted here.',
                 ),
               )
@@ -474,7 +476,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                 enableSuggestions: false,
                 autocorrect: false,
                 decoration: InputDecoration(
-                  labelText: t('Твой вопрос', 'Your question'),
+                  labelText: t('���� ������', 'Your question'),
                 ),
                 onChanged: (value) {
                   session.edit(value, language: _language);
@@ -490,8 +492,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                   : _prepare,
               child: Text(
                 widget.diagnostic
-                    ? t('Подготовить тестовый ответ', 'Prepare test answer')
-                    : t('Продолжить', 'Continue'),
+                    ? t('����������� �������� �����', 'Prepare test answer')
+                    : t('����������', 'Continue'),
               ),
             ),
             if (_result != null && _outcome(_result!).isNotEmpty)
@@ -507,12 +509,12 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   Widget _answer(Answer answer) => Padding(
     padding: const EdgeInsets.all(24),
     child: Text(
-      answer == Answer.yes ? t('ДА', 'YES') : t('НЕТ', 'NO'),
+      answer == Answer.yes ? t('��', 'YES') : t('���', 'NO'),
       key: const ValueKey('answer'),
       style: Theme.of(context).textTheme.displayLarge,
       semanticsLabel: answer == Answer.yes
-          ? t('Ответ: да', 'Answer: yes')
-          : t('Ответ: нет', 'Answer: no'),
+          ? t('�����: ��', 'Answer: yes')
+          : t('�����: ���', 'Answer: no'),
     ),
   );
 
@@ -523,8 +525,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
       appBar: AppBar(
         title: Text(
           widget.diagnostic
-              ? t('Проверка ядра', 'Core check')
-              : t('Спроси Вселенную', 'Ask the Universe'),
+              ? t('�������� ����', 'Core check')
+              : t('������ ���������', 'Ask the Universe'),
         ),
       ),
       body: SafeArea(
@@ -534,11 +536,11 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             Text(
               widget.diagnostic
                   ? t(
-                      'ТЕХНИЧЕСКИЙ ТЕСТ · отдельная попытка',
-                      'TECHNICAL TEST · separate attempt',
+                      '����������� ���� � ��������� �������',
+                      'TECHNICAL TEST � separate attempt',
                     )
                   : t(
-                      'Допуск всех вопросов закрыт',
+                      '������ ���� �������� ������',
                       'Admission is closed for every question',
                     ),
             ),
@@ -555,7 +557,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                               language == _language
                           ? null
                           : () => _languageTo(language),
-                      child: Text(language == 'ru' ? 'Русский' : 'English'),
+                      child: Text(language == 'ru' ? '�������' : 'English'),
                     ),
                   )
                   .toList(),
@@ -569,7 +571,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                   Text(_loadFailure),
                   TextButton(
                     onPressed: _settingsBusy ? null : _load,
-                    child: Text(t('Повторить загрузку', 'Retry loading')),
+                    child: Text(t('��������� ��������', 'Retry loading')),
                   ),
                 ],
               )
@@ -579,11 +581,11 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             if (!_loading && !_failed)
               SwitchListTile(
                 title: Text(
-                  t('Напомнить после паузы', 'Remind me after the pause'),
+                  t('��������� ����� �����', 'Remind me after the pause'),
                 ),
                 subtitle: Text(
                   t(
-                    'Одно уведомление без вопроса и ответа',
+                    '���� ����������� ��� ������� � ������',
                     'One notification without the question or answer',
                   ),
                 ),
@@ -602,7 +604,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             if (_notificationError || session?.notificationFailed == true)
               Text(
                 t(
-                  'Уведомление недоступно. Проверь разрешение в настройках iPhone. Таймер продолжает работать.',
+                  '����������� ����������. ������� ���������� � ���������� iPhone. ������ ���������� ��������.',
                   'Notification unavailable. Check permission in iPhone Settings. The timer keeps running.',
                 ),
               ),
@@ -612,19 +614,19 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                 onPressed: _loading || _settingsBusy || session?.busy == true
                     ? null
                     : _diagnostic,
-                child: Text(t('Проверка ядра', 'Core check')),
+                child: Text(t('�������� ����', 'Core check')),
               ),
             if (widget.diagnostic && !_loading)
               TextButton(
                 onPressed: _settingsBusy || session?.busy == true
                     ? null
                     : _resetDiagnostic,
-                child: Text(t('Сбросить только тест', 'Reset test only')),
+                child: Text(t('�������� ������ ����', 'Reset test only')),
               ),
             const SizedBox(height: 12),
             Text(
               t(
-                'Случайный ответ не предсказывает будущее и не заменяет профессиональную помощь.',
+                '��������� ����� �� ������������� ������� � �� �������� ���������������� ������.',
                 'A random answer does not predict the future or replace professional help.',
               ),
             ),

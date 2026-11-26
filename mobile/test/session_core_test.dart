@@ -338,7 +338,7 @@ void main() {
         return Admission.held;
       },
     );
-    const text = '  Not a real question.\nНе удалять отрицание.  ';
+    const text = '  Not a real question.\n�� ������� ���������.  ';
     f.session.edit(text, language: 'en');
     await f.session.confirm(f.session.review()!);
     expect(seenText, text);
@@ -726,6 +726,158 @@ void main() {
     },
   );
 
+  for (final diagnostic in [false, true]) {
+    final mode = diagnostic ? 'diagnostic' : 'real';
+
+    test('$mode small clock regression stays blocked until catch-up', () async {
+      final f = Fixture();
+      await f.start(diagnostic: diagnostic);
+      await f.pause();
+      // Equal samples are valid: native clocks are rounded to milliseconds.
+      await f.session.refresh();
+      expect(f.session.phase, SessionPhase.cooldown);
+      f.clock.advance(10000);
+      await f.session.refresh();
+      final left = f.session.remainingMs;
+      final saved = f.store.value, writes = f.store.writes.length;
+      final scheduled = f.notifications.pending;
+      final schedules = f.notifications.schedules;
+
+      f.clock.continuous -= 1;
+      await f.session.refresh();
+      expect(f.session.phase, SessionPhase.failed);
+      expect(f.session.edit('cannot bypass clock failure'), isFalse);
+      expect(await f.session.acknowledgeShown(), isFalse);
+      // Retrying the same controller must not forget the accepted sample.
+      await f.session.initialize();
+      expect(f.session.phase, SessionPhase.failed);
+      expect(f.store.value, saved);
+      expect(f.store.writes.length, writes);
+      expect(f.notifications.schedules, schedules);
+      expect(f.notifications.pending, same(scheduled));
+      expect(f.random.calls, 1);
+
+      f.clock.continuous += 1;
+      await f.session.initialize();
+      expect(f.session.phase, SessionPhase.cooldown);
+      expect(f.session.remainingMs, left);
+      expect(f.store.value, saved);
+      expect(f.store.writes.length, writes);
+      f.clock.advance(left - 1);
+      await f.session.refresh();
+      expect(f.session.remainingMs, 1);
+      f.clock.advance(1);
+      await f.session.refresh();
+      expect(f.session.phase, SessionPhase.ready);
+      expect(f.notifications.pending, isNull);
+      expect(f.random.calls, 1);
+    });
+
+    test('$mode clock regression after wall rebase preserves state', () async {
+      for (final shift in [-86400000, 86400000]) {
+        final f = Fixture();
+        await f.start(diagnostic: diagnostic);
+        await f.pause();
+        f.clock.advance(10000);
+        f.clock.utc += shift;
+        await f.session.refresh();
+        expect(f.session.phase, SessionPhase.cooldown);
+        expect(
+          f.store.record['utcDeadline'],
+          f.clock.utc + f.session.remainingMs,
+        );
+        final saved = f.store.value, writes = f.store.writes.length;
+        final schedules = f.notifications.schedules;
+        f.clock.continuous -= 1;
+        // Loading state again is also a clock observation, not a fresh owner.
+        await f.session.initialize();
+        expect(f.session.phase, SessionPhase.failed);
+        expect(f.store.value, saved);
+        expect(f.store.writes.length, writes);
+        expect(f.notifications.schedules, schedules);
+        expect(f.random.calls, 1);
+      }
+    });
+
+    test('$mode new clock domain accepts low uptime then guards it', () async {
+      final f = Fixture();
+      await f.start(diagnostic: diagnostic);
+      await f.pause();
+      final duration = f.session.currentPauseDurationMs;
+      f.clock.utc += 10000;
+      f.clock.continuous = 1000;
+      f.clock.boot = 'new-clock-domain';
+      await f.session.refresh();
+      expect(f.session.phase, SessionPhase.cooldown);
+      expect(f.session.remainingMs, duration - 10000);
+      expect(f.store.record['bootToken'], 'new-clock-domain');
+      f.clock.advance(1000);
+      await f.session.refresh();
+      final saved = f.store.value, writes = f.store.writes.length;
+      final schedules = f.notifications.schedules;
+      f.clock.continuous -= 1;
+      await f.session.refresh();
+      expect(f.session.phase, SessionPhase.failed);
+      expect(f.store.value, saved);
+      expect(f.store.writes.length, writes);
+      expect(f.notifications.schedules, schedules);
+      expect(f.random.calls, 1);
+    });
+
+    test('$mode failed rebase write retains the accepted clock sample', () async {
+      for (final committed in [false, true]) {
+        final f = Fixture();
+        await f.start(diagnostic: diagnostic);
+        await f.pause();
+        final deadline = f.store.record['continuousDeadline'];
+        f.clock.advance(10000);
+        f.clock.utc += 86400000;
+        f.store.failAt = f.store.writes.length + 1;
+        f.store.commitBeforeFailure = committed;
+        await f.session.refresh();
+        expect(f.session.phase, SessionPhase.failed);
+        final saved = f.store.value, writes = f.store.writes.length;
+        final schedules = f.notifications.schedules;
+
+        f.store.failAt = null;
+        f.clock.continuous -= 1;
+        await f.session.initialize();
+        expect(f.session.phase, SessionPhase.failed);
+        expect(f.store.value, saved);
+        expect(f.store.writes.length, writes);
+        expect(f.notifications.schedules, schedules);
+        expect(f.random.calls, 1);
+
+        f.clock.continuous += 1;
+        await f.session.initialize();
+        expect(f.session.phase, SessionPhase.cooldown);
+        expect(f.store.record['continuousDeadline'], deadline);
+        expect(
+          f.session.remainingMs,
+          f.session.currentPauseDurationMs - 10000,
+        );
+      }
+    });
+
+    test('$mode restored controller guards its first clock sample', () async {
+      final f = Fixture();
+      await f.start(diagnostic: diagnostic);
+      await f.pause();
+      f.clock.advance(10000);
+      await f.start(diagnostic: diagnostic);
+      expect(f.session.phase, SessionPhase.cooldown);
+      final saved = f.store.value, writes = f.store.writes.length;
+      final schedules = f.notifications.schedules;
+      f.clock.continuous -= 1;
+      await f.session.refresh();
+      expect(f.session.phase, SessionPhase.failed);
+      expect(f.store.value, saved);
+      expect(f.store.writes.length, writes);
+      expect(f.notifications.schedules, schedules);
+      expect(f.random.calls, 1);
+    });
+  }
+
   test(
     'unavailable clock after display preserves the same pending answer',
     () async {
@@ -844,7 +996,7 @@ void main() {
     await f.session.acknowledgeShown();
     expect(
       f.notifications.pending!.body,
-      'Вселенная снова готова тебя услышать',
+      '��������� ����� ������ ���� ��������',
     );
     expect(f.notifications.pending!.remainingMs, cooldownMs);
     expect(f.notifications.schedules, 1);
