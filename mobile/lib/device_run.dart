@@ -32,6 +32,8 @@ class DeviceRun {
       for (final (text, lang, expected) in samples) {
         if (!active()) throw StateError('Interrupted');
         final result = await inspect(text, lang);
+        // The app may become inactive while the final inference is in flight.
+        if (!active()) throw StateError('Interrupted');
         if (result.outcome != expected) throw StateError('Unexpected verdict');
         times.add(result.elapsedMs);
         maxRss = math.max(maxRss, result.rssBytes);

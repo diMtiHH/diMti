@@ -1,9 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'engine.dart';
 import 'device_run.dart';
+import 'device_report.dart';
 import 'worker.dart';
 
 void main() => runApp(const UniverseLab());
@@ -37,7 +40,7 @@ class _LabPageState extends State<LabPage> with WidgetsBindingObserver {
   final _worker = ModelWorker();
   bool _ru = true, _loading = true, _failed = false, _running = false;
   Reading? _result;
-  DeviceRun? _measurement;
+  DeviceReport? _report;
   int _generation = 0;
   String t(String ru, String en) => _ru ? ru : en;
 
@@ -86,6 +89,7 @@ class _LabPageState extends State<LabPage> with WidgetsBindingObserver {
     setState(() {
       _running = true;
       _result = null;
+      _report = null;
     });
     final request = _worker.inspect(_input.text, _ru ? 'ru' : 'en');
     _input.clear();
@@ -105,15 +109,29 @@ class _LabPageState extends State<LabPage> with WidgetsBindingObserver {
     setState(() {
       _running = true;
       _result = null;
-      _measurement = null;
+      _report = null;
     });
     try {
       final result = await DeviceRun.measure(
         _worker.inspect,
         () => mounted && generation == _generation,
       );
-      if (mounted && generation == _generation)
-        setState(() => _measurement = result);
+      if (mounted && generation == _generation) {
+        setState(
+          () => _report = DeviceReport(
+            measurement: result,
+            measuredAt: DateTime.now(),
+            loadMs: _worker.loadMs,
+            operatingSystem: Platform.operatingSystem,
+            operatingSystemVersion: Platform.operatingSystemVersion,
+            buildMode: kReleaseMode
+                ? 'release'
+                : kProfileMode
+                ? 'profile'
+                : 'debug',
+          ),
+        );
+      }
     } catch (_) {
       if (mounted && generation == _generation) {
         setState(
@@ -127,6 +145,25 @@ class _LabPageState extends State<LabPage> with WidgetsBindingObserver {
           _failed = !_worker.available;
         });
       }
+    }
+  }
+
+  Future<void> _copyReport() async {
+    final report = _report;
+    if (report == null || _running) return;
+    String message;
+    try {
+      await Clipboard.setData(ClipboardData(text: report.encode()));
+      message = t('Отчёт скопирован', 'Report copied');
+    } catch (_) {
+      message = t(
+        'Не удалось скопировать отчёт.',
+        'Could not copy the report.',
+      );
+    }
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -156,6 +193,7 @@ class _LabPageState extends State<LabPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final enabled = !_loading && !_failed && !_running;
+    final measurement = _report?.measurement;
     return Scaffold(
       appBar: AppBar(title: Text(t('Спроси Вселенную', 'Ask the Universe'))),
       body: SafeArea(
@@ -237,7 +275,7 @@ class _LabPageState extends State<LabPage> with WidgetsBindingObserver {
               onPressed: enabled ? _benchmark : null,
               child: Text(t('Замер на 20 примерах', 'Measure 20 checks')),
             ),
-            if (_measurement case final m?)
+            if (measurement case final m?) ...[
               Semantics(
                 liveRegion: true,
                 child: Text(
@@ -247,6 +285,17 @@ class _LabPageState extends State<LabPage> with WidgetsBindingObserver {
                   ),
                 ),
               ),
+              Text(
+                t(
+                  'Отчёт содержит только технические замеры. Текст вопросов не включается.',
+                  'The report contains technical measurements only. Question text is not included.',
+                ),
+              ),
+              TextButton(
+                onPressed: enabled ? _copyReport : null,
+                child: Text(t('Копировать отчёт', 'Copy report')),
+              ),
+            ],
             if (_result case final reading?) ...[
               const SizedBox(height: 16),
               Semantics(liveRegion: true, child: Text(_message(reading))),

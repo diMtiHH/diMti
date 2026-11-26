@@ -23,7 +23,7 @@ class Reading {
   ]);
 }
 
-const _hashes = {
+const modelAssetHashes = {
   'model.onnx':
       'ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665',
   'tokenizer.json':
@@ -50,8 +50,21 @@ class LocalEngine {
 
   static Future<LocalEngine> open(Directory assets) async {
     File file(String name) => File.fromUri(assets.uri.resolve(name));
-    for (final entry in _hashes.entries) {
-      final hash = await sha256.bind(file(entry.key).openRead()).single;
+    Uint8List? windowsGraph;
+    for (final entry in modelAssetHashes.entries) {
+      final asset = file(entry.key);
+      final Digest hash;
+      if (Platform.isWindows && entry.key == 'model.onnx') {
+        // onnxruntime_v2 1.23.2+2 passes a UTF-8 path to the Windows
+        // wide-character API. Give the runtime the verified graph bytes.
+        if (await asset.length() != 470268510) {
+          throw const FormatException('Model file size mismatch');
+        }
+        windowsGraph = await asset.readAsBytes();
+        hash = sha256.convert(windowsGraph);
+      } else {
+        hash = await sha256.bind(asset.openRead()).single;
+      }
       if (hash.toString() != entry.value) {
         throw const FormatException('Asset checksum mismatch');
       }
@@ -70,7 +83,9 @@ class LocalEngine {
     try {
       options.setIntraOpNumThreads(2);
       options.setInterOpNumThreads(1);
-      session = OrtSession.fromFile(file('model.onnx'), options);
+      session = windowsGraph == null
+          ? OrtSession.fromFile(file('model.onnx'), options)
+          : OrtSession.fromBuffer(windowsGraph, options);
       final inputs = session.inputNames.toSet();
       if (inputs.length != 3 ||
           !inputs.containsAll([
