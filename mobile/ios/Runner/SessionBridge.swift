@@ -91,9 +91,10 @@ final class SessionBridge {
     return value
   }
 
-  private func validateState(_ text: String) throws -> [String: Any] {
+  private func validateState(_ text: String, _ scope: String) throws -> [String: Any] {
     let value = try dictionary(text)
-    guard value["version"] as? Int == 1, let phase = value["phase"] as? String else { throw BridgeError.invalid }
+    guard let version = value["version"] as? Int, let phase = value["phase"] as? String,
+      version == 1 || (version == 2 && scope == "diagnostic" && phase == "cooldown") else { throw BridgeError.invalid }
     var keys: Set<String> = ["version", "phase"]
     switch phase {
     case "idle", "reserved": break
@@ -102,6 +103,10 @@ final class SessionBridge {
       guard ["yes", "no"].contains(value["answer"] as? String ?? "") else { throw BridgeError.invalid }
     case "cooldown":
       keys.formUnion(["utcDeadline", "continuousDeadline", "bootToken"])
+      if version == 2 {
+        keys.insert("durationMs")
+        guard value["durationMs"] as? Int64 == 60_000 else { throw BridgeError.invalid }
+      }
       guard let utc = value["utcDeadline"] as? Int64,
         let continuous = value["continuousDeadline"] as? Int64,
         utc >= 0, continuous >= 0, utc <= 9_007_199_254_740_991, continuous <= 9_007_199_254_740_991,
@@ -168,13 +173,14 @@ final class SessionBridge {
       throw BridgeError.invalid
     }
     guard let raw = try read(scope, "state") else { cancel(scope); return }
-    let state = try validateState(raw)
+    let state = try validateState(raw, scope)
     guard state["phase"] as? String == "cooldown" else { cancel(scope); return }
     let now = try clock()
     let sameBoot = state["bootToken"] as? String == now["bootToken"] as? String
     let deadline = state[sameBoot ? "continuousDeadline" : "utcDeadline"] as! Int64
     let current = now[sameBoot ? "continuousMs" : "utcMs"] as! Int64
-    let left = min(Int64(1_800_000), deadline - current)
+    let duration = state["durationMs"] as? Int64 ?? 1_800_000
+    let left = min(duration, deadline - current)
     guard left > 0 else { cancel(scope); return }
     let content = UNMutableNotificationContent()
     let ru = prefs["language"] as? String == "ru"
@@ -193,7 +199,7 @@ final class SessionBridge {
     case "readState": return try read(scope, "state")
     case "writeState":
       guard let value = args["value"] as? String else { throw BridgeError.invalid }
-      _ = try validateState(value)
+      _ = try validateState(value, scope)
       try write(scope, "state", value)
       return nil
     case "clock": return try clock()

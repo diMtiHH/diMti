@@ -143,15 +143,16 @@ void main() {
       await tester.tap(find.text('Показать сохранённый ответ'));
       await tester.pumpAndSettle();
       expect(find.text('НЕТ'), findsOneWidget);
-      expect(find.text('30:00'), findsOneWidget);
+      expect(find.text('1:00'), findsOneWidget);
+      expect(find.text('Тестовая пауза — одна минута'), findsOneWidget);
       expect(backend.value, contains('cooldown'));
       expect(backend.value, isNot(contains('answer')));
-      backend.utc += 60000;
-      backend.continuous += 60000;
+      backend.utc += 15000;
+      backend.continuous += 15000;
       await tester.pumpWidget(const SizedBox());
       await tester.pumpWidget(MaterialApp(home: page()));
       await tester.pumpAndSettle();
-      expect(find.text('29:00'), findsOneWidget);
+      expect(find.text('0:45'), findsOneWidget);
       expect(find.byKey(const ValueKey('answer')), findsNothing);
       expect(random.calls, 1);
       await tester.pumpWidget(const SizedBox());
@@ -188,6 +189,40 @@ void main() {
   });
 
   testWidgets(
+    'legacy diagnostic pause stays intact until explicit test reset',
+    (tester) async {
+      final backend = TestBackend(), random = TestRandom();
+      final old = QuestionSession(
+        store: backend,
+        clock: BackendClock(backend),
+        random: random,
+        validateQuestion: validateDiagnosticFixture,
+      );
+      await old.initialize();
+      old.edit(diagnosticFixture);
+      await old.confirm(old.review()!);
+      await old.acknowledgeShown();
+      await show(
+        tester,
+        SessionPage(diagnostic: true, backend: backend, random: random),
+      );
+      expect(find.text('30:00'), findsOneWidget);
+      expect(find.textContaining('Продолжается прежний тест'), findsOneWidget);
+      await tester.tap(find.text('Сбросить только тест'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Подготовить тестовый ответ'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Подтверждаю'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Показать сохранённый ответ'));
+      await tester.pumpAndSettle();
+      expect(find.text('1:00'), findsOneWidget);
+      expect(backend.resets, 1);
+      await tester.pumpWidget(const SizedBox());
+    },
+  );
+
+  testWidgets(
     'notification denial cannot start or reset a timer; locale preserves state',
     (tester) async {
       final backend = TestBackend()..denied = true;
@@ -208,7 +243,7 @@ void main() {
       expect(backend.value, saved);
       await tester.tap(find.text('Show saved answer'));
       await tester.pumpAndSettle();
-      expect(find.text('30:00'), findsOneWidget);
+      expect(find.text('1:00'), findsOneWidget);
       await tester.pumpWidget(const SizedBox());
     },
   );

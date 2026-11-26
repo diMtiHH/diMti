@@ -151,6 +151,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         return;
       }
       final session = QuestionSession(
+        diagnostic: widget.diagnostic,
         store: _backend,
         clock: BackendClock(_backend),
         random: widget.random ?? SystemAnswerSource(),
@@ -431,7 +432,19 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         return Column(
           children: [
             if (_visibleAnswer != null) _answer(_visibleAnswer!),
-            Text(t('Тридцать минут тишины', 'Thirty minutes of quiet')),
+            Text(
+              session.currentPauseDurationMs == diagnosticCooldownMs
+                  ? t('Тестовая пауза — одна минута', 'Test pause — one minute')
+                  : t('Тридцать минут тишины', 'Thirty minutes of quiet'),
+            ),
+            if (widget.diagnostic &&
+                session.currentPauseDurationMs == cooldownMs)
+              Text(
+                t(
+                  'Продолжается прежний тест. Для нового минутного теста нажми «Сбросить только тест».',
+                  'An earlier test is still running. Use Reset test only to start a new one-minute test.',
+                ),
+              ),
             Semantics(
               label: t('Осталось $time', '$time remaining'),
               child: Text(
@@ -449,8 +462,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             if (widget.diagnostic)
               Text(
                 t(
-                  'Один тестовый результат, сохранение и пауза 30 минут. Личные вопросы здесь не принимаются.',
-                  'One test result, persistence and a 30-minute pause. Personal questions are not accepted here.',
+                  'Один тестовый результат, сохранение и пауза 1 минута. Обычная пауза — 30 минут. Личные вопросы здесь не принимаются.',
+                  'One test result, persistence and a 1-minute pause. The normal pause is 30 minutes. Personal questions are not accepted here.',
                 ),
               )
             else

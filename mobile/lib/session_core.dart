@@ -53,6 +53,7 @@ class ClockSample {
 }
 
 const cooldownMs = 1800 * 1000;
+const diagnosticCooldownMs = 60 * 1000;
 const maxClockMs = 9007199254740991 - cooldownMs;
 
 abstract interface class SessionClock {
@@ -102,21 +103,24 @@ class _Record {
   final Answer? answer;
   final int? utcDeadline, continuousDeadline;
   final String? bootToken;
+  final int durationMs;
   const _Record(
     this.kind, {
     this.answer,
     this.utcDeadline,
     this.continuousDeadline,
     this.bootToken,
+    this.durationMs = cooldownMs,
   });
 
   String encode() => jsonEncode({
-    'version': 1,
+    'version': durationMs == diagnosticCooldownMs ? 2 : 1,
     'phase': kind.name,
     if (answer != null) 'answer': answer!.name,
     if (utcDeadline != null) 'utcDeadline': utcDeadline,
     if (continuousDeadline != null) 'continuousDeadline': continuousDeadline,
     if (bootToken != null) 'bootToken': bootToken,
+    if (durationMs == diagnosticCooldownMs) 'durationMs': durationMs,
   });
 
   static _Record decode(String? raw) {
@@ -124,11 +128,18 @@ class _Record {
     if (raw.length > 1024) throw const FormatException('Invalid state');
     final decoded = jsonDecode(raw);
     if (decoded is! Map<String, dynamic> ||
-        decoded['version'] != 1 ||
+        ![1, 2].contains(decoded['version']) ||
         decoded['version'] is! int) {
       throw const FormatException('Unsupported state');
     }
     final kind = _RecordKind.values.byName(decoded['phase'] as String);
+    final shortPause = decoded['version'] == 2;
+    if (shortPause &&
+        (kind != _RecordKind.cooldown ||
+            decoded['durationMs'] is! int ||
+            decoded['durationMs'] != diagnosticCooldownMs)) {
+      throw const FormatException('Invalid diagnostic timer');
+    }
     final expected = {
       'version',
       'phase',
@@ -137,6 +148,7 @@ class _Record {
         'utcDeadline',
         'continuousDeadline',
         'bootToken',
+        if (shortPause) 'durationMs',
       ],
     };
     if (decoded.keys.toSet().difference(expected).isNotEmpty ||
@@ -169,6 +181,7 @@ class _Record {
         utcDeadline: wall,
         continuousDeadline: continuous,
         bootToken: boot,
+        durationMs: shortPause ? diagnosticCooldownMs : cooldownMs,
       );
     }
     return _Record(kind);
@@ -196,6 +209,8 @@ class QuestionSession {
   final QuestionValidator validateQuestion;
   final PauseNotifications notifications;
   final Duration validationTimeout;
+  // Fixed fixture + isolated backend only. Real sessions always use the default.
+  final bool diagnostic;
   void Function()? onChanged;
 
   QuestionSession({
@@ -206,6 +221,7 @@ class QuestionSession {
     PauseNotifications? notifications,
     String initialLanguage = 'ru',
     this.validationTimeout = const Duration(seconds: 45),
+    this.diagnostic = false,
   }) : notifications = notifications ?? NoPauseNotifications(),
        _language = initialLanguage {
     if (initialLanguage != 'ru' && initialLanguage != 'en') {
@@ -223,6 +239,8 @@ class QuestionSession {
   int _remainingMs = 0;
   SessionPhase get phase => _phase;
   int get remainingMs => _remainingMs;
+  int get currentPauseDurationMs => _record.durationMs;
+  int get _newPauseDurationMs => diagnostic ? diagnosticCooldownMs : cooldownMs;
   bool get notificationFailed => _notificationFailed;
   String get draft => _draft;
   String get language => _language;
@@ -331,10 +349,10 @@ class QuestionSession {
     final left = sameBoot
         ? _record.continuousDeadline! - now.continuousMs
         : _record.utcDeadline! - now.utcMs;
-    if (sameBoot && left > cooldownMs) {
+    if (sameBoot && left > _record.durationMs) {
       throw const FormatException('Continuous clock moved backwards');
     }
-    _remainingMs = left.clamp(0, cooldownMs);
+    _remainingMs = left.clamp(0, _record.durationMs);
     if (remainingMs == 0) {
       // Availability changes only after the clear is durably acknowledged.
       await _save(const _Record(_RecordKind.idle));
@@ -350,6 +368,7 @@ class QuestionSession {
             utcDeadline: now.utcMs + remainingMs,
             continuousDeadline: now.continuousMs + remainingMs,
             bootToken: now.bootToken,
+            durationMs: _record.durationMs,
           ),
         );
         reconcile = true;
@@ -366,6 +385,9 @@ class QuestionSession {
     _phase = SessionPhase.loading;
     try {
       _record = _Record.decode(await store.read());
+      if (!diagnostic && _record.durationMs != cooldownMs) {
+        throw const FormatException('Diagnostic timer in real session');
+      }
       _remainingMs = 0;
       switch (_record.kind) {
         case _RecordKind.idle:
@@ -464,12 +486,13 @@ class QuestionSession {
       await _save(
         _Record(
           _RecordKind.cooldown,
-          utcDeadline: now.utcMs + cooldownMs,
-          continuousDeadline: now.continuousMs + cooldownMs,
+          utcDeadline: now.utcMs + _newPauseDurationMs,
+          continuousDeadline: now.continuousMs + _newPauseDurationMs,
           bootToken: now.bootToken,
+          durationMs: _newPauseDurationMs,
         ),
       );
-      _remainingMs = cooldownMs;
+      _remainingMs = _newPauseDurationMs;
       _phase = SessionPhase.cooldown;
       await _reconcileNotification();
       return true;

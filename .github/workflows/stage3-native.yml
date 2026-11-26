@@ -8,7 +8,7 @@ permissions:
 jobs:
   native:
     runs-on: macos-15-intel
-    timeout-minutes: 40
+    timeout-minutes: 55
     env:
       DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     steps:
@@ -21,7 +21,7 @@ jobs:
       - name: Prepare verified assets
         run: python3 -m research.prepare_mobile
       - name: Run native session and bundled model tests
-        timeout-minutes: 28
+        timeout-minutes: 42
         working-directory: mobile
         run: |
           xcodebuild -version
