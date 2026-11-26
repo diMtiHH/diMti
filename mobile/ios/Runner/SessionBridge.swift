@@ -3,7 +3,7 @@ import Flutter
 import Foundation
 import UserNotifications
 
-// Every operation, including asynchronous notification calls, is serialized.
+// Operations are serialized; every OS notification callback has a deadline.
 // Errors expose fixed codes only; paths, state and question text are never logged.
 @MainActor
 final class SessionBridge {
@@ -11,15 +11,14 @@ final class SessionBridge {
   private let center = UNUserNotificationCenter.current()
   private let fileManager = FileManager.default
   private let channel: FlutterMethodChannel
-  // KERN_BOOTTIME is a documented timestamp, not a boot UUID. Cache it for
-  // this process so a wall-clock edit cannot change the active clock domain.
-  // Across process restarts it can change after a clock edit as well as reboot;
-  // that deliberately takes the core's bounded UTC recovery path (see STAGE_3).
-  private static var processClockDomain: String?
+  private static var processClock: ClockDomain?
+  // An add with an unknown outcome fences further adds for this scope until
+  // its late callback has cancelled that request. Cancel/reset remain usable.
+  private let delivery = NotificationDelivery()
   private var englishNoticeApproved: Bool {
     Bundle.main.object(forInfoDictionaryKey: "UniverseEnglishNoticeApproved") as? Bool == true
   }
-  private enum BridgeError: Error { case invalid, storage, clock }
+  private enum BridgeError: Error { case invalid, storage, clock, notification }
 
   init(messenger: FlutterBinaryMessenger) {
     channel = FlutterMethodChannel(name: "app.asktheuniverse/session.v1", binaryMessenger: messenger)
@@ -34,6 +33,7 @@ final class SessionBridge {
           switch error {
           case BridgeError.clock: code = "clock_unavailable"
           case BridgeError.invalid: code = "invalid_state"
+          case BridgeError.notification, is CallbackDeadline, is NotificationDeliveryError: code = "notification_unavailable"
           default: code = "storage_unavailable"
           }
           result(FlutterError(code: code, message: nil, details: nil))
@@ -118,18 +118,18 @@ final class SessionBridge {
   }
 
   private func clock() throws -> [String: Any] {
-    if Self.processClockDomain == nil {
-      var boot = timeval()
-      var size = MemoryLayout<timeval>.size
-      var mib: [Int32] = [CTL_KERN, KERN_BOOTTIME]
-      let status = mib.withUnsafeMutableBufferPointer { buffer in
-        sysctl(buffer.baseAddress, UInt32(buffer.count), &boot, &size, nil, 0)
+    let domain: String
+    do {
+      if Self.processClock == nil {
+        let support = try fileManager.url(for: .applicationSupportDirectory,
+          in: .userDomainMask, appropriateFor: nil, create: true)
+        Self.processClock = ClockDomain(directory: support
+          .appendingPathComponent("UniverseSessionV1", isDirectory: true)
+          .appendingPathComponent("clock", isDirectory: true))
       }
-      guard status == 0, size == MemoryLayout<timeval>.size,
-        boot.tv_sec > 0, boot.tv_usec >= 0, boot.tv_usec < 1_000_000 else { throw BridgeError.clock }
-      Self.processClockDomain = "boottime-v1:\(boot.tv_sec):\(boot.tv_usec)"
-    }
-    guard let domain = Self.processClockDomain else { throw BridgeError.clock }
+      guard let clock = Self.processClock else { throw BridgeError.clock }
+      domain = try clock.token()
+    } catch { throw BridgeError.clock }
     var info = mach_timebase_info_data_t()
     guard mach_timebase_info(&info) == KERN_SUCCESS, info.denom != 0 else { throw BridgeError.clock }
     let milliseconds = Double(mach_continuous_time()) * Double(info.numer) / Double(info.denom) / 1_000_000
@@ -166,8 +166,11 @@ final class SessionBridge {
   private func schedule(_ scope: String) async throws {
     let prefs = try preferences(scope)
     if prefs["language"] as? String == "en" && !englishNoticeApproved { cancel(scope); return }
-    let settings = await center.notificationSettings()
     guard prefs["notifications"] as? Bool == true else { cancel(scope); return }
+    guard delivery.isAvailable(scope) else { throw BridgeError.notification }
+    let settings = try await BoundedCallback<UNNotificationSettings>.wait(seconds: 2) { reply in
+      center.getNotificationSettings { reply(.success($0)) }
+    }
     guard [.authorized, .provisional, .ephemeral].contains(settings.authorizationStatus) else {
       cancel(scope)
       throw BridgeError.invalid
@@ -189,7 +192,12 @@ final class SessionBridge {
     content.sound = .default
     let request = UNNotificationRequest(identifier: notificationID(scope), content: content,
       trigger: UNTimeIntervalNotificationTrigger(timeInterval: max(1, Double(left) / 1000), repeats: false))
-    try await center.add(request)
+    try await delivery.add(scope, cancel: { [self] in cancel(scope) }) { reply in
+      center.add(request) { error in
+        if let error = error { reply(.failure(error)) }
+        else { reply(.success(())) }
+      }
+    }
   }
 
   private func perform(_ call: FlutterMethodCall) async throws -> Any? {
@@ -221,7 +229,14 @@ final class SessionBridge {
       var prefs = try preferences(scope)
       if enabled && prefs["language"] as? String == "en" && !englishNoticeApproved { return false }
       var granted = false
-      if enabled { granted = try await center.requestAuthorization(options: [.alert, .sound]) }
+      if enabled {
+        granted = try await BoundedCallback<Bool>.wait(seconds: 60) { reply in
+          center.requestAuthorization(options: [.alert, .sound]) { granted, error in
+            if let error = error { reply(.failure(error)) }
+            else { reply(.success(granted)) }
+          }
+        }
+      }
       prefs["notifications"] = enabled && granted
       try savePreferences(scope, prefs)
       if enabled && granted { try await schedule(scope) } else { cancel(scope) }

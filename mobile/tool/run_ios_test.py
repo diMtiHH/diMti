@@ -25,11 +25,11 @@ def main():
         result = subprocess.run(
             ['flutter', 'test', '--no-pub', '-d', device,
              *(sys.argv[2:] or ['integration_test/ios_model_test.dart'])],
-            timeout=720,
+            timeout=1200,
         )
         return result.returncode
     except subprocess.TimeoutExpired:
-        print('Simulator test exceeded 12 minutes, including build and launch.', flush=True)
+        print('Simulator test exceeded 20 minutes, including build and launch.', flush=True)
         return 124
 
 

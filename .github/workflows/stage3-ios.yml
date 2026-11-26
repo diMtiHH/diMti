@@ -11,6 +11,8 @@ jobs:
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Test clock crash recovery and notification deadlines
+        run: bash mobile/tool/run_native_safety.sh
       - name: Install pinned Flutter SDK
         run: |
           git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"

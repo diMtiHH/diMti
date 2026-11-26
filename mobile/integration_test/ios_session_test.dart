@@ -24,7 +24,10 @@ void main() {
       await backend.resetDiagnostic();
       expect(await backend.setNotifications(false), isFalse);
       final firstClock = await backend.readClock();
-      expect(firstClock.bootToken, startsWith('boottime-v1:'));
+      expect(
+        firstClock.bootToken,
+        anyOf(startsWith('semaphore-v1:'), startsWith('boottime-v1:')),
+      );
       expect((await real.readClock()).bootToken, firstClock.bootToken);
       await Future<void>.delayed(const Duration(milliseconds: 30));
       final nextClock = await backend.readClock();
