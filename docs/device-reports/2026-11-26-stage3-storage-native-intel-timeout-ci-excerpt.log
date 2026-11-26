@@ -1,0 +1,17 @@
+# CI excerpt — Intel session repeat timed out before test results
+run: https://github.com/diMtiHH/diMti/actions/runs/45889100129
+job: 140147053110 (iOS session)
+commit: b1ca816bb23090c385f44e3c68bda811a3be97bb
+Result: host native checks passed; test app built, installed and launched.
+Flutter waited for VM service discovery until the 20-minute build/launch limit.
+No session test result was reported in this job. Exact cause is not established.
+The 2 session cases passed earlier in job 140131893541 with identical application source.
+The independent model job 140147052811 passed; the overall workflow still failed.
+
+2026-11-26T20:11:13.9830320Z Native safety checks: 16/16 passed
+2026-11-26T20:11:21.9295750Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T20:25:10.1980770Z [   +3 ms] Xcode build done.                                           345.9s
+2026-11-26T20:26:05.1102460Z [        ] Waiting for VM Service port to be available...
+2026-11-26T20:35:50.0304630Z Simulator test exceeded 20 minutes, including build and launch.
+2026-11-26T20:35:50.1248790Z ##[error]Process completed with exit code 124.
+

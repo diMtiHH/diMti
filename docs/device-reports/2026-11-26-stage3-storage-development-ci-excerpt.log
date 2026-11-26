@@ -1,0 +1,19 @@
+Early development attempts; neither produced an IPA.
+
+Run: https://github.com/diMtiHH/diMti/actions/runs/45880124896
+Commit: 806b32bc393d54e918ac26f7f0e2bed703286db7
+2026-11-26T18:59:17.3471710Z Swift/ErrorType.swift:254: Fatal error: Error raised at top level: Error Domain=NSCocoaErrorDomain Code=4 "The file “state.json” doesn’t exist."
+2026-11-26T18:59:17.3566270Z ##[error]Process completed with exit code 133.
+
+Run: https://github.com/diMtiHH/diMti/actions/runs/45880346839
+Commit: 6241ecfd00d71dab76bebe7ec13985740776e4b6
+2026-11-26T19:01:01.0920140Z PASS storage 1: shared Dart/Swift state contract: 71 cases; rejected input preserves bytes
+2026-11-26T19:01:01.0921140Z PASS storage 2: notification preference and channel switch require actual booleans
+2026-11-26T19:01:01.0949360Z PASS storage 3: invalid preferences cannot overwrite saved opt-in
+2026-11-26T19:01:05.7878380Z PASS storage 4: 40 process exits across 5 write checkpoints and both scopes
+2026-11-26T19:01:05.7932290Z PASS storage 5: first uncommitted reservation is never loaded from staging
+2026-11-26T19:01:05.7961120Z PASS storage 6: error after rename propagates; reload recovers the committed timer
+2026-11-26T19:01:05.8018500Z PASS storage 7: corrupt, invalid UTF-8 and oversized committed files never use pending data
+2026-11-26T19:01:05.8051710Z PASS storage 8: diagnostic reset isolation and answer removal in committed cooldown
+2026-11-26T19:01:05.8072700Z Swift/ErrorType.swift:254: Fatal error: Error raised at top level: main.SessionDataError.invalid
+2026-11-26T19:01:05.8245400Z ##[error]Process completed with exit code 133.

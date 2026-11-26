@@ -1,0 +1,19 @@
+# CI excerpt — integration attempt stopped before results
+run: https://github.com/diMtiHH/diMti/actions/runs/45880867908
+job: 140119585393
+commit: af55801a878e88cc2d2896d7880b947541299e32
+runner: macos-15-intel; Xcode 16.4; iPhone 16 / iOS 18.5
+Result: timeout (124) after a successful Xcode build; no integration test results.
+The last non-verbose output does not identify the exact launch stage that stalled.
+Model integration step skipped. This run is not counted as passed.
+
+2026-11-26T19:04:56.3283660Z Native safety checks: 16/16 passed
+2026-11-26T19:05:02.4468540Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T19:05:18.1184590Z Xcode 16.4
+2026-11-26T19:05:18.1185190Z Build version 16F6
+2026-11-26T19:05:18.4398840Z Downloading Darwin x64 Dart SDK from Flutter engine 4d35714800b9266b6693a58e1225ecd7e9e45ed7...
+2026-11-26T19:14:41.2351970Z Xcode build done.                                           125.4s
+2026-11-26T19:29:39.2329630Z Simulator test exceeded 20 minutes, including build and launch.
+2026-11-26T19:29:39.2627320Z ##[error]Process completed with exit code 124.
+2026-11-26T19:29:41.1256150Z Terminate orphan process: pid (22491) (simctl)
+

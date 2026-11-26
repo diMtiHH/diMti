@@ -1,0 +1,15 @@
+# CI excerpt — isolated ARM session runner failed before application launch
+run: https://github.com/diMtiHH/diMti/actions/runs/45887226579
+job: 140140828420 (iOS session)
+commit: d271ab7bc495afe93ca8c51b1efd0d5a82cbd18b
+Result: host native checks passed; simulator boot timed out, then shutdown timed out.
+No Flutter build or application test was run in this job.
+The launcher now prints available boot output and handles shutdown timeout explicitly.
+
+2026-11-26T19:55:47.0973750Z Native safety checks: 16/16 passed
+2026-11-26T19:55:54.9123500Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T20:03:24.1362450Z Simulator boot timed out.
+2026-11-26T20:03:24.4657550Z Restarting simulator after unsuccessful boot.
+2026-11-26T20:04:51.8034230Z subprocess.TimeoutExpired: Command '['xcrun', 'simctl', 'shutdown', '<simulator>']' timed out after 60 seconds
+2026-11-26T20:04:57.1218220Z ##[error]Process completed with exit code 1.
+

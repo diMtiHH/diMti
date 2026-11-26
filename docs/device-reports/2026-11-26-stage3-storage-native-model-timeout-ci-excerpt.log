@@ -1,0 +1,16 @@
+# CI excerpt — isolated ARM model launch timed out
+run: https://github.com/diMtiHH/diMti/actions/runs/45887226579
+job: 140140828726 (iOS model)
+commit: d271ab7bc495afe93ca8c51b1efd0d5a82cbd18b
+Result: host native checks passed; model app built, installed and launched.
+Flutter then waited for VM service discovery until the 20-minute build/launch limit.
+No model test result was produced. Fresh simulator alone did not resolve this stall.
+Exact cause of the absent VM service connection is not established.
+
+2026-11-26T19:55:48.2202650Z Native safety checks: 16/16 passed
+2026-11-26T19:55:55.1812240Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T20:07:27.8847040Z [   +3 ms] Xcode build done.                                           188.6s
+2026-11-26T20:08:38.2152170Z [ +164 ms] Waiting for VM Service port to be available...
+2026-11-26T20:19:41.1627330Z Simulator test exceeded 20 minutes, including build and launch.
+2026-11-26T20:19:41.2876350Z ##[error]Process completed with exit code 124.
+

@@ -1,0 +1,17 @@
+# CI excerpt — model integration passed on Intel
+run: https://github.com/diMtiHH/diMti/actions/runs/45889100129
+job: 140147052811 (iOS model)
+commit: b1ca816bb23090c385f44e3c68bda811a3be97bb
+application source: af55801a878e88cc2d2896d7880b947541299e32 (same as IPA)
+Only workflow and test-launch helper differ from the application commit.
+runner: macos-15-intel; Xcode 16.4; iPhone 16 / iOS 18.5
+Result: 1/1 model integration test passed; model load, RU check and 20 bilingual checks.
+
+2026-11-26T20:11:02.2499030Z Native safety checks: 16/16 passed
+2026-11-26T20:11:09.4309710Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T20:11:39.9343780Z Xcode 16.4
+2026-11-26T20:11:39.9357930Z Build version 16F6
+2026-11-26T20:25:36.9730950Z [   +3 ms] Xcode build done.                                           213.3s
+2026-11-26T20:26:22.8020640Z 00:00 +0: iOS Runner loads the bundled model and checks RU and EN
+2026-11-26T20:27:04.4178940Z 00:44 +1: All tests passed!
+

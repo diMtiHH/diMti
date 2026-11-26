@@ -1,0 +1,39 @@
+Run: https://github.com/diMtiHH/diMti/actions/runs/45880868027
+Commit: af55801a878e88cc2d2896d7880b947541299e32
+Result: success
+2026-11-26T19:04:55.2887160Z PASS 1: commit token before creating kernel marker
+2026-11-26T19:04:55.2999560Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-26T19:04:55.3072820Z PASS 3: simulated reboot rotates token
+2026-11-26T19:04:55.3074280Z PASS 4: failed write recovery
+2026-11-26T19:04:55.3075550Z PASS 5: ambiguous committed write recovery
+2026-11-26T19:04:55.3081760Z PASS 6: crash between persisted token and kernel creation
+2026-11-26T19:04:55.3083510Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-26T19:04:55.3084180Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-26T19:04:55.3084980Z PASS 9: strict private marker validation
+2026-11-26T19:04:55.3086010Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-26T19:04:55.3086740Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-26T19:04:55.3087780Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-26T19:04:55.3093830Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-26T19:04:55.3094660Z PASS 14: notification callback success/error and duplicate completion
+2026-11-26T19:04:55.3095600Z PASS 15: missing OS callback releases the serial queue
+2026-11-26T19:04:55.3096600Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-26T19:04:55.3097500Z Native safety checks: 16/16 passed
+2026-11-26T19:04:57.5118780Z PASS storage 1: shared Dart/Swift state contract: 74 cases; rejected input preserves bytes
+2026-11-26T19:04:57.5120770Z PASS storage 2: notification preference and channel switch require actual booleans
+2026-11-26T19:04:57.5150510Z PASS storage 3: invalid preferences cannot overwrite saved opt-in
+2026-11-26T19:05:02.1517170Z PASS storage 4: 40 process exits across 5 write checkpoints and both scopes
+2026-11-26T19:05:02.1548990Z PASS storage 5: first uncommitted reservation is never loaded from staging
+2026-11-26T19:05:02.1580500Z PASS storage 6: error after rename propagates; reload recovers the committed timer
+2026-11-26T19:05:02.1662150Z PASS storage 7: corrupt, invalid UTF-8 and oversized committed files never use pending data
+2026-11-26T19:05:02.1706610Z PASS storage 8: diagnostic reset isolation and answer removal in committed cooldown
+2026-11-26T19:05:02.1714060Z PASS storage 9: ambiguous preferences rejected; canonical state committed without leftover staging
+2026-11-26T19:05:02.1722480Z PASS storage 10: both private scope directories excluded from backup
+2026-11-26T19:05:02.1746940Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T19:05:13.2448970Z Xcode 26.6
+2026-11-26T19:05:13.2472030Z Build version 17F113
+2026-11-26T19:06:21.9349600Z No issues found! (ran in 10.9s)
+2026-11-26T19:09:07.4275390Z Xcode build done.                                           110.3s
+2026-11-26T19:09:18.1349800Z model.onnx: verified in Runner.app
+2026-11-26T19:09:18.1465900Z tokenizer.json: verified in Runner.app
+2026-11-26T19:09:18.1568840Z head.json: verified in Runner.app
+2026-11-26T19:09:18.1669130Z App bytes: 533199359

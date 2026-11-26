@@ -1,0 +1,193 @@
+{
+  "protocol": "stage3-build-v1",
+  "version": "0.3.4",
+  "build": "6",
+  "diagnostic_cooldown_ms": 60000,
+  "real_cooldown_ms": 1800000,
+  "admission": "closed",
+  "local_analysis": "passed",
+  "local_tests_passed": 137,
+  "local_tests_seconds": 31,
+  "local_test_log": "setup-windows-stage3-storage.log",
+  "commit": "af55801a878e88cc2d2896d7880b947541299e32",
+  "tree": "d1d641168115cad7c61d11737aca53b58b84e65a",
+  "release_run_id": 45880868027,
+  "release_job_id": 140119585823,
+  "native_run_id": 45889100129,
+  "release_workflow_status": "success",
+  "native_test_status": "all_three_cases_passed_across_runs_with_launch_timeouts",
+  "native_early_checks": "16 safety and 10 storage groups passed in Release and all native jobs for final application source",
+  "native_safety_checks_passed": 16,
+  "native_storage_checks_passed": 10,
+  "shared_contract_cases": 74,
+  "process_interruptions": 40,
+  "storage_read_limit_bytes": 2049,
+  "storage_valid_file_limit_bytes": 2048,
+  "physical_test_status": "deferred_by_user",
+  "last_independently_confirmed_installed_version": "0.3.1 (3)",
+  "english_notifications_approved": false,
+  "limitations": [
+    "Process interruption tests do not simulate loss of power",
+    "Physical privacy/backup audit not performed",
+    "Clock fallback and reboot UTC limitations remain",
+    "iOS integration launch remains unstable in CI; 3 case passes come from separate runs, latest workflow failed before session results"
+  ],
+  "superseded_attempts": [
+    {
+      "commit": "806b32bc393d54e918ac26f7f0e2bed703286db7",
+      "release_run": 45880124896,
+      "native_run": 45880125011,
+      "result": "early test failure before Flutter build",
+      "reason": "FileHandle missing file returned Cocoa code 4 rather than read code 260; fixed with POSIX ENOENT"
+    },
+    {
+      "commit": "6241ecfd00d71dab76bebe7ec13985740776e4b6",
+      "release_run": 45880346839,
+      "native_run": 45880346859,
+      "result": "early test failure before Flutter build",
+      "reason": "duplicate-key parsing differed; now rejected by both Dart and Swift"
+    }
+  ],
+  "release_build_status": "success",
+  "artifact_id": 15148160507,
+  "artifact_zip_sha256": "6a00119d6dd25bc242ce3ed82eb7a2651bbf433e4c1622c3877dc37d32270409",
+  "ipa_path": "C:\\Users\\user\\Downloads\\Ask-the-Universe-Stage3-0.3.4\\Ask-the-Universe-0.3.4-build6.ipa",
+  "ipa_sha256": "321f5368bfc8fdff3a83345a856a41bedd8efdbd5ce5945e356939060f2766f7",
+  "ipa_bytes": 295627228,
+  "app_bytes": 533199359,
+  "assets_sha256": {
+    "model.onnx": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665",
+    "tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+    "head.json": "fc3593cfabdc324d4e37b69c4fd49749e957bb582e42367fcbcb7692feab8ea9"
+  },
+  "verified": [
+    "container digest",
+    "IPA checksum",
+    "ZIP CRC",
+    "source commit",
+    "version and build",
+    "iPhoneOS",
+    "model asset hashes",
+    "privacy manifest",
+    "English notification gate false",
+    "denied sysctl string absent from Runner executable"
+  ],
+  "release_log": "2026-11-26-stage3-storage-release-ci-excerpt.log",
+  "development_log": "2026-11-26-stage3-storage-development-ci-excerpt.log",
+  "native_attempts": [
+    {
+      "run_id": 45880867908,
+      "job_id": 140119585393,
+      "commit": "af55801a878e88cc2d2896d7880b947541299e32",
+      "runner": "macos-15-intel",
+      "status": "timeout",
+      "exit_code": 124,
+      "integration_results": 0,
+      "note": "Xcode build completed; no integration test result before launch/build timeout; model step skipped",
+      "log": "2026-11-26-stage3-storage-native-timeout-ci-excerpt.log"
+    },
+    {
+      "run_id": 45884551099,
+      "job_id": 140131893541,
+      "commit": "747538423c1844795eb6274fbc8fcc47028156d4",
+      "runner": "macos-15",
+      "status": "failure",
+      "application_source_equal_to_ipa": true,
+      "source_diff": [
+        ".github/workflows/stage3-native.yml",
+        "mobile/tool/run_ios_test.py"
+      ],
+      "session_step_status": "success",
+      "model_step_status": "timeout_without_test_result",
+      "integration_tests_passed": 2,
+      "note": "Second app built, installed and launched, but VM service connection was not discovered before 12-minute step timeout; no model result",
+      "log": "2026-11-26-stage3-storage-native-retry-ci-excerpt.log"
+    },
+    {
+      "run_id": 45887226579,
+      "commit": "d271ab7bc495afe93ca8c51b1efd0d5a82cbd18b",
+      "runner": "macos-15",
+      "status": "failure",
+      "strategy": "separate fresh runner and simulator per session/model suite",
+      "application_source_equal_to_ipa": true,
+      "source_diff": [
+        ".github/workflows/stage3-native.yml",
+        "mobile/tool/run_ios_test.py"
+      ],
+      "session_job_id": 140140828420,
+      "model_job_id": 140140828726,
+      "session_step_status": "simulator_boot_and_shutdown_timeout_before_flutter",
+      "session_log": "2026-11-26-stage3-storage-native-boot-ci-excerpt.log",
+      "model_step_status": "vm_service_timeout_without_test_result",
+      "model_log": "2026-11-26-stage3-storage-native-model-timeout-ci-excerpt.log"
+    },
+    {
+      "run_id": 45889100129,
+      "commit": "b1ca816bb23090c385f44e3c68bda811a3be97bb",
+      "runner": "macos-15-intel",
+      "status": "failure",
+      "strategy": "fresh headless simulator per suite; explicit shutdown-timeout reporting",
+      "application_source_equal_to_ipa": true,
+      "source_diff": [
+        ".github/workflows/stage3-native.yml",
+        "mobile/tool/run_ios_test.py"
+      ],
+      "model_job_id": 140147052811,
+      "session_job_id": 140147053110,
+      "model_step_status": "success",
+      "model_tests_passed": 1,
+      "session_step_status": "vm_service_timeout_without_test_result",
+      "model_log": "2026-11-26-stage3-storage-model-ci-excerpt.log",
+      "session_log": "2026-11-26-stage3-storage-native-intel-timeout-ci-excerpt.log",
+      "session_tests_reported": 0
+    }
+  ],
+  "local_source_verification": {
+    "files_checked": 54,
+    "result": "matches IPA commit",
+    "comparison": "Git blob bytes; engine.dart differs only by existing CRLF line endings"
+  },
+  "launcher_local_checks": {
+    "passed": 3,
+    "method": "mocked subprocess results",
+    "cases": [
+      "boot and shutdown timeouts never execute Flutter",
+      "Flutter failure exit code preserved",
+      "Flutter success exit code preserved"
+    ]
+  },
+  "native_session_tests_passed": 2,
+  "native_model_tests_passed": 1,
+  "native_integration_tests_passed": 3,
+  "native_session_result_source": {
+    "run_id": 45884551099,
+    "job_id": 140131893541,
+    "commit": "747538423c1844795eb6274fbc8fcc47028156d4",
+    "log": "2026-11-26-stage3-storage-native-retry-ci-excerpt.log"
+  },
+  "native_model_result_source": {
+    "run_id": 45889100129,
+    "job_id": 140147052811,
+    "commit": "b1ca816bb23090c385f44e3c68bda811a3be97bb",
+    "log": "2026-11-26-stage3-storage-model-ci-excerpt.log"
+  },
+  "native_job_ids": {
+    "model": 140147052811,
+    "session_repeat": 140147053110
+  },
+  "native_workflow_status": "failure",
+  "native_all_cases_passed_in_one_workflow_run": false,
+  "native_source_diff_from_ipa": [
+    ".github/workflows/stage3-native.yml",
+    "mobile/tool/run_ios_test.py"
+  ],
+  "native_launch_issue": {
+    "status": "open",
+    "observed": [
+      "simulator boot/shutdown timeout",
+      "VM service discovery timeout after build/install/launch"
+    ],
+    "exact_vm_service_cause_established": false,
+    "timeouts_are_not_counted_as_passes": true
+  }
+}

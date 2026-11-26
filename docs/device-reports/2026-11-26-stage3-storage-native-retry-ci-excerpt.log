@@ -1,0 +1,24 @@
+# CI excerpt — session passed; model launch timed out
+run: https://github.com/diMtiHH/diMti/actions/runs/45884551099
+job: 140131893541
+commit: 747538423c1844795eb6274fbc8fcc47028156d4
+runner: macos-15 ARM; Xcode 16.4; iPhone 16 / iOS 18.5
+Result: 16/16 safety + 10/10 storage groups + 2/2 session integration tests passed.
+Second test app was built, installed and launched, then Flutter waited for the VM service.
+No model test result was produced before the 12-minute step timeout.
+Exact cause of VM-service discovery failure is not established by this log.
+
+2026-11-26T19:33:57.1786050Z Native safety checks: 16/16 passed
+2026-11-26T19:34:02.9981740Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-26T19:34:16.8379500Z Xcode 16.4
+2026-11-26T19:34:16.8380390Z Build version 16F6
+2026-11-26T19:34:16.8414900Z arm64
+2026-11-26T19:40:43.0745350Z [   +4 ms] Xcode build done.                                           126.0s
+2026-11-26T19:41:21.1537650Z [   +2 ms] Waiting for VM Service port to be available...
+2026-11-26T19:41:22.4343530Z 00:00 +0: native iOS storage, clock and notification cancellation preserve recovery
+2026-11-26T19:41:23.3844910Z 00:00 +1: native invalid records and malformed settings preserve saved state
+2026-11-26T19:41:28.5474100Z 00:06 +2: All tests passed!
+2026-11-26T19:42:52.7489300Z [   +3 ms] Xcode build done.                                           56.1s
+2026-11-26T19:43:07.7397140Z [  +16 ms] Waiting for VM Service port to be available...
+2026-11-26T19:53:41.7613170Z ##[error]The action 'Test bundled model in Russian and English' has timed out after 12 minutes.
+
