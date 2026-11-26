@@ -23,7 +23,7 @@ def main():
         subprocess.run(['xcrun', 'simctl', 'shutdown', device], timeout=60, check=False)
     try:
         result = subprocess.run(
-            ['flutter', 'test', '--no-pub', '-d', device,
+            ['flutter', 'test', '--verbose', '--reporter', 'expanded', '--no-pub', '-d', device,
              *(sys.argv[2:] or ['integration_test/ios_model_test.dart'])],
             timeout=1200,
         )

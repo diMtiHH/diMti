@@ -1,0 +1,446 @@
+[
+  {
+    "name": "idle",
+    "scope": "real",
+    "raw": "{\"version\":1,\"phase\":\"idle\"}",
+    "valid": true
+  },
+  {
+    "name": "reserved",
+    "scope": "real",
+    "raw": "{\"version\":1,\"phase\":\"reserved\"}",
+    "valid": true
+  },
+  {
+    "name": "pending yes",
+    "scope": "real",
+    "raw": "{\"version\":1,\"phase\":\"pending\",\"answer\":\"yes\"}",
+    "valid": true
+  },
+  {
+    "name": "pending no",
+    "scope": "real",
+    "raw": "{\"version\":1,\"phase\":\"pending\",\"answer\":\"no\"}",
+    "valid": true
+  },
+  {
+    "name": "legacy 30 minute cooldown",
+    "scope": "real",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": true
+  },
+  {
+    "name": "minute cooldown",
+    "scope": "real",
+    "raw": "{\"version\":2,\"phase\":\"cooldown\",\"utcDeadline\":160000,\"continuousDeadline\":160000,\"bootToken\":\"fixture-boot\",\"durationMs\":60000}",
+    "valid": false
+  },
+  {
+    "name": "maximum safe deadlines",
+    "scope": "real",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":9007199254740991,\"continuousDeadline\":9007199254740991,\"bootToken\":\"fixture-boot\"}",
+    "valid": true
+  },
+  {
+    "name": "idle",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"idle\"}",
+    "valid": true
+  },
+  {
+    "name": "reserved",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"reserved\"}",
+    "valid": true
+  },
+  {
+    "name": "pending yes",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"pending\",\"answer\":\"yes\"}",
+    "valid": true
+  },
+  {
+    "name": "pending no",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"pending\",\"answer\":\"no\"}",
+    "valid": true
+  },
+  {
+    "name": "legacy 30 minute cooldown",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": true
+  },
+  {
+    "name": "minute cooldown",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"cooldown\",\"utcDeadline\":160000,\"continuousDeadline\":160000,\"bootToken\":\"fixture-boot\",\"durationMs\":60000}",
+    "valid": true
+  },
+  {
+    "name": "maximum safe deadlines",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":9007199254740991,\"continuousDeadline\":9007199254740991,\"bootToken\":\"fixture-boot\"}",
+    "valid": true
+  },
+  {
+    "name": "invalid root or version 14",
+    "scope": "diagnostic",
+    "raw": "null",
+    "valid": false
+  },
+  {
+    "name": "invalid root or version 15",
+    "scope": "diagnostic",
+    "raw": "[]",
+    "valid": false
+  },
+  {
+    "name": "invalid root or version 16",
+    "scope": "diagnostic",
+    "raw": "{}",
+    "valid": false
+  },
+  {
+    "name": "invalid root or version 17",
+    "scope": "diagnostic",
+    "raw": "{",
+    "valid": false
+  },
+  {
+    "name": "invalid root or version 18",
+    "scope": "diagnostic",
+    "raw": "{\"version\":true,\"phase\":\"idle\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid root or version 19",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1.0,\"phase\":\"idle\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid root or version 20",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1e0,\"phase\":\"idle\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid root or version 21",
+    "scope": "diagnostic",
+    "raw": "{\"version\":0,\"phase\":\"idle\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid root or version 22",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"unknown\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid utcDeadline 23",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":true,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid utcDeadline 24",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":false,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid utcDeadline 25",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":-1,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid utcDeadline 26",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1.25,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid utcDeadline 27",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1.0,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid utcDeadline 28",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":null,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid utcDeadline 29",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":\"1900000\",\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid utcDeadline 30",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":9007199254740992,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid continuousDeadline 31",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":true,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid continuousDeadline 32",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":false,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid continuousDeadline 33",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":-1,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid continuousDeadline 34",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1.25,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid continuousDeadline 35",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1.0,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid continuousDeadline 36",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":null,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid continuousDeadline 37",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":\"1900000\",\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid continuousDeadline 38",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":9007199254740992,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid short duration 39",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"cooldown\",\"utcDeadline\":160000,\"continuousDeadline\":160000,\"bootToken\":\"fixture-boot\",\"durationMs\":true}",
+    "valid": false
+  },
+  {
+    "name": "invalid short duration 40",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"cooldown\",\"utcDeadline\":160000,\"continuousDeadline\":160000,\"bootToken\":\"fixture-boot\",\"durationMs\":60000.0}",
+    "valid": false
+  },
+  {
+    "name": "invalid short duration 41",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"cooldown\",\"utcDeadline\":160000,\"continuousDeadline\":160000,\"bootToken\":\"fixture-boot\",\"durationMs\":60000.5}",
+    "valid": false
+  },
+  {
+    "name": "invalid short duration 42",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"cooldown\",\"utcDeadline\":160000,\"continuousDeadline\":160000,\"bootToken\":\"fixture-boot\",\"durationMs\":59999}",
+    "valid": false
+  },
+  {
+    "name": "invalid short duration 43",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"cooldown\",\"utcDeadline\":160000,\"continuousDeadline\":160000,\"bootToken\":\"fixture-boot\",\"durationMs\":60001}",
+    "valid": false
+  },
+  {
+    "name": "invalid short duration 44",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"cooldown\",\"utcDeadline\":160000,\"continuousDeadline\":160000,\"bootToken\":\"fixture-boot\",\"durationMs\":null}",
+    "valid": false
+  },
+  {
+    "name": "invalid short duration 45",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"cooldown\",\"utcDeadline\":160000,\"continuousDeadline\":160000,\"bootToken\":\"fixture-boot\",\"durationMs\":\"60000\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid clock token 46",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid clock token 47",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":null}",
+    "valid": false
+  },
+  {
+    "name": "invalid clock token 48",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":true}",
+    "valid": false
+  },
+  {
+    "name": "invalid clock token 49",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid clock token 50",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid clock token 51",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"ééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééééé\"}",
+    "valid": false
+  },
+  {
+    "name": "valid clock string 52",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀\"}",
+    "valid": true
+  },
+  {
+    "name": "valid clock string 53",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"number text 1.5e3 / \\\" \\\\\"}",
+    "valid": true
+  },
+  {
+    "name": "valid clock string 54",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}",
+    "valid": true
+  },
+  {
+    "name": "short version forbidden for idle",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"idle\"}",
+    "valid": false
+  },
+  {
+    "name": "short version forbidden for reserved",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"reserved\"}",
+    "valid": false
+  },
+  {
+    "name": "short version forbidden for pending",
+    "scope": "diagnostic",
+    "raw": "{\"version\":2,\"phase\":\"pending\",\"answer\":\"yes\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid pending answer 58",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"pending\",\"answer\":\"maybe\"}",
+    "valid": false
+  },
+  {
+    "name": "invalid pending answer 59",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"pending\",\"answer\":true}",
+    "valid": false
+  },
+  {
+    "name": "invalid pending answer 60",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"pending\",\"answer\":1}",
+    "valid": false
+  },
+  {
+    "name": "invalid pending answer 61",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"pending\",\"answer\":null}",
+    "valid": false
+  },
+  {
+    "name": "missing version",
+    "scope": "diagnostic",
+    "raw": "{\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "missing phase",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "missing utcDeadline",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "missing continuousDeadline",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "missing bootToken",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000}",
+    "valid": false
+  },
+  {
+    "name": "unexpected input field",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\",\"question\":\"fixture-only\"}",
+    "valid": false
+  },
+  {
+    "name": "answer cannot accompany timer",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":1900000,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\",\"answer\":\"yes\"}",
+    "valid": false
+  },
+  {
+    "name": "oversized text",
+    "scope": "diagnostic",
+    "raw": "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 {\"version\":1,\"phase\":\"idle\"}",
+    "valid": false
+  },
+  {
+    "name": "numeric exponent deadline",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"cooldown\",\"utcDeadline\":19e5,\"continuousDeadline\":1900000,\"bootToken\":\"fixture-boot\"}",
+    "valid": false
+  },
+  {
+    "name": "duplicate phase ending valid",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"fixture-invalid\",\"phase\":\"idle\"}",
+    "valid": false
+  },
+  {
+    "name": "duplicate phase ending invalid",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"idle\",\"phase\":\"fixture-invalid\"}",
+    "valid": false
+  },
+  {
+    "name": "escaped duplicate key",
+    "scope": "diagnostic",
+    "raw": "{\"version\":1,\"phase\":\"idle\",\"\\u0076ersion\":1}",
+    "valid": false
+  }
+]

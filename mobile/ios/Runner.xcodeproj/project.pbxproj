@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		A32000000000000000000001 /* SessionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32000000000000000000002 /* SessionBridge.swift */; };
+		A33000000000000000000001 /* ClockContinuity.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33000000000000000000002 /* ClockContinuity.swift */; };
+		A33000000000000000000003 /* BoundedCallback.swift in Sources */ = {isa = PBXBuildFile; fileRef = A33000000000000000000004 /* BoundedCallback.swift */; };
+		A34000000000000000000001 /* SessionSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34000000000000000000002 /* SessionSchema.swift */; };
+		A34000000000000000000003 /* SessionStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A34000000000000000000004 /* SessionStorage.swift */; };
 		A32000000000000000000003 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = A32000000000000000000004 /* PrivacyInfo.xcprivacy */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
@@ -44,6 +48,11 @@
 
 /* Begin PBXFileReference section */
 		A32000000000000000000002 /* SessionBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionBridge.swift; sourceTree = "<group>"; };
+		A33000000000000000000002 /* ClockContinuity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClockContinuity.swift; sourceTree = "<group>"; };
+		A33000000000000000000004 /* BoundedCallback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoundedCallback.swift; sourceTree = "<group>"; };
+		A34000000000000000000002 /* SessionSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSchema.swift; sourceTree = "<group>"; };
+		A34000000000000000000004 /* SessionStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStorage.swift; sourceTree = "<group>"; };
+		A33000000000000000000005 /* ClockSemaphore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClockSemaphore.h; sourceTree = "<group>"; };
 		A32000000000000000000004 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
@@ -123,6 +132,11 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				A32000000000000000000002 /* SessionBridge.swift */,
+				A33000000000000000000002 /* ClockContinuity.swift */,
+				A33000000000000000000004 /* BoundedCallback.swift */,
+				A34000000000000000000002 /* SessionSchema.swift */,
+				A34000000000000000000004 /* SessionStorage.swift */,
+				A33000000000000000000005 /* ClockSemaphore.h */,
 				A32000000000000000000004 /* PrivacyInfo.xcprivacy */,
 				7884E8672EC3CC0400C636F2 /* SceneDelegate.swift */,
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
@@ -280,6 +294,10 @@
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				A32000000000000000000001 /* SessionBridge.swift in Sources */,
+				A33000000000000000000001 /* ClockContinuity.swift in Sources */,
+				A33000000000000000000003 /* BoundedCallback.swift in Sources */,
+				A34000000000000000000001 /* SessionSchema.swift in Sources */,
+				A34000000000000000000003 /* SessionStorage.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
 				7884E8682EC3CC0700C636F2 /* SceneDelegate.swift in Sources */,
 			);

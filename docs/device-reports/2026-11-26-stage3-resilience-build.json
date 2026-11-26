@@ -1,0 +1,79 @@
+{
+  "protocol": "stage3-build-v1",
+  "version": "0.3.3",
+  "build": "5",
+  "diagnostic_cooldown_ms": 60000,
+  "real_cooldown_ms": 1800000,
+  "admission": "closed",
+  "local_analysis": "passed",
+  "local_tests_passed": 63,
+  "local_tests_seconds": 36,
+  "local_test_log": "setup-windows-stage3-resilience.log",
+  "commit": "6083b41fe8cd5df9fb90fc1fe00bd139fdc7a540",
+  "tree": "50d97b1acda7c838025e10c663b235677fb092e0",
+  "release_run_id": 45874432080,
+  "release_job_id": 140097814420,
+  "native_run_id": 45874431508,
+  "native_job_id": 140097813759,
+  "release_build_status": "success",
+  "native_test_status": "passed",
+  "native_safety_steps": "passed on both runners",
+  "physical_test_status": "deferred_by_user",
+  "last_independently_confirmed_installed_version": "0.3.1 (3)",
+  "clock_strategy": "private random POSIX lifetime marker; durable token before exclusive creation; documented KERN_BOOTTIME fallback only for capability denial",
+  "clock_limitations": [
+    "Personal signing capability not physically verified",
+    "Real reboot, old-format migration or fallback use bounded UTC recovery",
+    "Not absolute protection against clock changes or reinstall"
+  ],
+  "notification_deadlines_seconds": {
+    "settings": 2,
+    "add": 2,
+    "authorization": 60
+  },
+  "notification_uncertain_add_policy": "Cancel; fence new adds in scope until late completion is cancelled; retry on later foreground reconciliation",
+  "english_notifications_approved": false,
+  "release_workflow_status": "success",
+  "native_safety_checks_passed": 16,
+  "artifact_id": 15144193249,
+  "artifact_zip_sha256": "97ac428942a435215240c69cf1b1a82e047b0aea6cc3b0105933d3bb337066f1",
+  "ipa_path": "C:\\Users\\user\\Downloads\\Ask-the-Universe-Stage3-0.3.3\\Ask-the-Universe-0.3.3-build5.ipa",
+  "ipa_sha256": "33479ce650b357dfba184ac4732f646ef07afd0d86f005673d42586a988a4959",
+  "ipa_bytes": 295614430,
+  "app_bytes": 533165287,
+  "assets_sha256": {
+    "model.onnx": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665",
+    "tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+    "head.json": "fc3593cfabdc324d4e37b69c4fd49749e957bb582e42367fcbcb7692feab8ea9"
+  },
+  "verified": [
+    "container digest",
+    "IPA checksum",
+    "ZIP CRC",
+    "source commit",
+    "version and build",
+    "iPhoneOS",
+    "model asset hashes",
+    "privacy manifest",
+    "English notification gate false",
+    "denied sysctl string absent from Runner executable"
+  ],
+  "release_log": "2026-11-26-stage3-resilience-release-ci-excerpt.log",
+  "native_workflow_status": "success",
+  "native_tests_passed": 2,
+  "native_environment": {
+    "runner": "macos-15-intel",
+    "xcode": "16.4 (16F6)",
+    "simulator": "iPhone 16",
+    "ios": "18.5"
+  },
+  "native_log": "2026-11-26-stage3-resilience-native-ci-excerpt.log",
+  "native_safety_environments": [
+    "macos-15-intel / Xcode 16.4",
+    "macos-26 / Xcode 26.6"
+  ],
+  "integration_result_times_utc": {
+    "session": "2026-11-26T18:35:08.530899Z",
+    "model": "2026-11-26T18:40:18.824560Z"
+  }
+}

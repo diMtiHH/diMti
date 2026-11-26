@@ -1,0 +1,7 @@
+Run: https://github.com/diMtiHH/diMti/actions/runs/45870092839
+Commit: 19c46d47aaf280a5d09ae3afe94a78826be357d2
+Supplemental retry only; the main minute build passed 2/2 in run 45869756533.
+Result: failed (timeout 124 after build, before a test result).
+2026-11-26T18:05:27.8899000Z Xcode build done.                                           331.9s
+2026-11-26T18:11:36.5406660Z Simulator test exceeded 20 minutes, including build and launch.
+2026-11-26T18:11:36.9430700Z ##[error]Process completed with exit code 124.
