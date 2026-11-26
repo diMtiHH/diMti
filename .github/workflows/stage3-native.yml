@@ -7,8 +7,17 @@ permissions:
   contents: read
 jobs:
   native:
+    name: iOS ${{ matrix.suite }}
     runs-on: macos-15
-    timeout-minutes: 55
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: session
+            target: integration_test/ios_session_test.dart
+          - suite: model
+            target: integration_test/ios_model_test.dart
     env:
       DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     steps:
@@ -33,14 +42,12 @@ jobs:
           flutter config --no-analytics --no-enable-swift-package-manager
           flutter precache --ios
           flutter pub get --enforce-lockfile
-          simulator_id=$(xcrun simctl create "Universe Native 18.5" com.apple.CoreSimulator.SimDeviceType.iPhone-16 com.apple.CoreSimulator.SimRuntime.iOS-18-5)
+          simulator_id=$(xcrun simctl create "Universe ${{ matrix.suite }} 18.5" com.apple.CoreSimulator.SimDeviceType.iPhone-16 com.apple.CoreSimulator.SimRuntime.iOS-18-5)
           echo "UNIVERSE_SIMULATOR=$simulator_id" >> "$GITHUB_ENV"
           open -a "$DEVELOPER_DIR/Applications/Simulator.app" --args -CurrentDeviceUDID "$simulator_id"
-      - name: Test native session storage and recovery
+      # Each suite gets a clean runner and simulator. Reinstalling a different
+      # Flutter test entry point on one device stalled VM service discovery.
+      - name: Test ${{ matrix.suite }} on a fresh simulator
         timeout-minutes: 32
         working-directory: mobile
-        run: python3 tool/run_ios_test.py "$UNIVERSE_SIMULATOR" integration_test/ios_session_test.dart
-      - name: Test bundled model in Russian and English
-        timeout-minutes: 12
-        working-directory: mobile
-        run: flutter test --verbose --reporter expanded --no-pub -d "$UNIVERSE_SIMULATOR" integration_test/ios_model_test.dart
+        run: python3 tool/run_ios_test.py "$UNIVERSE_SIMULATOR" "${{ matrix.target }}"
