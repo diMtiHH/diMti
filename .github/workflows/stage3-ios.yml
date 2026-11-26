@@ -1,0 +1,57 @@
+name: Stage 3 iPhone build and native checks
+on:
+  push:
+    branches: [stage3-iphone]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  iphone:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install pinned Flutter SDK
+        run: |
+          git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          test "$(git -C "$RUNNER_TEMP/flutter" rev-parse HEAD)" = ae9b586f34a8443573f82ef57c3bf914a908cbf7
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Prepare verified local assets
+        run: python3 -m research.prepare_mobile
+      - name: Build for iPhone without signing
+        working-directory: mobile
+        run: |
+          xcodebuild -version
+          flutter config --no-analytics --no-enable-swift-package-manager
+          flutter pub get --enforce-lockfile
+          flutter analyze --no-pub
+          flutter build ios --release --no-codesign --no-pub
+          python3 tool/check_app.py build/ios/iphoneos/Runner.app
+      - name: Package unsigned IPA for local signing
+        working-directory: mobile
+        run: |
+          mkdir -p "$RUNNER_TEMP/ipa/Payload"
+          ditto build/ios/iphoneos/Runner.app "$RUNNER_TEMP/ipa/Payload/Runner.app"
+          ditto -c -k --keepParent "$RUNNER_TEMP/ipa/Payload" "$RUNNER_TEMP/ipa/Ask-the-Universe-stage3.ipa"
+          printf '%s\n' "$GITHUB_SHA" > "$RUNNER_TEMP/ipa/SOURCE_COMMIT.txt"
+      - name: Checksum installable archive
+        working-directory: ${{ runner.temp }}/ipa
+        run: shasum -a 256 Ask-the-Universe-stage3.ipa > SHA256SUMS
+      - name: Save built IPA for physical device testing
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: Ask-the-Universe-stage3-iphone
+          path: |
+            ${{ runner.temp }}/ipa/Ask-the-Universe-stage3.ipa
+            ${{ runner.temp }}/ipa/SHA256SUMS
+            ${{ runner.temp }}/ipa/SOURCE_COMMIT.txt
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 1
+      - name: Run native session and model checks in a fresh iPhone simulator
+        timeout-minutes: 24
+        working-directory: mobile
+        run: |
+          runtime=$(xcrun simctl list runtimes --json | python3 -c 'import json,sys; r=[x["identifier"] for x in json.load(sys.stdin)["runtimes"] if x["isAvailable"] and ".iOS-" in x["identifier"]]; print(r[-1])')
+          fresh_id=$(xcrun simctl create "Universe Stage 3" com.apple.CoreSimulator.SimDeviceType.iPhone-Air "$runtime")
+          python3 tool/run_ios_test.py "$fresh_id" integration_test/ios_session_test.dart integration_test/ios_model_test.dart

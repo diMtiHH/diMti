@@ -8,8 +8,9 @@ import 'engine.dart';
 import 'device_run.dart';
 import 'device_report.dart';
 import 'worker.dart';
+import 'session_page.dart';
 
-void main() => runApp(const UniverseLab());
+void main() => runApp(const UniverseApp());
 
 class UniverseLab extends StatelessWidget {
   const UniverseLab({super.key});

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:universe_lab/main.dart' as app;
+import 'package:material_ui/material_ui.dart';
 
 Future<void> waitForText(WidgetTester tester, String text) async {
   final watch = Stopwatch()..start();
@@ -22,7 +23,7 @@ void main() {
   testWidgets('iOS Runner loads the bundled model and checks RU and EN', (
     tester,
   ) async {
-    app.main();
+    runApp(const app.UniverseLab());
     await tester.pump();
     await waitForText(tester, 'Модель готова');
     await tester.tap(find.text('Вставить пример'));

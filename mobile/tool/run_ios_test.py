@@ -24,7 +24,7 @@ def main():
     try:
         result = subprocess.run(
             ['flutter', 'test', '--no-pub', '-d', device,
-             'integration_test/ios_model_test.dart'],
+             *(sys.argv[2:] or ['integration_test/ios_model_test.dart'])],
             timeout=720,
         )
         return result.returncode
