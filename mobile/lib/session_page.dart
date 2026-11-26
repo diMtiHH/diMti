@@ -9,6 +9,8 @@ import 'ios_session.dart';
 import 'session_core.dart';
 import 'worker.dart';
 
+enum _LoadStage { preferences, clock, model, state }
+
 class UniverseApp extends StatelessWidget {
   const UniverseApp({super.key});
   @override
@@ -53,6 +55,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   String _language = 'ru';
   bool _loading = true, _failed = false, _settingsBusy = false;
   bool _loadRunning = false;
+  _LoadStage _loadStage = _LoadStage.preferences;
   bool _notifications = false, _notificationError = false;
   bool _englishNotifications = false;
   bool _foreground = true,
@@ -60,6 +63,25 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
       _reveal = false,
       _ackQueued = false;
   String t(String ru, String en) => _language == 'ru' ? ru : en;
+
+  String get _loadFailure => switch (_loadStage) {
+    _LoadStage.preferences => t(
+      'Не удалось прочитать настройки. Проверка заблокирована.',
+      'Could not read settings. Checking is blocked.',
+    ),
+    _LoadStage.clock => t(
+      'Не удалось получить системное время для таймера. Проверка заблокирована.',
+      'Could not read the system clock for the timer. Checking is blocked.',
+    ),
+    _LoadStage.model => t(
+      'Не удалось загрузить модель. Проверка заблокирована.',
+      'Could not load the model. Checking is blocked.',
+    ),
+    _LoadStage.state => t(
+      'Не удалось восстановить состояние. Проверка заблокирована.',
+      'Could not restore the session. Checking is blocked.',
+    ),
+  };
 
   @override
   void initState() {
@@ -94,7 +116,10 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         _failed = false;
       });
     try {
+      _loadStage = _LoadStage.preferences;
       final prefs = await _backend.preferences();
+      _language = prefs.language;
+      _loadStage = _LoadStage.clock;
       await _backend
           .readClock(); // Preflight: no fallback to process-only time.
       if (!mounted) return;
@@ -105,6 +130,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
       if (widget.diagnostic) {
         validator = validateDiagnosticFixture;
       } else {
+        _loadStage = _LoadStage.model;
         var inspect = widget.inspector;
         if (inspect == null) {
           final worker = _worker = ModelWorker();
@@ -133,6 +159,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         initialLanguage: _language,
       );
       _session = session;
+      _loadStage = _LoadStage.state;
       session.setActive(_foreground && !_covered);
       await session.initialize();
       session.onChanged = _changed;
@@ -526,12 +553,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             else if (_failed)
               Column(
                 children: [
-                  Text(
-                    t(
-                      'Не удалось загрузить модель или состояние. Проверка заблокирована.',
-                      'Could not load the model or session. Checking is blocked.',
-                    ),
-                  ),
+                  Text(_loadFailure),
                   TextButton(
                     onPressed: _settingsBusy ? null : _load,
                     child: Text(t('Повторить загрузку', 'Retry loading')),

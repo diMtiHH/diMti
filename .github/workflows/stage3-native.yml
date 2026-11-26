@@ -1,13 +1,13 @@
 name: Stage 3 native checks on iOS 18.5
 on:
   push:
-    branches: [stage3-native-check]
+    branches: [stage3-native-check, stage3-iphone]
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
   native:
-    runs-on: macos-15
+    runs-on: macos-15-intel
     timeout-minutes: 40
     env:
       DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
@@ -30,4 +30,3 @@ jobs:
           simulator_id=$(xcrun simctl create "Universe Native 18.5" com.apple.CoreSimulator.SimDeviceType.iPhone-16 com.apple.CoreSimulator.SimRuntime.iOS-18-5)
           python3 tool/run_ios_test.py "$simulator_id" integration_test/ios_session_test.dart
           flutter test --no-pub --concurrency=1 -d "$simulator_id" integration_test/ios_model_test.dart
-
