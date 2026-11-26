@@ -1,0 +1,47 @@
+name: Stage 2 unsigned iOS build
+on:
+  push:
+    branches: [stage2-ios-check]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  iphone:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Install pinned Flutter SDK
+        run: |
+          git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          test "$(git -C "$RUNNER_TEMP/flutter" rev-parse HEAD)" = ae9b586f34a8443573f82ef57c3bf914a908cbf7
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - name: Prepare verified local assets
+        run: python3 -m research.prepare_mobile
+      - name: Build for iPhone without signing
+        working-directory: mobile
+        run: |
+          xcodebuild -version
+          flutter config --no-analytics --no-enable-swift-package-manager
+          flutter pub get --enforce-lockfile
+          flutter analyze --no-pub
+          flutter build ios --release --no-codesign --no-pub
+          python3 tool/check_app.py build/ios/iphoneos/Runner.app
+      - name: Run bundled model in an iPhone simulator
+        working-directory: mobile
+        run: |
+          xcrun simctl list devices available --json > "$RUNNER_TEMP/simulators.json"
+          simulator_id=$(python3 - "$RUNNER_TEMP/simulators.json" <<'PY'
+          import json, sys
+          from pathlib import Path
+          runtimes = json.loads(Path(sys.argv[1]).read_text())['devices']
+          phones = [d for runtime, devices in runtimes.items() if '.iOS-' in runtime
+                    for d in devices if d['isAvailable'] and d['name'].startswith('iPhone')]
+          if not phones:
+              sys.exit('Xcode has no available iPhone simulator')
+          device = next((d for d in phones if d['name'] == 'iPhone Air'), phones[0])
+          print(device['udid'])
+          PY
+          )
+          xcrun simctl bootstatus "$simulator_id" -b
+          flutter test --no-pub -d "$simulator_id" integration_test/ios_model_test.dart
