@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -11,6 +12,7 @@ import 'package:universe_lab/cosmic_theme.dart';
 import 'package:universe_lab/engine.dart';
 import 'package:universe_lab/presentation_profile.dart';
 import 'package:universe_lab/session_clock_scope.dart';
+import 'package:universe_lab/universe_startup.dart';
 
 import 'ambient_audio_test.dart' show TestAmbientBackend;
 import 'presentation_profile_test.dart' show MemoryPresentationBackend;
@@ -19,7 +21,8 @@ import 'voice_page_test.dart' show PageVoiceBackend, pauseApp, resumeApp;
 
 class ShellFixture {
   final presentation = MemoryPresentationBackend();
-  final session = TestBackend(), random = TestRandom();
+  final TestBackend session;
+  final random = TestRandom();
   final voice = PageVoiceBackend();
   final ambient = TestAmbientBackend();
   int inspections = 0;
@@ -27,11 +30,13 @@ class ShellFixture {
     bool sound = false,
     bool haptics = true,
     String language = 'ru',
-  }) {
+    String name = 'Астра',
+    TestBackend? backend,
+  }) : session = backend ?? TestBackend() {
     session.language = language;
     presentation.value = const PresentationProfile.defaults()
         .copyWith(
-          name: 'Астра',
+          name: name,
           onboardingStep: 2,
           completed: true,
           termsVersion: currentTermsVersion,
@@ -53,6 +58,15 @@ class ShellFixture {
   );
 }
 
+class GatedShellBackend extends TestBackend {
+  final gate = Completer<void>();
+  @override
+  Future<String?> read() async {
+    await gate.future;
+    return super.read();
+  }
+}
+
 void main() {
   var shadersReady = false;
   setUp(() {
@@ -66,7 +80,7 @@ void main() {
         .clearAccessibilityFeaturesTestValue(),
   );
   Future<void> frames(WidgetTester tester) async {
-    for (var i = 0; i < 5; ++i) {
+    for (var i = 0; i < 12; ++i) {
       await tester.pump(const Duration(milliseconds: 20));
     }
   }
@@ -109,15 +123,15 @@ void main() {
         child: MaterialApp(
           theme: cosmicTheme,
           debugShowCheckedModeBanner: false,
-          builder: (context, child) => MediaQuery(
-            data: MediaQuery.of(context)
-                .copyWith(textScaler: TextScaler.linear(scale)),
-            child: child!,
-          ),
-          home: RepaintBoundary(
+          builder: (context, child) => RepaintBoundary(
             key: const ValueKey('aura-capture'),
-            child: fixture.shell(),
+            child: MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: TextScaler.linear(scale)),
+              child: child!,
+            ),
           ),
+          home: fixture.shell(),
         ),
       ),
     );
@@ -128,6 +142,52 @@ void main() {
     await tester.pumpWidget(const SizedBox());
     await frames(tester);
   }
+
+  testWidgets(
+    'startup covers all input until real session restoration is ready',
+    (tester) async {
+      final backend = GatedShellBackend();
+      final fixture = ShellFixture(sound: true, backend: backend);
+      await show(tester, fixture);
+      expect(find.byType(UniverseStartup), findsOneWidget);
+      expect(find.byType(AuraTouchSurface), findsNothing);
+      expect(
+        tester
+            .widget<IconButton>(find.byKey(const ValueKey('open-settings')))
+            .onPressed,
+        isNull,
+      );
+      await tester.tapAt(const Offset(195, 422));
+      await tester.pump(const Duration(seconds: 20));
+      expect(find.byType(UniverseStartup), findsOneWidget);
+      expect(find.byType(TextField), findsNothing);
+      expect(fixture.voice.starts, isEmpty);
+      expect(fixture.ambient.plays, isEmpty);
+      expect(fixture.random.calls, 0);
+      backend.gate.complete();
+      await frames(tester);
+      expect(find.byType(UniverseStartup), findsNothing);
+      expect(find.byType(AuraTouchSurface), findsOneWidget);
+      expect(fixture.ambient.plays, ['aurora']);
+      await clean(tester);
+    },
+  );
+
+  testWidgets(
+    'a 40-character nickname stays centered and limited to two lines',
+    (tester) async {
+      final fixture = ShellFixture(name: 'Щ' * 40);
+      await show(tester, fixture, size: const Size(320, 568), scale: 1.8);
+      final finder = find.byKey(const ValueKey('main-greeting'));
+      final text = tester.widget<Text>(finder);
+      expect(text.textAlign, TextAlign.center);
+      expect(text.maxLines, 2);
+      expect(text.overflow, TextOverflow.ellipsis);
+      expect(tester.getRect(finder).center.dx, closeTo(160, .1));
+      expect(tester.takeException(), isNull);
+      await clean(tester);
+    },
+  );
 
   testWidgets(
     'settings control ambient and haptics; no production diagnostic entry or question side effects',
@@ -168,7 +228,7 @@ void main() {
       final fixture = ShellFixture(sound: true);
       await show(tester, fixture);
       expect(fixture.ambient.plays, ['aurora']);
-      await tap(tester, find.byKey(const ValueKey('ask-question')));
+      await tap(tester, find.byType(AuraTouchSurface));
       await tester.enterText(find.byType(TextField), 'private synthetic draft');
       await frames(tester);
       await tap(tester, find.byKey(const ValueKey('voice-input')));
@@ -192,6 +252,13 @@ void main() {
     (tester) async {
       final methods = <String>[];
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('ask_universe/haptics'),
+        (call) async {
+          if (call.method != 'cancel') methods.add(call.method);
+          return null;
+        },
+      );
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
         SystemChannels.platform,
         (call) async {
           if (call.method == 'HapticFeedback.vibrate') methods.add(call.method);
@@ -204,9 +271,15 @@ void main() {
           null,
         ),
       );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          const MethodChannel('ask_universe/haptics'),
+          null,
+        ),
+      );
       final fixture = ShellFixture(haptics: false);
       await show(tester, fixture);
-      await tap(tester, find.byKey(const ValueKey('ask-question')));
+      await tap(tester, find.byType(AuraTouchSurface));
       await tester.enterText(find.byType(TextField), 'synthetic question');
       await frames(tester);
       await tap(tester, find.text('Продолжить'));
@@ -225,7 +298,7 @@ void main() {
       for (final language in ['ru', 'en']) {
         final fixture = ShellFixture(language: language);
         await show(tester, fixture, size: const Size(320, 568), scale: 1.8);
-        await tap(tester, find.byKey(const ValueKey('ask-question')));
+        await tap(tester, find.byType(AuraTouchSurface));
         await tester.enterText(
           find.byType(TextField),
           'A sufficiently long synthetic question to wrap on a small screen',
@@ -256,11 +329,20 @@ void main() {
     'capture actual AURA home input confirmation and world with bundled fonts and shaders',
     (tester) async {
       await tester.runAsync(() async {
-        final font = FontLoader('Manrope');
-        for (final weight in ['Light', 'Regular', 'Medium', 'SemiBold']) {
-          font.addFont(rootBundle.load('assets/fonts/Manrope-$weight.ttf'));
+        for (final family in ['Cormorant Garamond', 'Literata']) {
+          final font = FontLoader(family);
+          final prefix = family.replaceAll(' ', '');
+          final weights = [
+            if (family == 'Cormorant Garamond') 'Light',
+            'Regular',
+            'Medium',
+            'SemiBold',
+          ];
+          for (final weight in weights) {
+            font.addFont(rootBundle.load('assets/fonts/$prefix-$weight.ttf'));
+          }
+          await font.load();
         }
-        await font.load();
       });
       final fixture = ShellFixture();
       await show(tester, fixture);
@@ -285,7 +367,7 @@ void main() {
       }
 
       await capture('aura-home');
-      await tap(tester, find.byKey(const ValueKey('ask-question')));
+      await tap(tester, find.byType(AuraTouchSurface));
       await capture('aura-input');
       await tester.enterText(
         find.byType(TextField),
@@ -296,6 +378,15 @@ void main() {
       await capture('aura-confirmation');
       await tap(tester, find.byKey(const ValueKey('tab-1')));
       await capture('aura-world');
+      await tap(tester, find.byKey(const ValueKey('open-settings')));
+      await tester.pump(const Duration(milliseconds: 200));
+      await capture('aura-settings-personal');
+      await tester.ensureVisible(find.text('Твоя Вселенная'));
+      await frames(tester);
+      await capture('aura-settings-space');
+      await tap(tester, find.byKey(const ValueKey('preview-animation')));
+      await tester.pump(const Duration(milliseconds: 500));
+      await capture('aura-settings-controls');
       expect(fixture.random.calls, 0);
       expect(fixture.session.writes, 0);
       await clean(tester);

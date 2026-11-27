@@ -21,6 +21,8 @@ jobs:
         run: bash mobile/tool/run_native_presentation.sh
       - name: Test ambient and microphone audio ownership
         run: bash mobile/tool/run_native_ambient.sh
+      - name: Test motion and haptic pattern boundaries
+        run: bash mobile/tool/run_native_interaction.sh
       - name: Install pinned Flutter SDK
         run: |
           git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"

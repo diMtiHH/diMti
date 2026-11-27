@@ -38,16 +38,30 @@ class AuraAssetsTests(unittest.TestCase):
     def test_fonts_match_pinned_sources_and_static_weights(self):
         folder = ROOT / 'fonts'
         manifest = json.loads((folder / 'sources.json').read_text(encoding='utf-8'))
+        self.assertEqual(manifest['protocol'], 'aura-offline-typography-v2')
+        self.assertFalse(manifest['runtime_network'])
         self.assertEqual(manifest['google_fonts_commit'], 'b31870aff700ab7a1d74fa0c6887d95beb9e0037')
-        self.assertEqual({entry['weight'] for entry in manifest['static_faces'].values()}, {300, 400, 500, 600})
-        self.assertEqual(len(manifest['static_faces']), 4)
-        for name, entry in {**manifest['source_files'], **manifest['static_faces']}.items():
-            data = (folder / name).read_bytes()
-            self.assertEqual(len(data), entry['bytes'])
-            self.assertEqual(hashlib.sha256(data).hexdigest(), entry['sha256'])
-        license_text = (folder / 'OFL.txt').read_text(encoding='utf-8')
-        self.assertIn('SIL OPEN FONT LICENSE Version 1.1', license_text)
-        self.assertIn('The Manrope Project Authors', license_text)
+        self.assertEqual({f['family'] for f in manifest['families']}, {'Cormorant Garamond', 'Literata'})
+        for family in manifest['families']:
+            weights = {300, 400, 500, 600} if family['role'] == 'headings' else {400, 500, 600}
+            self.assertEqual({entry['weight'] for entry in family['static_faces'].values()}, weights)
+            self.assertEqual(len(family['static_faces']), len(weights))
+            for name, entry in {**family['source_files'], **family['static_faces']}.items():
+                data = (folder / name).read_bytes()
+                self.assertEqual(len(data), entry['bytes'])
+                self.assertEqual(hashlib.sha256(data).hexdigest(), entry['sha256'])
+                if name in family['static_faces']:
+                    self.assertTrue(entry['russian_latin_digits_verified'])
+                    count = struct.unpack_from('>H', data, 4)[0]
+                    tables = {
+                        data[12 + i * 16:16 + i * 16]: struct.unpack_from('>I', data, 20 + i * 16)[0]
+                        for i in range(count)
+                    }
+                    self.assertNotIn(b'fvar', tables)
+                    self.assertEqual(struct.unpack_from('>H', data, tables[b'OS/2'] + 4)[0], entry['weight'])
+            license_text = (folder / family['license_file']).read_text(encoding='utf-8')
+            self.assertIn('SIL OPEN FONT LICENSE Version 1.1', license_text)
+            self.assertIn('Project Authors', license_text)
 
     def test_ambient_is_provisional_and_off_by_default(self):
         manifest = json.loads((ROOT / 'audio/ambient/metadata.json').read_text(encoding='utf-8'))

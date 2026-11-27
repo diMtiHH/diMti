@@ -18,6 +18,7 @@ import 'ambient_audio.dart';
 import 'aura_answer_page.dart';
 import 'aura_renderer.dart';
 import 'aura_ui.dart';
+import 'universe_startup.dart';
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
@@ -96,6 +97,7 @@ class _UniverseShellState extends State<UniverseShell>
       _languageBusy = false;
   bool _foreground = true, _covered = false;
   int _tab = 0, _languageRevision = 0;
+  bool _startupDone = false, _sessionPrepared = false, _shadersPrepared = false;
   String t(String ru, String en) => _language == 'ru' ? ru : en;
   @override
   void initState() {
@@ -110,6 +112,27 @@ class _UniverseShellState extends State<UniverseShell>
         WidgetsBinding.instance.lifecycleState == null ||
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
     _load();
+    unawaited(_prepareGraphics());
+  }
+
+  Future<void> _prepareGraphics() async {
+    try {
+      await warmUpAuraShaders();
+    } catch (_) {
+      /* Scene fallback stays available. */
+    }
+    if (mounted) setState(() => _shadersPrepared = true);
+  }
+
+  void _prepared(bool succeeded) {
+    if (!mounted) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() {
+        _sessionPrepared = succeeded;
+        if (!succeeded) _startupDone = true;
+      });
+    });
   }
 
   void _changed() {
@@ -136,7 +159,9 @@ class _UniverseShellState extends State<UniverseShell>
         active: _foreground,
         capturingSpeech: _capturingSpeech,
         allowPlayback:
-            !_presentation.needsOnboarding && !_presentation.needsConsent,
+            !_presentation.needsOnboarding &&
+            !_presentation.needsConsent &&
+            _startupDone,
         userIntent: userIntent,
       ),
     );
@@ -225,6 +250,13 @@ class _UniverseShellState extends State<UniverseShell>
         _preferencesFailed ||
         _presentation.failed) {
       final failed = _preferencesFailed || _presentation.failed;
+      if (!failed)
+        return UniverseStartup(
+          language: _language,
+          name: '',
+          ready: false,
+          onComplete: () {},
+        );
       return CosmicScene(
         background: 'stars',
         active: _foreground,
@@ -269,93 +301,116 @@ class _UniverseShellState extends State<UniverseShell>
     }
     final content = Scaffold(
       backgroundColor: Colors.transparent,
-      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: Column(
+        child: Stack(
+          fit: StackFit.expand,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 14, 18, 8),
-              child: Row(
-                children: [
-                  AuraBrandMark(
-                    size: 28,
-                    color: auraAccent(profile.background.name),
+            IndexedStack(
+              index: _tab,
+              children: [
+                TickerMode(
+                  enabled:
+                      _startupDone && _tab == 0 && !_covered && !_answerCover,
+                  child: SessionPage(
+                    embedded: true,
+                    aura: true,
+                    appearance: profile,
+                    interaction: _interaction,
+                    onPrepared: _prepared,
+                    onVisuals: _visualChanged,
+                    onVoiceCapture: _captureChanged,
+                    onFeedback: (event) => unawaited(_ambient.cue(event)),
+                    onAnswerScreen: (open) {
+                      if (mounted) setState(() => _answerCover = open);
+                    },
+                    active: _startupDone && _tab == 0 && !_covered,
+                    nickname: profile.name,
+                    languageRevision: _languageRevision,
+                    backend: _sessionBackend,
+                    voiceBackend: widget.voiceBackend,
+                    inspector: widget.inspector,
+                    random: widget.random,
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      t('Спроси\nВселенную', 'Ask the\nUniverse'),
-                      style: Theme.of(context).textTheme.titleMedium
-                          ?.copyWith(height: 1.25, letterSpacing: .5),
-                    ),
-                  ),
-                  IconButton(
-                    key: const ValueKey('open-settings'),
-                    tooltip: t('Настройки', 'Settings'),
-                    onPressed: _settings,
-                    icon: const AuraIcon(kind: AuraIconKind.settings),
-                    style: IconButton.styleFrom(
-                      backgroundColor: Colors.white.withValues(alpha: .045),
-                      side: BorderSide(
-                        color: Colors.white.withValues(alpha: .09),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: IndexedStack(
-                index: _tab,
-                children: [
-                  TickerMode(
-                    enabled: _tab == 0 && !_covered && !_answerCover,
-                    child: SessionPage(
-                      embedded: true,
-                      aura: true,
-                      appearance: profile,
-                      interaction: _interaction,
-                      onVisuals: _visualChanged,
-                      onVoiceCapture: _captureChanged,
-                      onFeedback: (event) => unawaited(_ambient.cue(event)),
-                      onAnswerScreen: (open) {
-                        if (mounted) setState(() => _answerCover = open);
-                      },
-                      active: _tab == 0 && !_covered,
-                      nickname: profile.name,
-                      languageRevision: _languageRevision,
-                      backend: _sessionBackend,
-                      voiceBackend: widget.voiceBackend,
-                      inspector: widget.inspector,
-                      random: widget.random,
-                    ),
-                  ),
-                  _WorldPage(
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 90, bottom: 100),
+                  child: _WorldPage(
                     language: _language,
                     background: profile.background.name,
-                    active: _foreground && _tab == 1 && !_covered,
+                    active:
+                        _startupDone && _foreground && _tab == 1 && !_covered,
                   ),
-                ],
+                ),
+              ],
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(24, 14, 18, 8),
+                child: Row(
+                  children: [
+                    AuraBrandMark(
+                      size: 28,
+                      color: auraAccent(profile.background.name),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        t('Спроси\nВселенную', 'Ask the\nUniverse'),
+                        style: Theme.of(context).textTheme.titleMedium
+                            ?.copyWith(height: 1.1, letterSpacing: .5),
+                      ),
+                    ),
+                    IconButton(
+                      key: const ValueKey('open-settings'),
+                      tooltip: t('Настройки', 'Settings'),
+                      onPressed: _startupDone ? _settings : null,
+                      icon: const AuraIcon(kind: AuraIconKind.settings),
+                    ),
+                  ],
+                ),
               ),
             ),
             if (MediaQuery.viewInsetsOf(context).bottom == 0)
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
-                child: Row(
-                  children: [
-                    _navigation(
-                      0,
-                      AuraIconKind.universe,
-                      t('Вселенная', 'Universe'),
-                      profile,
-                    ),
-                    _navigation(
-                      1,
-                      AuraIconKind.world,
-                      t('Что волнует мир', 'What concerns the world'),
-                      profile,
-                    ),
-                  ],
+              Positioned(
+                bottom: 0,
+                left: 16,
+                right: 16,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10, bottom: 8),
+                  child: Row(
+                    children: [
+                      _navigation(
+                        0,
+                        AuraIconKind.universe,
+                        t('Вселенная', 'Universe'),
+                        profile,
+                      ),
+                      _navigation(
+                        1,
+                        AuraIconKind.world,
+                        t('Что волнует мир', 'What concerns the world'),
+                        profile,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            if (!_startupDone)
+              Positioned.fill(
+                child: UniverseStartup(
+                  language: _language,
+                  name: profile.name,
+                  ready: _sessionPrepared && _shadersPrepared,
+                  onComplete: () {
+                    if (mounted) {
+                      setState(() => _startupDone = true);
+                      _syncAmbient();
+                    }
+                  },
                 ),
               ),
           ],
@@ -372,7 +427,7 @@ class _UniverseShellState extends State<UniverseShell>
         phase: _tab == 0 ? visual.phase : AuraPhase.idle,
         energy: _tab == 0 ? visual.energy : 0,
         progress: _tab == 0 ? visual.progress : 0,
-        active: _foreground && !_covered && !_answerCover,
+        active: _startupDone && _foreground && !_covered && !_answerCover,
         child: Opacity(
           opacity: _tab == 0 && visual.phase == AuraPhase.answerAnimation
               ? (1 -
@@ -639,138 +694,245 @@ class _PresentationSettingsState extends State<PresentationSettings> {
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 560),
               child: ListView(
-                padding: const EdgeInsets.all(24),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 36),
                 children: [
-                  TextField(
-                    controller: _name,
-                    maxLength: 40,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration: InputDecoration(
-                      labelText: t('Имя или никнейм', 'Name or nickname'),
-                      errorText: _nameInvalid
-                          ? t(
-                              'До 40 символов, без переносов строк',
-                              'Up to 40 characters, no line breaks',
-                            )
-                          : null,
-                    ),
-                  ),
-                  Wrap(
-                    spacing: 12,
-                    children: [
-                      FilledButton(
-                        onPressed: busy ? null : _saveName,
-                        child: Text(t('Сохранить имя', 'Save name')),
-                      ),
-                      TextButton(
-                        onPressed: busy ? null : () => _saveName(clear: true),
-                        child: Text(t('Удалить имя', 'Delete name')),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 28),
-                  Text(
-                    t('Язык', 'Language'),
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: 12),
-                  SegmentedButton<String>(
-                    segments: const [
-                      ButtonSegment(value: 'ru', label: Text('Русский')),
-                      ButtonSegment(value: 'en', label: Text('English')),
-                    ],
-                    selected: {_language},
-                    showSelectedIcon: false,
-                    onSelectionChanged: busy
-                        ? null
-                        : (value) => _languageTo(value.single),
-                  ),
-                  const SizedBox(height: 28),
-                  PersonalizationControls(
-                    profile: profile,
-                    language: _language,
-                    busy: busy,
-                    active: !_covered,
-                    onChanged: (next) => widget.controller.save(next),
-                  ),
-                  const SizedBox(height: 28),
-                  SwitchListTile(
-                    key: const ValueKey('ambient-enabled'),
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(t('Звук пространства', 'Ambient sound')),
-                    subtitle: Text(
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(6, 4, 6, 24),
+                    child: Text(
                       t(
-                        'Тихий фон выбранной Вселенной',
-                        'A quiet background for your Universe',
+                        'Пусть это пространство будет твоим.',
+                        'Make this space your own.',
                       ),
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
-                    value: profile.ambientEnabled,
-                    onChanged: busy
-                        ? null
-                        : (value) => widget.controller.save(
-                            profile.copyWith(ambientEnabled: value),
-                          ),
                   ),
-                  SwitchListTile(
-                    key: const ValueKey('haptics-enabled'),
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(t('Тактильный отклик', 'Haptic feedback')),
-                    value: profile.hapticsEnabled,
-                    onChanged: busy
-                        ? null
-                        : (value) => widget.controller.save(
-                            profile.copyWith(hapticsEnabled: value),
-                          ),
-                  ),
-                  if (profile.ambientEnabled && widget.ambient?.failed == true)
-                    Text(
-                      t(
-                        'Звук сейчас недоступен.',
-                        'Sound is currently unavailable.',
-                      ),
+                  _SettingsPanel(
+                    title: t('Личное', 'Personal'),
+                    description: t(
+                      'Необязательно. Имя остаётся только на этом устройстве.',
+                      'Optional. Your name stays only on this device.',
                     ),
-                  if (profile.ambientEnabled &&
-                      widget.ambient?.interrupted == true)
-                    TextButton(
-                      onPressed: widget.onResumeAmbient,
-                      child: Text(
-                        t('Возобновить звук', 'Resume ambient sound'),
-                      ),
-                    ),
-                  const SizedBox(height: 12),
-                  if (_preferences != null)
-                    SwitchListTile(
-                      contentPadding: EdgeInsets.zero,
-                      title: Text(
-                        t('Напомнить после паузы', 'Remind me after the pause'),
-                      ),
-                      subtitle: Text(
-                        _language == 'en' && !_preferences!.englishNotifications
-                            ? 'Reminders are currently available in Russian.'
-                            : t(
-                                'Одно уведомление без вопроса и ответа',
-                                'One notification without the question or answer',
+                    icon: AuraIconKind.brand,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextField(
+                          controller: _name,
+                          maxLength: 40,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          onChanged: (_) {
+                            if (_nameInvalid)
+                              setState(() => _nameInvalid = false);
+                          },
+                          decoration: InputDecoration(
+                            labelText: t('Имя или никнейм', 'Name or nickname'),
+                            filled: true,
+                            fillColor: const Color(0x24050915),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: const BorderSide(
+                                color: Color(0x30c5cad3),
                               ),
-                      ),
-                      value:
-                          _preferences!.notifications &&
-                          (_language == 'ru' ||
-                              _preferences!.englishNotifications),
-                      onChanged:
-                          busy ||
-                              (_language == 'en' &&
-                                  !_preferences!.englishNotifications)
-                          ? null
-                          : _notifications,
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(16),
+                              borderSide: BorderSide(
+                                color: auraAccent(profile.background.name)
+                                    .withValues(alpha: .7),
+                              ),
+                            ),
+                            errorText: _nameInvalid
+                                ? t(
+                                    'До 40 символов, без переносов строк',
+                                    'Up to 40 characters, no line breaks',
+                                  )
+                                : null,
+                          ),
+                        ),
+                        Wrap(
+                          spacing: 12,
+                          runSpacing: 8,
+                          children: [
+                            FilledButton(
+                              onPressed: busy ? null : _saveName,
+                              child: Text(t('Сохранить имя', 'Save name')),
+                            ),
+                            TextButton(
+                              onPressed: busy
+                                  ? null
+                                  : () => _saveName(clear: true),
+                              child: Text(t('Удалить имя', 'Delete name')),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 28),
+                        Text(
+                          t('Язык', 'Language'),
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 12),
+                        SegmentedButton<String>(
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStateProperty.resolveWith(
+                              (states) => states.contains(WidgetState.selected)
+                                  ? const Color(0x24c5cad3)
+                                  : Colors.transparent,
+                            ),
+                            foregroundColor: const WidgetStatePropertyAll(
+                              CosmicPalette.white,
+                            ),
+                            side: const WidgetStatePropertyAll(
+                              BorderSide(color: Color(0x55c5cad3), width: .8),
+                            ),
+                          ),
+                          segments: const [
+                            ButtonSegment(value: 'ru', label: Text('Русский')),
+                            ButtonSegment(value: 'en', label: Text('English')),
+                          ],
+                          selected: {_language},
+                          showSelectedIcon: false,
+                          onSelectionChanged: busy
+                              ? null
+                              : (value) => _languageTo(value.single),
+                        ),
+                      ],
                     ),
-                  if (_error)
-                    Text(
-                      t(
-                        'Не удалось изменить настройки или нет разрешения. Таймер сохранён.',
-                        'Settings could not be changed or permission is unavailable. The timer is preserved.',
-                      ),
+                  ),
+                  const SizedBox(height: 20),
+                  _SettingsPanel(
+                    title: t('Твоя Вселенная', 'Your Universe'),
+                    description: t(
+                      'Выбирай пространство и форму независимо друг от друга.',
+                      'Choose your space and form independently.',
                     ),
+                    icon: AuraIconKind.universe,
+                    child: PersonalizationControls(
+                      profile: profile,
+                      language: _language,
+                      busy: busy,
+                      active: !_covered,
+                      onChanged: (next) => widget.controller.save(next),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _SettingsPanel(
+                    title: t('Звук и ощущения', 'Sound and feeling'),
+                    icon: AuraIconKind.volume,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SwitchListTile(
+                          key: const ValueKey('ambient-enabled'),
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(t('Звук пространства', 'Ambient sound')),
+                          subtitle: Text(
+                            t(
+                              'Четыре встроенных фона. Учитывает беззвучный режим iPhone.',
+                              'Four built-in soundscapes. Respects iPhone silent mode.',
+                            ),
+                          ),
+                          value: profile.ambientEnabled,
+                          onChanged: busy
+                              ? null
+                              : (value) => widget.controller.save(
+                                  profile.copyWith(ambientEnabled: value),
+                                ),
+                        ),
+                        SwitchListTile(
+                          key: const ValueKey('haptics-enabled'),
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(
+                            t('Тактильный отклик', 'Haptic feedback'),
+                          ),
+                          subtitle: Text(
+                            t(
+                              'Мягкие импульсы во время касаний и анимации',
+                              'Gentle pulses during touch and animation',
+                            ),
+                          ),
+                          value: profile.hapticsEnabled,
+                          onChanged: busy
+                              ? null
+                              : (value) => widget.controller.save(
+                                  profile.copyWith(hapticsEnabled: value),
+                                ),
+                        ),
+                        if (profile.ambientEnabled &&
+                            widget.ambient?.failed == true)
+                          Text(
+                            t(
+                              'Звук сейчас недоступен.',
+                              'Sound is currently unavailable.',
+                            ),
+                          ),
+                        if (profile.ambientEnabled &&
+                            widget.ambient?.interrupted == true)
+                          TextButton(
+                            onPressed: widget.onResumeAmbient,
+                            child: Text(
+                              t('Возобновить звук', 'Resume ambient sound'),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  _SettingsPanel(
+                    title: t('Твоя пауза', 'Your pause'),
+                    icon: AuraIconKind.settings,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        if (_preferences != null)
+                          SwitchListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              t(
+                                'Напомнить после паузы',
+                                'Remind me after the pause',
+                              ),
+                            ),
+                            subtitle: Text(
+                              _language == 'en' &&
+                                      !_preferences!.englishNotifications
+                                  ? 'Reminders are currently available in Russian.'
+                                  : t(
+                                      'Одно уведомление без вопроса и ответа',
+                                      'One notification without the question or answer',
+                                    ),
+                            ),
+                            value:
+                                _preferences!.notifications &&
+                                (_language == 'ru' ||
+                                    _preferences!.englishNotifications),
+                            onChanged:
+                                busy ||
+                                    (_language == 'en' &&
+                                        !_preferences!.englishNotifications)
+                                ? null
+                                : _notifications,
+                          )
+                        else
+                          Text(
+                            t(
+                              'Загружаем настройки напоминаний…',
+                              'Loading reminder settings…',
+                            ),
+                          ),
+                        if (_error)
+                          Text(
+                            t(
+                              'Не удалось изменить настройки или нет разрешения. Таймер сохранён.',
+                              'Settings could not be changed or permission is unavailable. The timer is preserved.',
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
                   if (widget.controller.failed) ...[
                     Text(
                       t(
@@ -783,27 +945,40 @@ class _PresentationSettingsState extends State<PresentationSettings> {
                       child: Text(t('Повторить загрузку', 'Retry loading')),
                     ),
                   ],
-                  const SizedBox(height: 24),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(t('Принципы взаимодействия', 'Our principles')),
-                    trailing: const AuraIcon(kind: AuraIconKind.arrowRight),
-                    onTap: () => _open(PrinciplesPage(language: _language)),
-                  ),
-                  const SizedBox(height: 28),
-                  Text(
-                    t(
-                      'Пространство для размышлений. Ответы случайны и не предназначены для принятия важных решений.',
-                      'A space for reflection. Answers are random and are not intended for important decisions.',
+                  const SizedBox(height: 20),
+                  _SettingsPanel(
+                    title: t('О приложении', 'About'),
+                    icon: AuraIconKind.brand,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        ListTile(
+                          contentPadding: EdgeInsets.zero,
+                          title: Text(
+                            t('Принципы взаимодействия', 'Our principles'),
+                          ),
+                          trailing: const AuraIcon(
+                            kind: AuraIconKind.arrowRight,
+                          ),
+                          onTap: () =>
+                              _open(PrinciplesPage(language: _language)),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          t(
+                            'Пространство для размышлений. Ответы случайны и не предназначены для принятия важных решений.',
+                            'A space for reflection. Answers are random and are not intended for important decisions.',
+                          ),
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodySmall,
                   ),
-                  const SizedBox(height: 18),
+                  const SizedBox(height: 24),
                   Text(
                     t(
-                      'Спроси Вселенную · 0.6.0 (10)',
-                      'Ask the Universe · 0.6.0 (10)',
+                      'Спроси Вселенную · 0.6.1 (11)',
+                      'Ask the Universe · 0.6.1 (11)',
                     ),
                     textAlign: TextAlign.center,
                     style: Theme.of(context).textTheme.bodySmall,
@@ -824,6 +999,65 @@ class _PresentationSettingsState extends State<PresentationSettings> {
     _name.dispose();
     super.dispose();
   }
+}
+
+class _SettingsPanel extends StatelessWidget {
+  final String title;
+  final String? description;
+  final AuraIconKind icon;
+  final Widget child;
+  const _SettingsPanel({
+    required this.title,
+    required this.icon,
+    required this.child,
+    this.description,
+  });
+
+  @override
+  Widget build(BuildContext context) => DecoratedBox(
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(26),
+      border: Border.all(color: const Color(0x26c5cad3), width: .8),
+      gradient: const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [Color(0xc2161b2a), Color(0xc2080b16)],
+      ),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.fromLTRB(18, 20, 18, 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Semantics(
+            header: true,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    title,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                AuraIcon(
+                  kind: icon,
+                  size: 22,
+                  color: CosmicPalette.silver.withValues(alpha: .7),
+                ),
+              ],
+            ),
+          ),
+          if (description != null) ...[
+            const SizedBox(height: 8),
+            Text(description!, style: Theme.of(context).textTheme.bodySmall),
+          ],
+          const SizedBox(height: 18),
+          child,
+        ],
+      ),
+    ),
+  );
 }
 
 class PrinciplesPage extends StatefulWidget {

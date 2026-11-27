@@ -47,7 +47,11 @@ void main() {
         );
         await tester.tap(find.byTooltip('Settings'));
         expect(taps, 1);
-        expect(cosmicTheme.textTheme.bodyLarge!.fontFamily, 'Manrope');
+        expect(cosmicTheme.textTheme.bodyLarge!.fontFamily, 'Literata');
+        expect(
+          cosmicTheme.textTheme.displayLarge!.fontFamily,
+          'Cormorant Garamond',
+        );
         expect(cosmicTheme.textTheme.displayLarge!.fontWeight, FontWeight.w300);
         await tester.pumpWidget(const SizedBox());
       } finally {

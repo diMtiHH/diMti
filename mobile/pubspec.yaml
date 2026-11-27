@@ -1,7 +1,7 @@
 name: universe_lab
 description: Local bilingual iPhone validation bench for Ask the Universe.
 publish_to: none
-version: 0.6.0+10
+version: 0.6.1+11
 environment:
   sdk: '>=3.14.0 <4.0.0'
 dependencies:
@@ -23,18 +23,27 @@ flutter:
     - shaders/aura_matter.frag
     - shaders/aura_metal.frag
   fonts:
-    - family: Manrope
+    - family: Cormorant Garamond
       fonts:
-        - asset: assets/fonts/Manrope-Light.ttf
+        - asset: assets/fonts/CormorantGaramond-Light.ttf
           weight: 300
-        - asset: assets/fonts/Manrope-Regular.ttf
+        - asset: assets/fonts/CormorantGaramond-Regular.ttf
           weight: 400
-        - asset: assets/fonts/Manrope-Medium.ttf
+        - asset: assets/fonts/CormorantGaramond-Medium.ttf
           weight: 500
-        - asset: assets/fonts/Manrope-SemiBold.ttf
+        - asset: assets/fonts/CormorantGaramond-SemiBold.ttf
+          weight: 600
+    - family: Literata
+      fonts:
+        - asset: assets/fonts/Literata-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Literata-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Literata-SemiBold.ttf
           weight: 600
   assets:
-    - assets/fonts/OFL.txt
+    - assets/fonts/CormorantGaramond-OFL.txt
+    - assets/fonts/Literata-OFL.txt
     - assets/audio/ambient/
     - assets/onboarding/script.json
     - assets/onboarding/narration.json

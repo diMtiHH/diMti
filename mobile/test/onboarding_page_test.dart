@@ -14,6 +14,7 @@ import 'package:universe_lab/narration.dart';
 import 'package:universe_lab/onboarding_page.dart';
 import 'package:universe_lab/presentation_profile.dart';
 import 'package:universe_lab/session_clock_scope.dart';
+import 'package:universe_lab/universe_startup.dart';
 
 import 'narration_test.dart' show TestNarrationBackend;
 import 'presentation_profile_test.dart' show MemoryPresentationBackend;
@@ -87,6 +88,7 @@ void main() {
     await tester.runAsync(() async {
       await NarrationTrack.load('ru');
       await NarrationTrack.load('en');
+      await warmUpAuraShaders();
     });
   }
 
@@ -97,7 +99,18 @@ void main() {
     await tester.pump();
     await preload(tester);
     await tester.pump(const Duration(milliseconds: 300));
-    await tester.pump();
+    for (var i = 0; i < 10; ++i) {
+      await tester.pump();
+    }
+    // The new startup cover also waits for the restored session. Complete its
+    // short visual transition only when that cover actually exists.
+    for (
+      var i = 0;
+      i < 20 && find.byType(UniverseStartup).evaluate().isNotEmpty;
+      ++i
+    ) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
   }
 
   Future<void> show(
@@ -117,6 +130,19 @@ void main() {
   }
 
   Future<void> tap(WidgetTester tester, Finder finder) async {
+    if (finder.evaluate().isEmpty &&
+        find.byType(ListView).evaluate().isNotEmpty) {
+      await tester.scrollUntilVisible(
+        finder,
+        280,
+        scrollable: find
+            .descendant(
+              of: find.byType(ListView),
+              matching: find.byType(Scrollable),
+            )
+            .first,
+      );
+    }
     await tester.ensureVisible(finder);
     await tester.pump();
     await tester.tap(finder);
@@ -178,7 +204,7 @@ void main() {
       expect(find.byType(OnboardingPage), findsNothing);
       expect(find.byKey(const ValueKey('open-settings')), findsOneWidget);
       expect(find.text('Привет, Астра'), findsOneWidget);
-      expect(find.byKey(const ValueKey('ask-question')), findsOneWidget);
+      expect(find.byType(AuraTouchSurface), findsOneWidget);
       expect(find.byKey(const ValueKey('answer')), findsNothing);
       expect(fixture.stored.completed, isTrue);
       expect(fixture.stored.termsVersion, currentTermsVersion);
@@ -546,7 +572,7 @@ void main() {
           termsVersion: currentTermsVersion,
         ).toJson();
         await show(tester, fixture);
-        await tap(tester, find.byKey(const ValueKey('ask-question')));
+        await tap(tester, find.byType(AuraTouchSurface));
         await tester.enterText(
           find.byKey(const ValueKey('question-input')),
           'private review fixture',
@@ -566,7 +592,7 @@ void main() {
         } else {
           await tap(tester, find.byTooltip('Назад'));
         }
-        await tap(tester, find.byKey(const ValueKey('ask-question')));
+        await tap(tester, find.byType(AuraTouchSurface));
         expect(
           tester.widget<TextField>(find.byType(TextField)).controller!.text,
           isEmpty,
@@ -630,11 +656,20 @@ void main() {
         final icons = FontLoader('MaterialIcons');
         icons.addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
         await icons.load();
-        final loader = FontLoader('Manrope');
-        for (final weight in ['Light', 'Regular', 'Medium', 'SemiBold']) {
-          loader.addFont(rootBundle.load('assets/fonts/Manrope-$weight.ttf'));
+        for (final family in ['Cormorant Garamond', 'Literata']) {
+          final loader = FontLoader(family);
+          final prefix = family.replaceAll(' ', '');
+          final weights = [
+            if (family == 'Cormorant Garamond') 'Light',
+            'Regular',
+            'Medium',
+            'SemiBold',
+          ];
+          for (final weight in weights) {
+            loader.addFont(rootBundle.load('assets/fonts/$prefix-$weight.ttf'));
+          }
+          await loader.load();
         }
-        await loader.load();
       });
       await preload(tester);
       tester.view.physicalSize = const Size(390, 844);

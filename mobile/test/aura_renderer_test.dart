@@ -99,6 +99,9 @@ void main() {
       expect(opens, 1);
       expect(controller.pressed, isFalse);
       expect(controller.release, 1);
+      // Opening input after pointer-up must retain its release/rebound effect.
+      await tester.pumpWidget(app(controller, phase: AuraPhase.questionInput));
+      expect(controller.release, greaterThan(0));
       await tester.pumpWidget(const SizedBox());
       controller.dispose();
     },
@@ -133,7 +136,6 @@ void main() {
   );
 
   for (final phase in [
-    AuraPhase.questionInput,
     AuraPhase.questionConfirmation,
     AuraPhase.safetyValidation,
     AuraPhase.answerAnimation,
@@ -158,6 +160,21 @@ void main() {
       },
     );
   }
+
+  testWidgets(
+    'input-phase short tap can dismiss the keyboard through its owner',
+    (tester) async {
+      final controller = AuraInteractionController();
+      var taps = 0;
+      await tester.pumpWidget(
+        app(controller, phase: AuraPhase.questionInput, tap: () => taps++),
+      );
+      await tester.tap(find.byType(AuraTouchSurface));
+      expect(taps, 1);
+      await tester.pumpWidget(const SizedBox());
+      controller.dispose();
+    },
+  );
 
   testWidgets('replacing the interaction owner cancels the old gesture', (
     tester,
@@ -271,10 +288,10 @@ void main() {
         ),
       );
       await tester.pumpWidget(layers(true));
-      await tester.pump(const Duration(milliseconds: 20));
+      await tester.pump(const Duration(milliseconds: 60));
       final first = controller.elapsed;
-      await tester.pump(const Duration(milliseconds: 20));
-      expect(controller.elapsed - first, closeTo(.020, .001));
+      await tester.pump(const Duration(milliseconds: 40));
+      expect(controller.elapsed - first, closeTo(.040, .001));
       final before = controller.elapsed;
       await tester.pumpWidget(layers(true));
       expect(controller.elapsed, greaterThanOrEqualTo(before));
@@ -343,6 +360,53 @@ void main() {
     }
     expect(calls, contains('stop'));
   });
+
+  testWidgets(
+    'five virtual minutes keep idle cadence bounded and hidden views stop',
+    (tester) async {
+      final controller = AuraInteractionController();
+      await tester.pumpWidget(app(controller, reduced: false));
+      AuraPainter painter() => tester
+          .widgetList<CustomPaint>(find.byType(CustomPaint))
+          .map((widget) => widget.painter)
+          .whereType<AuraPainter>()
+          .single;
+      final initial = painter();
+      expect(initial.environmentShader, isNull);
+      expect(initial.matterShader, isNotNull);
+      expect(initial.metalShader, isNull);
+      var paints = 0;
+      void painted() => paints++;
+      initial.addListener(painted);
+      // A deterministic five-minute scheduler soak at a simulated 120 Hz display;
+      // this verifies scheduling/resource lifetime, not device GPU performance.
+      for (var minute = 0; minute < 5; minute++) {
+        final before = paints;
+        for (var frame = 0; frame < 7200; frame++) {
+          await tester.pump(const Duration(microseconds: 8334));
+        }
+        expect(paints - before, inInclusiveRange(1799, 1801));
+        expect(identical(painter().matterShader, initial.matterShader), isTrue);
+        expect(controller.quality, lessThanOrEqualTo(.65));
+      }
+      initial.removeListener(painted);
+      await tester.pumpWidget(app(controller, reduced: false, active: false));
+      final stopped = controller.elapsed;
+      await tester.pump(const Duration(minutes: 2));
+      expect(controller.elapsed, stopped);
+      expect(tester.binding.hasScheduledFrame, isFalse);
+      await tester.pumpWidget(
+        app(controller, reduced: true, form: 'liquidMetal'),
+      );
+      expect(painter().matterShader, isNull);
+      expect(painter().metalShader, isNotNull);
+      await tester.pumpWidget(app(controller, reduced: true, form: 'infinity'));
+      expect(painter().matterShader, isNull);
+      expect(painter().metalShader, isNull);
+      await tester.pumpWidget(const SizedBox());
+      controller.dispose();
+    },
+  );
 
   testWidgets('non-answer phases ignore stray transition progress', (
     tester,

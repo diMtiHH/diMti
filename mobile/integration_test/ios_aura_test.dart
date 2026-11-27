@@ -32,6 +32,31 @@ void main() {
       // playback or requesting speech/microphone access in the native runner.
       const ambientChannel = MethodChannel('ask_universe/ambient');
       await ambientChannel.invokeMethod<void>('stop');
+      const motionChannel = MethodChannel('ask_universe/motion');
+      await motionChannel.invokeMethod<void>('start');
+      await motionChannel.invokeMethod<void>('stop');
+      await expectLater(
+        motionChannel.invokeMethod<void>('start', {'invalid': true}),
+        throwsA(
+          isA<PlatformException>().having(
+            (error) => error.code,
+            'code',
+            'invalid',
+          ),
+        ),
+      );
+      const hapticsChannel = MethodChannel('ask_universe/haptics');
+      await hapticsChannel.invokeMethod<void>('cancel', {'owner': 1});
+      await expectLater(
+        hapticsChannel.invokeMethod<void>('hold', {'owner': true}),
+        throwsA(
+          isA<PlatformException>().having(
+            (error) => error.code,
+            'code',
+            'invalid',
+          ),
+        ),
+      );
       await expectLater(
         ambientChannel.invokeMethod<void>('cue', {'event': 'invalid'}),
         throwsA(

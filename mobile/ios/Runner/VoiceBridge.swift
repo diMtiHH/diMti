@@ -55,6 +55,7 @@ final class VoiceBridge {
   private var input: VoiceAudioInput?
   private var recognizer: SFSpeechRecognizer?
   private var task: SFSpeechRecognitionTask?
+  private var transcript = VoiceTranscriptBuffer()
   private var tapInstalled = false
   private var audioActivated = false
   private var startResult: FlutterResult?
@@ -245,12 +246,18 @@ final class VoiceBridge {
       request.shouldReportPartialResults = true
       let input = VoiceAudioInput(request)
       self.input = input
+      transcript = VoiceTranscriptBuffer()
       task = recognizer.recognitionTask(with: request) { [weak self] result, error in
         DispatchQueue.main.async {
           guard let self, self.lifecycle.accepts(ticket) else { return }
           if let result {
-            let text = result.bestTranscription.formattedString
-            guard VoicePolicy.acceptsTranscript(text) else {
+            let best = result.bestTranscription
+            let first = best.segments.first
+            let last = best.segments.last
+            let end = last.map { $0.timestamp + $0.duration }
+            guard let text = self.transcript.update(
+              best.formattedString, start: first?.timestamp, end: end
+            ) else {
               self.complete(ticket, error: "failed")
               return
             }
@@ -341,6 +348,7 @@ final class VoiceBridge {
     task = nil
     input = nil
     recognizer = nil
+    transcript = VoiceTranscriptBuffer()
     finishStart(FlutterError(code: error ?? "interrupted", message: "Voice stopped", details: nil))
     var event: [String: Any] = ["id": ticket.id, "type": error == nil ? "finished" : "error"]
     if let error { event["code"] = error }

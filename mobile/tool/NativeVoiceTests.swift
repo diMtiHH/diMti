@@ -98,6 +98,55 @@ private enum VoiceTestError: Error { case failed(String) }
     try check(!VoicePolicy.acceptsTranscript(String(repeating: "🌟", count: 4097)), "Dart UTF16 length respected")
     pass("transcript size matches Dart UTF16 limit without silent truncation")
 
+    var transcript = VoiceTranscriptBuffer()
+    try check(transcript.update("Should", start: 0.2, end: 0.5) == "Should", "first partial")
+    try check(transcript.update("Should I read", start: 0.2, end: 1.5) == "Should I read", "cumulative partial")
+    try check(transcript.update("Should I read", start: 0.2, end: 1.5) == "Should I read", "repeated callback")
+    try check(transcript.update("Should I write", start: 0.2, end: 1.5) == "Should I write", "corrected hypothesis")
+    pass("partial and corrected hypotheses replace the same audio range without duplication")
+
+    try check(transcript.update("today", start: 3, end: 3.5) == "Should I write today", "new utterance after silence")
+    try check(transcript.update("today or", start: 3, end: 4) == "Should I write today or", "new partial keeps prior utterance")
+    try check(transcript.update("today or tomorrow?", start: 3, end: 4.8) == "Should I write today or tomorrow?", "final phrase revision")
+    pass("a later disjoint audio range keeps the accepted phrase across a pause")
+
+    try check(transcript.update("Should I write today or tomorrow?", start: 0.2, end: 4.8) == "Should I write today or tomorrow?", "full cumulative result replaces covered snapshots")
+    try check(transcript.update("", start: nil, end: nil) == "Should I write today or tomorrow?", "empty result")
+    try check(transcript.update(" \n", start: nil, end: nil) == "Should I write today or tomorrow?", "blank result")
+    pass("cumulative final and empty silence results do not duplicate or erase previous speech")
+
+    var repeated = VoiceTranscriptBuffer()
+    try check(repeated.update("yes", start: 0, end: 0.4) == "yes", "initial word")
+    try check(repeated.update("yes", start: 1, end: 1.4) == "yes yes", "intentional repeated word")
+    try check(repeated.update("yes", start: 1, end: 1.4) == "yes yes", "repeated same event")
+    pass("intentional repetition at distinct audio times is preserved without duplicate callbacks")
+
+    var untimed = VoiceTranscriptBuffer()
+    try check(untimed.update("first", start: 0, end: 0.5) == "first", "known prefix")
+    try check(untimed.update("second", start: 2, end: 2.5) == "first second", "known current phrase")
+    try check(untimed.update("second revised", start: 0, end: 0) == "first second revised", "zero duration partial")
+    try check(untimed.update("second complete", start: 2, end: 3) == "first second complete", "timing resumes")
+    try check(untimed.update("all revised", start: 0, end: 3) == "all revised", "timestamp reset is a revision, never guessed append")
+    pass("untimed partials revise only the active phrase and ambiguous resets never guess a boundary")
+
+    var bounded = VoiceTranscriptBuffer()
+    let nearLimit = String(repeating: "🌟", count: 4095)
+    try check(bounded.update(nearLimit, start: 0, end: 1) == nearLimit, "UTF16 prefix")
+    try check(bounded.update("x", start: 2, end: 3) == nearLimit + " x", "combined boundary")
+    try check(bounded.update("xx", start: 2, end: 3) == nil, "combined overflow")
+    try check(bounded.text == nearLimit + " x", "overflow retains last accepted text")
+    pass("combined utterances enforce UTF16 bounds without silent truncation or state corruption")
+
+    let invalidTiming: [(Double?, Double?)] = [(Double.nan, 1), (0, Double.infinity), (-1, 1), (2, 1), (nil, 1), (0, nil)]
+    for interval in invalidTiming {
+      try check(bounded.update("invalid", start: interval.0, end: interval.1) == nil, "invalid interval rejected")
+      try check(bounded.text == nearLimit + " x", "invalid interval cannot edit current draft")
+    }
+    bounded = VoiceTranscriptBuffer()
+    try check(bounded.text.isEmpty, "capture disposal clears text")
+    try check(bounded.update("fresh capture", start: 0, end: 1) == "fresh capture", "new capture has no old transcript")
+    pass("invalid timing cannot corrupt text and a new capture has no retained transcription")
+
     try check(VoicePolicy.recordingSeconds == 60 && VoicePolicy.permissionSeconds == 60, "bounded capture and permissions")
     try check(VoicePolicy.finalizationSeconds == 2, "bounded finalization")
     pass("capture permission and finalization waits have explicit limits")

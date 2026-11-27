@@ -76,13 +76,13 @@ void main() {
         ),
       );
       b.emit(VoiceEvent(id: b.id, type: VoiceEventType.level, level: 0.6));
-      expect(c.text, 'spoken draft');
+      expect(c.text, 'manual draft spoken draft');
       expect(c.level, 0.6);
       expect(b.stops, isEmpty);
       expect(b.cancels, isEmpty);
       b.emit(VoiceEvent(id: b.id, type: VoiceEventType.finished));
       expect(c.state, VoiceInputState.idle);
-      expect(c.text, 'spoken draft');
+      expect(c.text, 'manual draft spoken draft');
       expect(c.level, 0);
       expect(c.busy, isFalse);
       expect(b.starts, hasLength(1));
@@ -185,8 +185,171 @@ void main() {
     b.emit(
       VoiceEvent(id: current, type: VoiceEventType.transcript, text: 'new'),
     );
-    expect(c.text, 'new');
+    expect(c.text, 'new draft new');
   });
+
+  test('partial corrections replace only the current capture suffix', () async {
+    final b = backend(), c = controller(b);
+    await c.start('ru', initialText: 'Стоит ли мне');
+    for (final speech in ['сегодня', 'сегодня почитать', 'сегодня почитать']) {
+      b.emit(
+        VoiceEvent(id: b.id, type: VoiceEventType.transcript, text: speech),
+      );
+      expect(c.text, 'Стоит ли мне $speech');
+    }
+    b.emit(VoiceEvent(id: b.id, type: VoiceEventType.transcript, text: ''));
+    b.emit(VoiceEvent(id: b.id, type: VoiceEventType.transcript, text: '  \n'));
+    expect(c.text, 'Стоит ли мне сегодня почитать');
+    b.emit(
+      VoiceEvent(
+        id: b.id,
+        type: VoiceEventType.finished,
+        text: 'сегодня читать?',
+      ),
+    );
+    expect(c.text, 'Стоит ли мне сегодня читать?');
+    expect(c.state, VoiceInputState.idle);
+  });
+
+  test(
+    'explicit second capture appends once and rejects the first final',
+    () async {
+      final b = backend(), c = controller(b);
+      await c.start('en');
+      final first = b.id;
+      b.emit(
+        VoiceEvent(id: first, type: VoiceEventType.finished, text: 'Should I'),
+      );
+      await c.start('en', initialText: c.text);
+      final second = b.id;
+      b.emit(
+        VoiceEvent(id: second, type: VoiceEventType.transcript, text: 'read'),
+      );
+      b.emit(
+        VoiceEvent(id: first, type: VoiceEventType.finished, text: 'stale'),
+      );
+      b.emit(
+        VoiceEvent(
+          id: second,
+          type: VoiceEventType.transcript,
+          text: 'read a novel',
+        ),
+      );
+      b.emit(
+        VoiceEvent(
+          id: second,
+          type: VoiceEventType.finished,
+          text: 'read a novel?',
+        ),
+      );
+      expect(c.text, 'Should I read a novel?');
+      expect(b.starts, hasLength(2));
+      expect(c.state, VoiceInputState.idle);
+    },
+  );
+
+  test(
+    'edited prefix is authoritative across cancel and language change',
+    () async {
+      final b = backend(), c = controller(b);
+      await c.start('ru', initialText: 'old draft');
+      final old = b.id;
+      b.emit(
+        VoiceEvent(id: old, type: VoiceEventType.transcript, text: 'discard'),
+      );
+      await c.cancel();
+      expect(c.text, isEmpty);
+      await c.start('en', initialText: 'Edited question:\n');
+      final current = b.id;
+      b.emit(
+        VoiceEvent(id: old, type: VoiceEventType.transcript, text: 'late'),
+      );
+      b.emit(
+        VoiceEvent(
+          id: current,
+          type: VoiceEventType.transcript,
+          text: 'read today',
+        ),
+      );
+      expect(c.text, 'Edited question:\nread today');
+      b.emit(
+        VoiceEvent(
+          id: current,
+          type: VoiceEventType.error,
+          code: 'interrupted',
+        ),
+      );
+      b.emit(
+        VoiceEvent(
+          id: current,
+          type: VoiceEventType.finished,
+          text: 'late final',
+        ),
+      );
+      expect(c.text, 'Edited question:\nread today');
+      expect(c.state, VoiceInputState.error);
+    },
+  );
+
+  test('empty final preserves the draft and last nonempty partial', () async {
+    final b = backend(), c = controller(b);
+    await c.start('en', initialText: 'Typed draft');
+    b.emit(VoiceEvent(id: b.id, type: VoiceEventType.finished, text: ''));
+    expect(c.text, 'Typed draft');
+    await c.start('en', initialText: c.text);
+    b.emit(
+      VoiceEvent(
+        id: b.id,
+        type: VoiceEventType.transcript,
+        text: 'plus speech',
+      ),
+    );
+    b.emit(VoiceEvent(id: b.id, type: VoiceEventType.finished, text: ''));
+    expect(c.text, 'Typed draft plus speech');
+  });
+
+  for (final terminal in [false, true]) {
+    test(
+      'combined UTF16 overflow keeps the last draft, terminal=$terminal',
+      () async {
+        final b = backend(), c = controller(b);
+        final prefix = '🌟' * 4094;
+        await c.start('en', initialText: prefix);
+        final id = b.id;
+        b.emit(VoiceEvent(id: id, type: VoiceEventType.transcript, text: 'a'));
+        final accepted = '$prefix a';
+        expect(c.text, accepted);
+        b.emit(
+          VoiceEvent(
+            id: id,
+            type: terminal
+                ? VoiceEventType.finished
+                : VoiceEventType.transcript,
+            text: 'abcd',
+          ),
+        );
+        expect(c.state, VoiceInputState.error);
+        expect(c.errorCode, 'failed');
+        expect(c.text, accepted);
+        expect(b.cancels, contains(id));
+        b.emit(VoiceEvent(id: id, type: VoiceEventType.finished, text: 'late'));
+        expect(c.text, accepted);
+      },
+    );
+  }
+
+  test(
+    'combined boundary is accepted without adding whitespace twice',
+    () async {
+      final b = backend(), c = controller(b);
+      final prefix = '${'a' * (maxVoiceTextLength - 2)} ';
+      await c.start('en', initialText: prefix);
+      b.emit(VoiceEvent(id: b.id, type: VoiceEventType.finished, text: 'b'));
+      expect(c.text, '${prefix}b');
+      expect(c.text.length, maxVoiceTextLength);
+      expect(c.state, VoiceInputState.idle);
+    },
+  );
 
   test(
     'stalled start times out and cleans up a later successful reply',

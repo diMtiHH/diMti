@@ -1,7 +1,7 @@
 import Foundation
 import CoreFoundation
 
-// Shared with the automatic native checks; contains no audio, text history or I/O.
+// Shared with automatic native checks. No audio, persistence, logging or I/O.
 enum VoicePolicy {
   static let recordingSeconds: TimeInterval = 60
   static let permissionSeconds: TimeInterval = 60
@@ -29,6 +29,59 @@ enum VoicePolicy {
     guard integer >= 0, integer <= 9_007_199_254_740_991,
           number == NSNumber(value: integer) else { return nil }
     return Int(integer)
+  }
+}
+
+// Ephemeral snapshots of this capture, bounded by the same UTF16 limit as Dart.
+// Apple timestamps refer to the processed audio stream. Only a disjoint later
+// audio range commits an earlier utterance; overlapping partial results revise
+// their range. We never infer a phrase boundary from words, confidence or a
+// wall-clock pause, and never deduplicate intentional repeated spoken words.
+struct VoiceTranscriptBuffer {
+  private struct Part {
+    let text: String
+    let start: TimeInterval?
+    let end: TimeInterval?
+  }
+  private var parts: [Part] = []
+  private(set) var text = ""
+
+  mutating func update(_ incoming: String, start: TimeInterval?, end: TimeInterval?) -> String? {
+    guard VoicePolicy.acceptsTranscript(incoming) else { return nil }
+    // Silence can produce an empty hypothesis; it must not erase the draft.
+    guard !incoming.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return text }
+    if let start, let end {
+      guard start.isFinite, end.isFinite, start >= 0, end >= start else { return nil }
+    } else if start != nil || end != nil { return nil }
+
+    // Early partials may not have a positive duration yet. They remain editable
+    // but cannot prove that a different utterance has begun.
+    let timedStart: TimeInterval?
+    let timedEnd: TimeInterval?
+    if let start, let end, end > start {
+      timedStart = start
+      timedEnd = end
+    } else {
+      timedStart = nil
+      timedEnd = nil
+    }
+    var retained: [Part]
+    if let start = timedStart {
+      retained = Array(parts.prefix { part in
+        guard let previousStart = part.start, let previousEnd = part.end else { return false }
+        return previousStart < start && previousEnd <= start
+      })
+    } else {
+      // Missing timing cannot establish a new utterance. Revise the current
+      // hypothesis, keeping only prefixes whose boundaries were established.
+      retained = Array(parts.dropLast())
+    }
+    retained.append(Part(text: incoming, start: timedStart, end: timedEnd))
+    let merged = retained.map(\.text).joined(separator: " ")
+    guard VoicePolicy.acceptsTranscript(merged) else { return nil }
+    parts = retained
+    text = merged
+    return text
   }
 }
 

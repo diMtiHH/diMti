@@ -7,6 +7,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'aura_power_budget.dart';
+import 'aura_motion.dart';
 
 /// Pure presentation phases. The caller, never the renderer, authorizes an
 /// answer animation/reveal and supplies its progress after the closed gate.
@@ -45,7 +46,7 @@ class AuraInteractionController extends ChangeNotifier {
   Offset _point = Offset.zero;
   bool _pressed = false;
   double _pressure = 0, _hold = 0, _release = 0, _pulse = 0;
-  double _elapsed = 0, _quality = 1;
+  double _elapsed = 0, _quality = .60;
   Duration? _frame;
   bool _disposed = false;
 
@@ -139,7 +140,7 @@ class AuraInteractionController extends ChangeNotifier {
     else if (cost > 19000)
       _quality = math.max(0.45, _quality - 0.06);
     else if (cost < 13000)
-      _quality = math.min(1, _quality + 0.02);
+      _quality = math.min(.65, _quality + 0.01);
   }
 
   @override
@@ -155,7 +156,11 @@ class AuraTouchSurface extends StatefulWidget {
   final AuraInteractionController interaction;
   final Widget child;
   final String label;
-  final VoidCallback? onShortTap, onTouchFeedback;
+  final VoidCallback? onShortTap,
+      onTouchFeedback,
+      onHoldStart,
+      onHoldRelease,
+      onTouchCancel;
   final AuraPhase phase;
   final bool active, enabled;
   const AuraTouchSurface({
@@ -165,6 +170,9 @@ class AuraTouchSurface extends StatefulWidget {
     required this.label,
     this.onShortTap,
     this.onTouchFeedback,
+    this.onHoldStart,
+    this.onHoldRelease,
+    this.onTouchCancel,
     this.phase = AuraPhase.idle,
     this.active = true,
     this.enabled = true,
@@ -181,7 +189,10 @@ class _AuraTouchSurfaceState extends State<AuraTouchSurface>
   bool _held = false, _dragged = false, _foreground = true;
   bool get _enabled => widget.active && widget.enabled && _foreground;
   bool get _canOpen =>
-      _enabled && widget.phase == AuraPhase.idle && widget.onShortTap != null;
+      _enabled &&
+      (widget.phase == AuraPhase.idle ||
+          widget.phase == AuraPhase.questionInput) &&
+      widget.onShortTap != null;
   @override
   void initState() {
     super.initState();
@@ -195,6 +206,7 @@ class _AuraTouchSurfaceState extends State<AuraTouchSurface>
     (point.dy / math.max(1, size.height) * 2 - 1).clamp(-1, 1),
   );
   void _cancel() {
+    if (_pointer != null) widget.onTouchCancel?.call();
     _holdTimer?.cancel();
     _holdTimer = null;
     _pointer = null;
@@ -208,7 +220,7 @@ class _AuraTouchSurfaceState extends State<AuraTouchSurface>
       oldWidget.interaction.cancel();
     }
     if (!_enabled ||
-        oldWidget.phase != widget.phase ||
+        (oldWidget.phase != widget.phase && _pointer != null) ||
         oldWidget.interaction != widget.interaction)
       _cancel();
   }
@@ -241,15 +253,19 @@ class _AuraTouchSurfaceState extends State<AuraTouchSurface>
             widget.interaction._down(_normalize(event.localPosition, size));
             widget.onTouchFeedback?.call();
             _holdTimer = Timer(const Duration(milliseconds: 320), () {
-              if (_pointer != null && _enabled) {
+              if (_pointer != null && _enabled && !_dragged) {
                 _held = true;
                 widget.interaction._holding();
+                widget.onHoldStart?.call();
               }
             });
           },
           onPointerMove: (event) {
             if (_pointer != event.pointer || !_enabled) return;
-            if ((event.localPosition - _origin).distance > 12) _dragged = true;
+            if ((event.localPosition - _origin).distance > 12 && !_dragged) {
+              _dragged = true;
+              widget.onTouchCancel?.call();
+            }
             widget.interaction._move(_normalize(event.localPosition, size));
           },
           onPointerUp: (event) {
@@ -258,6 +274,7 @@ class _AuraTouchSurfaceState extends State<AuraTouchSurface>
             _holdTimer = null;
             _pointer = null;
             widget.interaction._up();
+            if (_held && !_dragged && _enabled) widget.onHoldRelease?.call();
             if (!_held && !_dragged && _canOpen) widget.onShortTap?.call();
           },
           onPointerCancel: (event) {
@@ -272,7 +289,10 @@ class _AuraTouchSurfaceState extends State<AuraTouchSurface>
   void dispose() {
     _holdTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
-    if (_pointer != null) widget.interaction.cancel();
+    if (_pointer != null) {
+      widget.onTouchCancel?.call();
+      widget.interaction.cancel();
+    }
     super.dispose();
   }
 }
@@ -293,6 +313,7 @@ class _ShaderLibrary {
 /// Lets automated native/renderer checks require compiled shaders explicitly.
 /// A scene itself retains a procedural mesh while its shader assets warm up.
 Future<void> warmUpAuraShaders() async {
+  if (_ShaderLibrary.ready != null) return;
   await _ShaderLibrary.load();
 }
 
@@ -336,6 +357,9 @@ class _AuraSceneState extends State<AuraScene>
   late AuraPowerBudget _power;
   late final Ticker _ticker = createTicker(_tick);
   final _signal = _PaintSignal();
+  final _deviceMotion = AuraMotionController.instance;
+  bool _motionLease = false;
+  bool _timingsAttached = false;
   ui.FragmentShader? _environment, _matter, _metal;
   bool _foreground = true, _motion = false;
   Duration? _paintedAt;
@@ -347,7 +371,6 @@ class _AuraSceneState extends State<AuraScene>
     _power = widget.powerBudget ?? AuraPowerBudget.instance;
     _power.addListener(_powerChanged);
     WidgetsBinding.instance.addObserver(this);
-    SchedulerBinding.instance.addTimingsCallback(_timings);
     final state = WidgetsBinding.instance.lifecycleState;
     _foreground = state == null || state == AppLifecycleState.resumed;
     _load();
@@ -357,20 +380,37 @@ class _AuraSceneState extends State<AuraScene>
     try {
       final cached = _ShaderLibrary.ready;
       if (cached != null) {
-        _environment = cached.environment.fragmentShader();
-        _matter = cached.matter.fragmentShader();
-        _metal = cached.metal.fragmentShader();
+        _syncShaders(cached);
         return;
       }
       final library = await _ShaderLibrary.load();
       if (!mounted) return;
-      _environment = library.environment.fragmentShader();
-      _matter = library.matter.fragmentShader();
-      _metal = library.metal.fragmentShader();
+      _syncShaders(library);
       setState(() {});
     } catch (_) {
       // The bounded procedural geometry still responds to touch. Native tests
       // call warmUpAuraShaders separately, so a missing shader cannot pass CI.
+    }
+  }
+
+  void _syncShaders(_ShaderLibrary library) {
+    if (widget.showBackground) {
+      _environment ??= library.environment.fragmentShader();
+    } else {
+      _environment?.dispose();
+      _environment = null;
+    }
+    if (widget.showForm && widget.form == 'livingMatter') {
+      _matter ??= library.matter.fragmentShader();
+    } else {
+      _matter?.dispose();
+      _matter = null;
+    }
+    if (widget.showForm && widget.form == 'liquidMetal') {
+      _metal ??= library.metal.fragmentShader();
+    } else {
+      _metal?.dispose();
+      _metal = null;
     }
   }
 
@@ -389,9 +429,19 @@ class _AuraSceneState extends State<AuraScene>
 
   void _tick(Duration elapsed) {
     final stamp = SchedulerBinding.instance.currentFrameTimeStamp;
-    final interval = Duration(
-      microseconds: (1000000 / _power.maxFps - 500).round(),
+    final responsive =
+        _interaction.pressed ||
+        widget.energy > .05 ||
+        widget.phase == AuraPhase.answerAnimation;
+    final fps = math.min(
+      _power.maxFps,
+      widget.preview
+          ? 20
+          : responsive
+          ? 45
+          : 30,
     );
+    final interval = Duration(microseconds: (1000000 / fps - 500).round());
     if (_paintedAt != null && stamp - _paintedAt! < interval) return;
     _paintedAt = stamp;
     _interaction._advance(stamp);
@@ -405,6 +455,24 @@ class _AuraSceneState extends State<AuraScene>
         TickerMode.valuesOf(context).enabled &&
         !MediaQuery.disableAnimationsOf(context) &&
         !MediaQuery.accessibleNavigationOf(context);
+    final needsTilt = _motion && widget.showForm && !widget.preview;
+    final needsTimings = _motion && widget.showBackground && !widget.preview;
+    if (needsTimings != _timingsAttached) {
+      _timingsAttached = needsTimings;
+      if (needsTimings) {
+        SchedulerBinding.instance.addTimingsCallback(_timings);
+      } else {
+        SchedulerBinding.instance.removeTimingsCallback(_timings);
+      }
+    }
+    if (needsTilt && !_motionLease) {
+      _motionLease = true;
+      _deviceMotion.acquire();
+    }
+    if (!needsTilt && _motionLease) {
+      _motionLease = false;
+      _deviceMotion.release();
+    }
     if (_motion && !_ticker.isActive) {
       _paintedAt = null;
       _ticker.start();
@@ -421,6 +489,8 @@ class _AuraSceneState extends State<AuraScene>
   @override
   void didUpdateWidget(AuraScene oldWidget) {
     super.didUpdateWidget(oldWidget);
+    final library = _ShaderLibrary.ready;
+    if (library != null) _syncShaders(library);
     if (oldWidget.powerBudget != widget.powerBudget) {
       _power.removeListener(_powerChanged);
       _power = widget.powerBudget ?? AuraPowerBudget.instance;
@@ -468,6 +538,7 @@ class _AuraSceneState extends State<AuraScene>
                   preview: widget.preview,
                   qualityCap: _power.qualityCap,
                   motion: _motion,
+                  deviceMotion: _motionLease ? _deviceMotion : null,
                   environmentShader: _environment,
                   matterShader: _matter,
                   metalShader: _metal,
@@ -484,9 +555,11 @@ class _AuraSceneState extends State<AuraScene>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    SchedulerBinding.instance.removeTimingsCallback(_timings);
+    if (_timingsAttached)
+      SchedulerBinding.instance.removeTimingsCallback(_timings);
     _interaction.removeListener(_changed);
     _power.removeListener(_powerChanged);
+    if (_motionLease) _deviceMotion.release();
     if (widget.interaction == null) _interaction.dispose();
     _ticker.dispose();
     _signal.dispose();
@@ -506,6 +579,7 @@ class AuraPainter extends CustomPainter {
   final bool showBackground, showForm, preview, motion;
   final Alignment formAlignment;
   final ui.FragmentShader? environmentShader, matterShader, metalShader;
+  final AuraMotionController? deviceMotion;
   AuraPainter({
     required this.background,
     required this.form,
@@ -523,6 +597,7 @@ class AuraPainter extends CustomPainter {
     this.environmentShader,
     this.matterShader,
     this.metalShader,
+    this.deviceMotion,
     super.repaint,
   });
 
@@ -590,7 +665,11 @@ class AuraPainter extends CustomPainter {
     final origin = formAlignment.alongSize(free);
     final objectSize = Size.square(diameter);
     canvas.save();
-    canvas.translate(origin.dx, origin.dy);
+    final tilt = deviceMotion?.value ?? Offset.zero;
+    canvas.translate(
+      origin.dx + tilt.dx * diameter * .035,
+      origin.dy + tilt.dy * diameter * .035,
+    );
     final shader = form == 'liquidMetal'
         ? metalShader
         : form == 'livingMatter'
@@ -865,8 +944,8 @@ void paintAuraForm(
   if (form == 'infinity') {
     // Depth bins preserve front/back lighting with only 20 draw calls.
     final bins = List.generate(10, (_) => <double>[]);
-    final strands = (10 + quality * 10).round();
-    const steps = 144;
+    final strands = (7 + quality * 7).round();
+    const steps = 96;
     for (var strand = 0; strand < strands; ++strand) {
       _P3? previous;
       for (var i = 0; i <= steps; ++i) {
@@ -899,7 +978,10 @@ void paintAuraForm(
           final front = _project(previous, radius * 1.04, center);
           final next = _project(touched, radius * 1.04, center);
           final bin = ((depth + .8) / 1.6 * 9).round().clamp(0, 9);
-          bins[bin].addAll([front.dx, front.dy, next.dx, next.dy]);
+          bins[bin].add(front.dx);
+          bins[bin].add(front.dy);
+          bins[bin].add(next.dx);
+          bins[bin].add(next.dy);
         }
         previous = touched;
       }

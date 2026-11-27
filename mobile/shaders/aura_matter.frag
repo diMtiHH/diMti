@@ -26,7 +26,7 @@ void main() {
   float local=exp(-dot(uv-touch,uv-touch)*3.5)*uPressure;
   uv-=uTouch*local*.16*uMotion;
   uv*=squeeze;
-  float layers=9.+floor(uQuality*7.);
+  float layers=6.+floor(uQuality*5.);
   for(int i=0;i<17;i++) {
     if(float(i)>=layers) break;
     float z=-1.06+2.12*float(i)/(layers-1.);
@@ -53,7 +53,7 @@ void main() {
   }
   float halo=exp(-abs(length(uv)-.81)*13.)*.015;
   sum+=uColor*(broad*.11+halo)*(1.+local*.6);
-  sum=vec3(1.)-exp(-sum*1.9);
+  sum=vec3(1.)-exp(-sum*1.9*12./layers);
   float alpha=clamp(max(max(sum.r,sum.g),sum.b)*1.4+coverage*.13,0.,1.);
   float edge=1.-smoothstep(1.34,1.48,length(uv));
   fragColor=vec4(sum*edge,alpha*edge);

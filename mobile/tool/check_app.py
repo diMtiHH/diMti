@@ -27,17 +27,21 @@ for name, expected in {
     print(f'{name}: verified in Runner.app')
 print('App bytes:', sum(p.stat().st_size for p in app.rglob('*') if p.is_file()))
 info = plistlib.loads((app / 'Info.plist').read_bytes())
-assert info.get('CFBundleShortVersionString') == '0.6.0', 'Wrong app version'
-assert str(info.get('CFBundleVersion')) == '10', 'Wrong app build number'
+assert info.get('CFBundleShortVersionString') == '0.6.1', 'Wrong app version'
+assert str(info.get('CFBundleVersion')) == '11', 'Wrong app build number'
 assert info.get('UniverseEnglishNoticeApproved') is False
-for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription'):
+for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription', 'NSMotionUsageDescription'):
     assert isinstance(info.get(key), str) and info[key].strip(), key
 for language in ('ru', 'en'):
     localized = plistlib.loads((app / f'{language}.lproj/InfoPlist.strings').read_bytes())
-    for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription'):
+    for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription', 'NSMotionUsageDescription'):
         assert localized.get(key, '').strip(), (language, key)
 assert not info.get('UIBackgroundModes'), 'Background recording is not authorized'
-print('Local speech permission descriptions RU/EN and closed notification flag: verified')
+print('Local speech/motion permission descriptions RU/EN and closed notification flag: verified')
+native = (app / info['CFBundleExecutable']).read_bytes()
+for channel in ('presentation', 'voice', 'ambient', 'graphicsBudget', 'motion', 'haptics'):
+    assert f'ask_universe/{channel}'.encode() in native, f'Missing native channel: {channel}'
+print('Six native bridge channels: verified')
 onboarding = app / 'Frameworks/App.framework/flutter_assets/assets/onboarding'
 metadata = json.loads((onboarding / 'narration.json').read_text(encoding='utf-8'))
 script = json.loads((onboarding / 'script.json').read_text(encoding='utf-8'))
@@ -62,20 +66,26 @@ flutter_assets = app / 'Frameworks/App.framework/flutter_assets'
 font_source = repo / 'mobile/assets/fonts'
 font_manifest = json.loads((font_source / 'sources.json').read_text(encoding='utf-8'))
 packaged_fonts = json.loads((flutter_assets / 'FontManifest.json').read_text(encoding='utf-8'))
-manrope = [entry for entry in packaged_fonts if entry['family'] == 'Manrope']
-assert len(manrope) == 1, 'Missing or duplicate Manrope family'
-assert {(entry['asset'], entry['weight']) for entry in manrope[0]['fonts']} == {
-    (f'assets/fonts/{name}', entry['weight'])
-    for name, entry in font_manifest['static_faces'].items()
-}, 'Wrong packaged Manrope weights'
-for name, expected in {
-    **font_manifest['static_faces'],
-    'OFL.txt': font_manifest['source_files']['OFL.txt'],
-}.items():
-    data = (flutter_assets / 'assets/fonts' / name).read_bytes()
-    assert len(data) == expected['bytes'], name
-    assert hashlib.sha256(data).hexdigest() == expected['sha256'], name
-print('Four static Manrope faces and SIL OFL license: verified')
+assert font_manifest['protocol'] == 'aura-offline-typography-v2'
+assert font_manifest['runtime_network'] is False
+assert {family['family'] for family in font_manifest['families']} == {'Cormorant Garamond', 'Literata'}
+assert not any(entry['family'] == 'Manrope' for entry in packaged_fonts), 'Obsolete runtime typography'
+for family in font_manifest['families']:
+    packaged = [entry for entry in packaged_fonts if entry['family'] == family['family']]
+    assert len(packaged) == 1, f'Missing or duplicate {family["family"]} family'
+    assert {(entry['asset'], entry['weight']) for entry in packaged[0]['fonts']} == {
+        (f'assets/fonts/{name}', entry['weight'])
+        for name, entry in family['static_faces'].items()
+    }, f'Wrong packaged {family["family"]} weights'
+    license_name = family['license_file']
+    for name, expected in {
+        **family['static_faces'],
+        license_name: family['source_files'][license_name],
+    }.items():
+        data = (flutter_assets / 'assets/fonts' / name).read_bytes()
+        assert len(data) == expected['bytes'], name
+        assert hashlib.sha256(data).hexdigest() == expected['sha256'], name
+print('Seven static Cormorant Garamond/Literata faces and both SIL OFL licenses: verified')
 
 ambient = flutter_assets / 'assets/audio/ambient'
 ambient_source = repo / 'mobile/assets/audio/ambient'
@@ -123,4 +133,4 @@ for name in ('aura_environment.frag', 'aura_matter.frag', 'aura_metal.frag'):
     # copied GLSL file cannot satisfy this check or work in the shipped renderer.
     assert len(data) > 128 and data[4:8] == b'IPLR', f'Uncompiled/missing shader: {name}'
     assert data != (repo / 'mobile/shaders' / name).read_bytes(), name
-print('Three compiled AURA runtime shaders and version 0.6.0+10: verified')
+print('Three compiled AURA runtime shaders and version 0.6.1+11: verified')

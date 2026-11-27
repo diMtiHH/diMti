@@ -72,9 +72,10 @@ void main() {
     // Depth layers of oblique, folded curtains. Fine vertical striation is
     // carried through the same nonlinear field, not stacked sine-wave lines.
     vec2 base=rotate(-.47)*p;
-    for(int i=0;i<8;i++) {
-      if(float(i)>4.+uQuality*3.) break;
-      float z=float(i)/7.;
+    float curtains=3.+floor(uQuality*2.);
+    for(int i=0;i<5;i++) {
+      if(float(i)>=curtains) break;
+      float z=float(i)/(curtains-1.);
       vec2 q=base*(1.+z*.9)+vec2(z*.16,-z*.23);
       q.x+=.18*sin(q.y*3.7+t*.075+z*2.1)+.08*sin(q.y*9.2-t*.041+z);
       q.y+=.10*sin(q.x*6.1+t*.044+z*3.);
@@ -87,7 +88,7 @@ void main() {
       vec3 spectral=mix(vec3(.055,.19,.48),vec3(.18,.75,.50),
         .5+.5*sin(q.y*2.2+z*2.4));
       spectral=mix(spectral,vec3(.43,.85,.79),crest*.65);
-      color+=spectral*(band*.078+crest*.050)*filaments*veil*(1.-z*.45)*(1.+activation*.7);
+      color+=spectral*(band*.078+crest*.050)*filaments*veil*(1.-z*.45)*(1.+activation*.7)*6./curtains;
     }
     color+=vec3(.01,.025,.04)*noise(p*4.+t*.01);
   } else if(uEnvironment>.5) {
@@ -110,8 +111,6 @@ void main() {
   color+=stars(p,29.,t, .39);
   color+=stars(p+vec2(19.,7.),51.,t*.65,.28);
   if(uQuality>.4) color+=stars(p+vec2(5.,29.),83.,t*.35,.15);
-  float wave=exp(-abs(length(p-touch)-(.18+(1.-uPressure)*.25))*35.)*uPressure;
-  color+=accent*wave*.016;
   color+=accent*exp(-dot(p,p)*13.)*(uEnergy*.012+activation*.023+uActivity*.004);
   // A single continuous exposure across the display; no opaque bottom panel.
   color*=.92+.08*pow(max(0.,1.-length(p)*.6),2.);

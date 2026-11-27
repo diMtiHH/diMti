@@ -175,7 +175,8 @@ class _AuraAnswerPageState extends State<AuraAnswerPage>
                                                 'Answer: $answer',
                                               ),
                                               style: TextStyle(
-                                                fontFamily: 'Manrope',
+                                                fontFamily:
+                                                    'Cormorant Garamond',
                                                 fontWeight: FontWeight.w300,
                                                 fontSize: 86,
                                                 letterSpacing:

@@ -133,7 +133,10 @@ class AmbientController extends ChangeNotifier {
     }
     if (enabled &&
         (!active || capturingSpeech || !allowPlayback) &&
-        (_hasStarted || playing || _enabled)) {
+        (_hasStarted ||
+            playing ||
+            _nativeMayPlay ||
+            (_enabled && (!active || capturingSpeech)))) {
       interrupted = true;
     }
     _enabled = enabled;

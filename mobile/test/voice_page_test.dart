@@ -196,6 +196,53 @@ void main() {
   }
 
   testWidgets(
+    'repeated dictation appends to the edited draft and still needs confirmation',
+    (tester) async {
+      final f = VoicePageFixture();
+      await show(tester, f);
+      await tester.enterText(find.byType(TextField), 'Стоит ли мне');
+      await start(tester);
+      final first = f.voice.id;
+      f.voice.transcript('сегодня');
+      f.voice.transcript('сегодня почитать');
+      f.voice.emit(VoiceEvent(id: first, type: VoiceEventType.finished));
+      await tester.pumpAndSettle();
+      expect(draft(tester), 'Стоит ли мне сегодня почитать');
+
+      await tester.enterText(
+        find.byType(TextField),
+        'Стоит ли мне завтра почитать',
+      );
+      await start(tester);
+      final second = f.voice.id;
+      f.voice.transcript('роман');
+      f.voice.transcript('роман');
+      f.voice.transcript('');
+      f.voice.transcript('old final', capture: first);
+      f.voice.emit(
+        VoiceEvent(id: second, type: VoiceEventType.finished, text: 'роман?'),
+      );
+      await tester.pumpAndSettle();
+      expect(draft(tester), 'Стоит ли мне завтра почитать роман?');
+      expect(f.inspections, isEmpty);
+      expect(f.random.calls, 0);
+      expect(f.store.writes, 0);
+      await tester.tap(find.text('Продолжить'));
+      await tester.pumpAndSettle();
+      expect(f.inspections, isEmpty);
+      await tester.tap(find.text('Подтверждаю'));
+      await tester.pumpAndSettle();
+      expect(f.inspections, [
+        (text: 'Стоит ли мне завтра почитать роман?', language: 'ru'),
+      ]);
+      expect(find.text('Проверка завершена. Допуск закрыт.'), findsOneWidget);
+      expect(f.random.calls, 0);
+      expect(f.store.writes, 0);
+      await disposePage(tester);
+    },
+  );
+
+  testWidgets(
     'explicit voice cancel restores the prior typed draft and ignores late events',
     (tester) async {
       final f = VoicePageFixture();

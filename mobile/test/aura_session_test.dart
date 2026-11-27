@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:universe_lab/aura_answer_page.dart';
@@ -11,6 +12,7 @@ import 'package:universe_lab/engine.dart';
 import 'package:universe_lab/session_clock_scope.dart';
 import 'package:universe_lab/session_page.dart';
 import 'package:universe_lab/presentation_profile.dart';
+import 'package:universe_lab/voice_input.dart';
 
 import 'session_page_test.dart' show TestBackend, TestRandom;
 import 'voice_page_test.dart' show PageVoiceBackend, pauseApp, resumeApp;
@@ -97,20 +99,22 @@ void main() {
   }
 
   testWidgets(
-    'sequence haptics follow animation milestones and stop immediately in background',
+    'one native animation pattern starts and is cancelled immediately in background',
     (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
       final events = <String>[];
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-        SystemChannels.platform,
+        const MethodChannel('ask_universe/haptics'),
         (call) async {
-          if (call.method == 'HapticFeedback.vibrate')
-            events.add(call.arguments as String);
+          expect((call.arguments as Map)['owner'], isA<int>());
+          events.add(call.method);
           return null;
         },
       );
       addTearDown(
         () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-          SystemChannels.platform,
+          const MethodChannel('ask_universe/haptics'),
           null,
         ),
       );
@@ -118,15 +122,14 @@ void main() {
       await show(tester, backend: backend, random: random, diagnostic: true);
       await prepare(tester);
       await tester.pump(const Duration(milliseconds: 2300));
-      expect(
-        events.where((event) => event.endsWith('lightImpact')),
-        hasLength(1),
-      );
+      expect(events.where((event) => event == 'animation'), hasLength(1));
       pauseApp(tester.binding);
       await frames(tester);
-      final count = events.length;
+      expect(events.last, 'cancel');
+      final active = events.where((event) => event != 'cancel').toList();
       await tester.pump(const Duration(seconds: 5));
-      expect(events, hasLength(count));
+      expect(events.where((event) => event != 'cancel'), active);
+      expect(events, isNot(contains('reveal')));
       expect(jsonDecode(backend.value!)['phase'], 'pending');
       await clean(tester);
     },
@@ -135,18 +138,19 @@ void main() {
   testWidgets(
     'disabled haptics silence the entire sequence while sound cues stay result-neutral',
     (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
       final vibrations = <String>[], cues = <String>[];
       tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-        SystemChannels.platform,
+        const MethodChannel('ask_universe/haptics'),
         (call) async {
-          if (call.method == 'HapticFeedback.vibrate')
-            vibrations.add(call.method);
+          if (call.method != 'cancel') vibrations.add(call.method);
           return null;
         },
       );
       addTearDown(
         () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
-          SystemChannels.platform,
+          const MethodChannel('ask_universe/haptics'),
           null,
         ),
       );
@@ -180,7 +184,7 @@ void main() {
   );
 
   testWidgets(
-    'short tap opens text, hold and drag never request microphone or submit',
+    'short tap opens text; drag and cancelled hold never request microphone',
     (tester) async {
       final backend = TestBackend(),
           random = TestRandom(),
@@ -188,11 +192,12 @@ void main() {
       await show(tester, backend: backend, random: random, voice: voice);
       final center = tester.getCenter(find.byType(AuraTouchSurface));
       final hold = await tester.startGesture(center);
-      await tester.pump(const Duration(milliseconds: 700));
-      await hold.up();
+      await tester.pump(const Duration(milliseconds: 400));
+      await hold.cancel();
       await frames(tester);
       expect(find.byType(TextField), findsNothing);
       final drag = await tester.startGesture(center);
+      await tester.pump(const Duration(milliseconds: 400));
       await drag.moveBy(const Offset(55, -40));
       await drag.up();
       await frames(tester);
@@ -205,6 +210,64 @@ void main() {
       expect(backend.writes, 0);
       await tap(tester, find.byKey(const ValueKey('voice-input')));
       expect(voice.starts, hasLength(1));
+      await clean(tester);
+    },
+  );
+
+  testWidgets(
+    'stationary hold starts exactly one voice capture only on release',
+    (tester) async {
+      final backend = TestBackend(),
+          random = TestRandom(),
+          voice = PageVoiceBackend();
+      await show(tester, backend: backend, random: random, voice: voice);
+      final center = tester.getCenter(find.byType(AuraTouchSurface));
+      final hold = await tester.startGesture(center);
+      await tester.pump(const Duration(milliseconds: 400));
+      expect(voice.starts, isEmpty);
+      expect(find.byType(TextField), findsNothing);
+      await hold.up();
+      await frames(tester);
+      expect(voice.starts, hasLength(1));
+      expect(find.byKey(const ValueKey('question-input')), findsOneWidget);
+      final field = tester.widget<TextField>(find.byType(TextField));
+      expect(field.focusNode!.hasFocus, isFalse);
+      voice.transcript('first phrase');
+      await frames(tester);
+      expect(field.controller!.text, 'first phrase');
+      expect(random.calls, 0);
+      expect(backend.writes, 0);
+      await clean(tester);
+    },
+  );
+
+  testWidgets(
+    'form geometry survives input and keyboard; explicit dismiss preserves text',
+    (tester) async {
+      final backend = TestBackend(), random = TestRandom();
+      await show(tester, backend: backend, random: random);
+      final bounds = find.byKey(const ValueKey('main-form-bounds'));
+      final original = tester.getRect(bounds);
+      await tap(tester, find.byType(AuraTouchSurface));
+      expect(tester.getRect(bounds), original);
+      await tester.enterText(find.byType(TextField), 'private draft');
+      tester.view.viewInsets = const FakeViewPadding(bottom: 310);
+      addTearDown(tester.view.resetViewInsets);
+      await frames(tester);
+      expect(tester.getRect(bounds), original);
+      await tap(tester, find.byKey(const ValueKey('dismiss-keyboard')));
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
+        isFalse,
+      );
+      expect(
+        tester.widget<TextField>(find.byType(TextField)).controller!.text,
+        'private draft',
+      );
+      tester.view.resetViewInsets();
+      await frames(tester);
+      expect(tester.getRect(bounds), original);
+      expect(tester.takeException(), isNull);
       await clean(tester);
     },
   );
@@ -225,7 +288,7 @@ void main() {
             return Reading(outcome, 'fixture');
           },
         );
-        await tap(tester, find.byKey(const ValueKey('ask-question')));
+        await tap(tester, find.byType(AuraTouchSurface));
         const question = 'Стоит ли мне сегодня почитать роман?';
         await tester.enterText(
           find.byKey(const ValueKey('question-input')),
@@ -287,6 +350,131 @@ void main() {
       expect(backend.schedules, 1);
       expect(random.calls, 1);
       expect(tester.takeException(), isNull);
+      await clean(tester);
+    },
+  );
+
+  testWidgets(
+    'diagnostic AURA hold stays visual without voice or a new answer',
+    (tester) async {
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      addTearDown(() => debugDefaultTargetPlatformOverride = null);
+      final haptics = <String>[];
+      tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+        const MethodChannel('ask_universe/haptics'),
+        (call) async {
+          haptics.add(call.method);
+          return null;
+        },
+      );
+      addTearDown(
+        () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          const MethodChannel('ask_universe/haptics'),
+          null,
+        ),
+      );
+      final backend = TestBackend(), random = TestRandom();
+      final voice = PageVoiceBackend();
+      addTearDown(voice.dispose);
+      await show(
+        tester,
+        backend: backend,
+        random: random,
+        voice: voice,
+        diagnostic: true,
+      );
+      final interaction = tester
+          .widget<AuraTouchSurface>(find.byType(AuraTouchSurface))
+          .interaction;
+      final hold = await tester.startGesture(
+        tester.getCenter(find.byType(AuraTouchSurface)),
+      );
+      await tester.pump(const Duration(milliseconds: 350));
+      expect(interaction.hold, greaterThan(0));
+      await hold.up();
+      await frames(tester);
+      expect(tester.takeException(), isNull);
+      expect(voice.starts, isEmpty);
+      expect(haptics, isNot(contains('hold')));
+      expect(haptics, isNot(contains('release')));
+      expect(find.byKey(const ValueKey('question-input')), findsNothing);
+      expect(find.text('Подготовить тестовый ответ'), findsOneWidget);
+      expect(backend.writes, 0);
+      expect(random.calls, 0);
+      await clean(tester);
+    },
+  );
+
+  testWidgets(
+    'AURA permission alert restores visible voice editor and stop control',
+    (tester) async {
+      final backend = TestBackend(), random = TestRandom();
+      final voice = PageVoiceBackend()
+        ..autoListen = false
+        ..startGate = Completer<void>();
+      await show(tester, backend: backend, random: random, voice: voice);
+      final hold = await tester.startGesture(
+        tester.getCenter(find.byType(AuraTouchSurface)),
+      );
+      await tester.pump(const Duration(milliseconds: 350));
+      await hold.up();
+      await frames(tester);
+      final capture = voice.id;
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      await frames(tester);
+      expect(find.byKey(const ValueKey('question-input')), findsNothing);
+      expect(voice.cancellations, isNot(contains(capture)));
+
+      resumeApp(tester.binding);
+      voice.startGate!.complete();
+      voice.emit(VoiceEvent(id: capture, type: VoiceEventType.listening));
+      voice.transcript('after explicit permission');
+      await frames(tester);
+      final editor = tester.widget<TextField>(
+        find.byKey(const ValueKey('question-input')),
+      );
+      expect(editor.controller!.text, 'after explicit permission');
+      final microphone = tester.widget<IconButton>(
+        find.byKey(const ValueKey('voice-input')),
+      );
+      expect(microphone.tooltip, 'Остановить запись');
+      expect(microphone.onPressed, isNotNull);
+      expect(voice.starts, hasLength(1));
+      expect(backend.writes, 0);
+      expect(random.calls, 0);
+      await clean(tester);
+    },
+  );
+
+  testWidgets(
+    'AURA background during permission discards editor and late capture',
+    (tester) async {
+      final backend = TestBackend(), random = TestRandom();
+      final voice = PageVoiceBackend()
+        ..autoListen = false
+        ..startGate = Completer<void>();
+      await show(tester, backend: backend, random: random, voice: voice);
+      final hold = await tester.startGesture(
+        tester.getCenter(find.byType(AuraTouchSurface)),
+      );
+      await tester.pump(const Duration(milliseconds: 350));
+      await hold.up();
+      await frames(tester);
+      final capture = voice.id;
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      pauseApp(tester.binding);
+      await frames(tester);
+      voice.startGate!.complete();
+      voice.emit(VoiceEvent(id: capture, type: VoiceEventType.listening));
+      voice.transcript('must never return');
+      resumeApp(tester.binding);
+      await frames(tester);
+      expect(voice.cancellations, contains(capture));
+      expect(find.byKey(const ValueKey('question-input')), findsNothing);
+      expect(find.textContaining('must never return'), findsNothing);
+      expect(voice.starts, hasLength(1));
+      expect(backend.writes, 0);
+      expect(random.calls, 0);
       await clean(tester);
     },
   );
@@ -384,7 +572,7 @@ void main() {
         random: random,
         inspect: (_, __) => result.future,
       );
-      await tap(tester, find.byKey(const ValueKey('ask-question')));
+      await tap(tester, find.byType(AuraTouchSurface));
       await tester.enterText(
         find.byType(TextField),
         'private synthetic wording',

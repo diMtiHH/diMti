@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// AURA 13 uses bundled OFL Manrope fonts; no runtime font download occurs.
+/// Bundled OFL Cormorant Garamond headings and Literata body text stay offline.
 abstract final class CosmicPalette {
   static const deep = Color(0xff050507);
   static const night = Color(0xff090e20);
@@ -17,11 +17,11 @@ abstract final class CosmicPalette {
 ThemeData get cosmicTheme {
   final base = ThemeData(
     brightness: Brightness.dark,
-    fontFamily: 'Manrope',
+    fontFamily: 'Literata',
     typography: Typography.material2021(platform: defaultTargetPlatform),
   );
   final text = base.textTheme.apply(
-    fontFamily: 'Manrope',
+    fontFamily: 'Literata',
     bodyColor: CosmicPalette.white,
     displayColor: CosmicPalette.white,
   );
@@ -41,31 +41,60 @@ ThemeData get cosmicTheme {
     canvasColor: CosmicPalette.deep,
     textTheme: text.copyWith(
       displayLarge: text.displayLarge?.copyWith(
+        fontFamily: 'Cormorant Garamond',
         fontSize: 84,
         height: 1.1,
         letterSpacing: -1,
         fontWeight: FontWeight.w300,
       ),
+      displayMedium: text.displayMedium?.copyWith(
+        fontFamily: 'Cormorant Garamond',
+        fontSize: 48,
+        height: 1.15,
+        fontWeight: FontWeight.w300,
+      ),
       displaySmall: text.displaySmall?.copyWith(
+        fontFamily: 'Cormorant Garamond',
         fontSize: 32,
         height: 1.16,
         letterSpacing: -0.55,
         fontWeight: FontWeight.w400,
       ),
       headlineLarge: text.headlineLarge?.copyWith(
+        fontFamily: 'Cormorant Garamond',
         fontSize: 30,
         height: 1.2,
         letterSpacing: -0.55,
         fontWeight: FontWeight.w400,
       ),
       headlineMedium: text.headlineMedium?.copyWith(
+        fontFamily: 'Cormorant Garamond',
         fontSize: 26,
         height: 1.25,
         letterSpacing: -0.3,
         fontWeight: FontWeight.w400,
       ),
-      titleLarge: text.titleLarge?.copyWith(fontSize: 22, height: 1.3),
-      titleMedium: text.titleMedium?.copyWith(fontSize: 17, height: 1.4),
+      headlineSmall: text.headlineSmall?.copyWith(
+        fontFamily: 'Cormorant Garamond',
+        fontSize: 25,
+        height: 1.25,
+        fontWeight: FontWeight.w500,
+      ),
+      titleLarge: text.titleLarge?.copyWith(
+        fontFamily: 'Cormorant Garamond',
+        fontSize: 25,
+        height: 1.3,
+      ),
+      titleMedium: text.titleMedium?.copyWith(
+        fontFamily: 'Cormorant Garamond',
+        fontSize: 21,
+        height: 1.3,
+      ),
+      titleSmall: text.titleSmall?.copyWith(
+        fontFamily: 'Cormorant Garamond',
+        fontSize: 18,
+        height: 1.35,
+      ),
       bodyLarge: text.bodyLarge?.copyWith(fontSize: 16, height: 1.5),
       bodyMedium: text.bodyMedium?.copyWith(fontSize: 15, height: 1.5),
       bodySmall: text.bodySmall?.copyWith(
@@ -87,6 +116,13 @@ ThemeData get cosmicTheme {
       scrolledUnderElevation: 0,
       surfaceTintColor: Colors.transparent,
       centerTitle: false,
+      titleTextStyle: TextStyle(
+        fontFamily: 'Cormorant Garamond',
+        fontSize: 28,
+        height: 1.2,
+        fontWeight: FontWeight.w500,
+        color: CosmicPalette.white,
+      ),
     ),
     dividerTheme: DividerThemeData(
       color: CosmicPalette.silver.withValues(alpha: 0.16),
@@ -135,6 +171,18 @@ ThemeData get cosmicTheme {
       ),
     ),
     iconTheme: const IconThemeData(color: CosmicPalette.silver, size: 22),
+    switchTheme: SwitchThemeData(
+      thumbColor: const WidgetStatePropertyAll(CosmicPalette.silver),
+      trackColor: WidgetStateProperty.resolveWith(
+        (states) => states.contains(WidgetState.selected)
+            ? CosmicPalette.aurora.withValues(alpha: .32)
+            : CosmicPalette.deep.withValues(alpha: .8),
+      ),
+      trackOutlineColor: WidgetStatePropertyAll(
+        CosmicPalette.silver.withValues(alpha: .4),
+      ),
+      trackOutlineWidth: const WidgetStatePropertyAll(.8),
+    ),
     navigationBarTheme: NavigationBarThemeData(
       backgroundColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,

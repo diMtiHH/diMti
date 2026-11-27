@@ -35,6 +35,8 @@ jobs:
         run: bash mobile/tool/run_native_presentation.sh
       - name: Test ambient and microphone audio ownership
         run: bash mobile/tool/run_native_ambient.sh
+      - name: Test motion and haptic pattern boundaries
+        run: bash mobile/tool/run_native_interaction.sh
       - name: Test CI runner and XCTest result validation
         run: python3 -m unittest discover -s mobile/tool -p "test_*.py" -v
       - name: Install pinned Flutter SDK

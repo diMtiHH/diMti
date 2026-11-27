@@ -112,11 +112,20 @@ void main() {
     if (assetsReady) return;
     await tester.runAsync(() async {
       await warmUpAuraShaders();
-      final loader = FontLoader('Manrope');
-      for (final weight in ['Light', 'Regular', 'Medium', 'SemiBold']) {
-        loader.addFont(rootBundle.load('assets/fonts/Manrope-$weight.ttf'));
+      for (final family in ['Cormorant Garamond', 'Literata']) {
+        final loader = FontLoader(family);
+        final prefix = family.replaceAll(' ', '');
+        final weights = [
+          if (family == 'Cormorant Garamond') 'Light',
+          'Regular',
+          'Medium',
+          'SemiBold',
+        ];
+        for (final weight in weights) {
+          loader.addFont(rootBundle.load('assets/fonts/$prefix-$weight.ttf'));
+        }
+        await loader.load();
       }
-      await loader.load();
     });
     assetsReady = true;
   }

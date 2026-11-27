@@ -1,51 +1,105 @@
 {
-  "family": "Manrope",
-  "license": "SIL Open Font License 1.1",
+  "protocol": "aura-offline-typography-v2",
   "google_fonts_commit": "b31870aff700ab7a1d74fa0c6887d95beb9e0037",
   "fonttools_version": "4.61.1",
-  "source_files": {
-    "Manrope-Variable.source.ttf": {
-      "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/manrope/Manrope%5Bwght%5D.ttf",
-      "sha256": "3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6",
-      "bytes": 164700
+  "families": [
+    {
+      "family": "Cormorant Garamond",
+      "role": "headings",
+      "license": "SIL Open Font License 1.1",
+      "license_file": "CormorantGaramond-OFL.txt",
+      "fixed_axes": {},
+      "source_files": {
+        "CormorantGaramond-Variable.source.ttf": {
+          "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/cormorantgaramond/CormorantGaramond%5Bwght%5D.ttf",
+          "sha256": "b20b7d9626dd956b2c5e558692ad328b1f19e3275e2782db4fa07670d83f35e0",
+          "bytes": 1195560
+        },
+        "CormorantGaramond-OFL.txt": {
+          "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/cormorantgaramond/OFL.txt",
+          "sha256": "60700d351cac4650c51f3f9db318d2a420f8b45052dba2715eb5fec41f0f6956",
+          "bytes": 4387
+        },
+        "CormorantGaramond-upstream-METADATA.pb": {
+          "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/cormorantgaramond/METADATA.pb",
+          "sha256": "faa16a5e79613ca7cadd599ada1f4cf6891f3cb6731631fbed2a0b18a342e556",
+          "bytes": 1426
+        }
+      },
+      "static_faces": {
+        "CormorantGaramond-Light.ttf": {
+          "weight": 300,
+          "sha256": "9faf7cede1c059bf57fede38533fc18aa19846a171b88743826e7aa94970c25c",
+          "bytes": 773016,
+          "russian_latin_digits_verified": true
+        },
+        "CormorantGaramond-Regular.ttf": {
+          "weight": 400,
+          "sha256": "67a9da018f4cae694840d9e962215e7e5fca669f6c5de6ab9e675da53ec1e400",
+          "bytes": 773992,
+          "russian_latin_digits_verified": true
+        },
+        "CormorantGaramond-Medium.ttf": {
+          "weight": 500,
+          "sha256": "1e077af6a5bf0c9ab147458e815c9ecc3a080bebd7872d7c018f5f4d340e2a6e",
+          "bytes": 774332,
+          "russian_latin_digits_verified": true
+        },
+        "CormorantGaramond-SemiBold.ttf": {
+          "weight": 600,
+          "sha256": "b19592bc76e045bba4278a12028562d4f94855b4e12fd62c0dbd325bd1b63666",
+          "bytes": 774040,
+          "russian_latin_digits_verified": true
+        }
+      }
     },
-    "OFL.txt": {
-      "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/manrope/OFL.txt",
-      "sha256": "58172e0c0fac2cda8a37b348164bb55e44b0e69051e557e92b1d3f6910141f7b",
-      "bytes": 4387
-    },
-    "upstream-METADATA.pb": {
-      "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/manrope/METADATA.pb",
-      "sha256": "fb204147a7c16d009d4fa53248b6075bc941d7adfa450a825bc5d4cef2f9ded9",
-      "bytes": 732
+    {
+      "family": "Literata",
+      "role": "body",
+      "license": "SIL Open Font License 1.1",
+      "license_file": "Literata-OFL.txt",
+      "fixed_axes": {
+        "opsz": 14
+      },
+      "source_files": {
+        "Literata-Variable.source.ttf": {
+          "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/literata/Literata%5Bopsz,wght%5D.ttf",
+          "sha256": "b41138c9373112f32abb589cc22e8674b06ed4048b0c513be922bdd26f274440",
+          "bytes": 955132
+        },
+        "Literata-OFL.txt": {
+          "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/literata/OFL.txt",
+          "sha256": "8742963604cd89dc81437811a850018fc03b2bfad686d7422c8235967c87614e",
+          "bytes": 4389
+        },
+        "Literata-upstream-METADATA.pb": {
+          "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/literata/METADATA.pb",
+          "sha256": "8dbc5c48f254be32c879f006391cb5f6781941beb1a643c13acf66fa989b6a83",
+          "bytes": 1408
+        }
+      },
+      "static_faces": {
+        "Literata-Regular.ttf": {
+          "weight": 400,
+          "sha256": "c944f14b1be128d5136a7434546155856a9590417f276ef6f6bd03aa33c45222",
+          "bytes": 270780,
+          "russian_latin_digits_verified": true
+        },
+        "Literata-Medium.ttf": {
+          "weight": 500,
+          "sha256": "48a52bbd303b258aba7f3e14ec1571d37cdfa9260712e1a4cf34c30b9236f9b7",
+          "bytes": 270984,
+          "russian_latin_digits_verified": true
+        },
+        "Literata-SemiBold.ttf": {
+          "weight": 600,
+          "sha256": "f78c3124f410f9628f61769bf736c65dc1e3d1569c2fa6d1e6be95c0b07f4fc4",
+          "bytes": 271132,
+          "russian_latin_digits_verified": true
+        }
+      }
     }
-  },
-  "static_faces": {
-    "Manrope-Light.ttf": {
-      "weight": 300,
-      "sha256": "e1db27bf34999e038df7527206c5f5c87ede20ee7464e148c453b5607280752d",
-      "bytes": 97352,
-      "russian_latin_digits_verified": true
-    },
-    "Manrope-Regular.ttf": {
-      "weight": 400,
-      "sha256": "2602c71d1f36c96da0022706f15da7d51102d19d10510b77b5a39bf861122807",
-      "bytes": 97436,
-      "russian_latin_digits_verified": true
-    },
-    "Manrope-Medium.ttf": {
-      "weight": 500,
-      "sha256": "729037f5dc28daa949c5ce8e69d945bf14faf2649db737e6eb085c120c778dd0",
-      "bytes": 97536,
-      "russian_latin_digits_verified": true
-    },
-    "Manrope-SemiBold.ttf": {
-      "weight": 600,
-      "sha256": "2b2ab8c077256d2849465199657f042e36588a7b88d345acd2ab4e5807ebef99",
-      "bytes": 97584,
-      "russian_latin_digits_verified": true
-    }
-  },
+  ],
   "runtime_network": false,
-  "generation": "wght static instancing; no glyph subsetting"
+  "generation": "static instancing; no glyph subsetting"
 }

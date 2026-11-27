@@ -16,6 +16,7 @@ import 'aura_answer_page.dart';
 import 'aura_renderer.dart';
 import 'aura_ui.dart';
 import 'presentation_profile.dart';
+import 'aura_haptics.dart';
 
 enum _LoadStage { preferences, clock, model, state }
 
@@ -26,6 +27,7 @@ class SessionPage extends StatefulWidget {
   final ValueChanged<AuraVisualState>? onVisuals;
   final ValueChanged<bool>? onVoiceCapture, onAnswerScreen;
   final ValueChanged<String>? onFeedback;
+  final ValueChanged<bool>? onPrepared;
   final bool embedded, active;
   final String nickname;
   final int languageRevision;
@@ -52,6 +54,7 @@ class SessionPage extends StatefulWidget {
     this.onVoiceCapture,
     this.onAnswerScreen,
     this.onFeedback,
+    this.onPrepared,
   });
   @override
   State<SessionPage> createState() => _SessionPageState();
@@ -61,6 +64,8 @@ class _SessionPageState extends State<SessionPage>
     with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   late final AnimationController _sequence;
   late final AuraInteractionController _interaction;
+  final _haptics = AuraHapticsController();
+  final _inputFocus = FocusNode();
   bool _ownsInteraction = false, _inputMode = false, _answerOpen = false;
   bool _sequenceQueued = false;
   int _auraGeneration = 0;
@@ -97,10 +102,23 @@ class _SessionPageState extends State<SessionPage>
 
   void _haptic([String event = 'touch']) {
     if (!_foreground || !widget.active || _covered) return;
-    if (!widget.aura || _appearance.hapticsEnabled)
+    if (widget.aura) {
+      _configureHaptics();
+      if (event == 'reveal') {
+        _haptics.reveal();
+      } else if (event != 'transform') {
+        _haptics.tap();
+      }
+    } else {
       unawaited(HapticFeedback.selectionClick());
+    }
     if (widget.aura) widget.onFeedback?.call(event);
   }
+
+  void _configureHaptics() => _haptics.configure(
+    enabled: _appearance.hapticsEnabled,
+    active: _foreground && widget.active && !_covered,
+  );
 
   void _sequenceFeedback() {
     if (_quietSequence ||
@@ -109,17 +127,15 @@ class _SessionPageState extends State<SessionPage>
         !widget.active ||
         _covered)
       return;
-    var crossed = false;
+
     for (var i = 0; i < 2; ++i) {
       final threshold = i == 0 ? 2.2 / 4.5 : 3.8 / 4.5;
       if (_sequence.value >= threshold &&
           _sequenceFeedbackMask & (1 << i) == 0) {
         _sequenceFeedbackMask |= 1 << i;
-        crossed = true;
       }
     }
-    if (crossed && _appearance.hapticsEnabled)
-      unawaited(HapticFeedback.lightImpact());
+    // The native player owns a timed pattern; no platform traffic per frame.
   }
 
   final _input = TextEditingController();
@@ -192,6 +208,8 @@ class _SessionPageState extends State<SessionPage>
     _foreground =
         WidgetsBinding.instance.lifecycleState == null ||
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    _inputFocus.addListener(_focusChanged);
+    _configureHaptics();
     WidgetsBinding.instance.addObserver(this);
     _tick = Timer.periodic(const Duration(seconds: 1), (_) {
       if (_foreground && !_covered && widget.active) _session?.refresh();
@@ -210,10 +228,12 @@ class _SessionPageState extends State<SessionPage>
   @override
   void didUpdateWidget(SessionPage oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _configureHaptics();
     if (oldWidget.active && !widget.active) _hidePrivateView();
     if (!oldWidget.active && widget.active && _foreground && !_covered) {
       _session?.setActive(true);
       _resume();
+      _queueAuraAnswer();
     }
     if (oldWidget.languageRevision != widget.languageRevision) {
       _hidePrivateView();
@@ -237,6 +257,7 @@ class _SessionPageState extends State<SessionPage>
     }
     if (mounted) {
       setState(() => _loading = false);
+      widget.onPrepared?.call(!_failed && _session != null);
       _queueAuraAnswer();
       _visuals();
     }
@@ -341,7 +362,13 @@ class _SessionPageState extends State<SessionPage>
   }
 
   void _hidePrivateView({bool keepPermissionRequest = false}) {
+    // A system permission alert temporarily deactivates the app without ending
+    // its explicit voice request. Keep only the editor mode so the returning
+    // capture has visible transcript/stop controls; private text is still hidden.
+    final keepVoiceEditor = keepPermissionRequest && _inputMode;
+    _inputFocus.unfocus();
     _cancelAura();
+    _inputMode = keepVoiceEditor;
     if (!keepPermissionRequest) _discardVoice();
     _input.clear();
     _review = null;
@@ -354,6 +381,7 @@ class _SessionPageState extends State<SessionPage>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _foreground = state == AppLifecycleState.resumed;
+    _configureHaptics();
     if (!_foreground) {
       _hidePrivateView(
         keepPermissionRequest:
@@ -458,8 +486,9 @@ class _SessionPageState extends State<SessionPage>
     unawaited(_voice?.cancel());
   }
 
-  Future<void> _startVoice() async {
-    if (!widget.active ||
+  Future<void> _startVoice({bool fromHold = false}) async {
+    if (_voice == null ||
+        !widget.active ||
         !_foreground ||
         _covered ||
         _settingsBusy ||
@@ -468,7 +497,7 @@ class _SessionPageState extends State<SessionPage>
         _session?.busy == true)
       return;
     FocusScope.of(context).unfocus();
-    _haptic();
+    if (!fromHold) _haptic();
     _beforeVoice = _input.text;
     _voiceRevisionActive = true;
     await _voice!.start(_language, initialText: _beforeVoice);
@@ -626,6 +655,7 @@ class _SessionPageState extends State<SessionPage>
   }
 
   void _cancelAura() {
+    _haptics.cancel();
     ++_auraGeneration;
     _sequenceQueued = false;
     _sequence.stop();
@@ -680,6 +710,8 @@ class _SessionPageState extends State<SessionPage>
         MediaQuery.disableAnimationsOf(context) ||
         MediaQuery.accessibleNavigationOf(context);
     _haptic('transform');
+    _configureHaptics();
+    if (!_quietSequence) _haptics.animationStart();
     _sequence.duration = _quietSequence
         ? const Duration(milliseconds: 300)
         : const Duration(milliseconds: 4500);
@@ -747,21 +779,75 @@ class _SessionPageState extends State<SessionPage>
       _result = null;
     });
     _visuals();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _inputMode && _foreground && widget.active && !_covered) {
+        _inputFocus.requestFocus();
+      }
+    });
+  }
+
+  void _focusChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _formTap() {
+    if (_voice?.recording == true) {
+      unawaited(_voice!.stop());
+      return;
+    }
+    if (_inputFocus.hasFocus) {
+      _inputFocus.unfocus();
+      return;
+    }
+    _openInput();
+  }
+
+  void _holdStart() {
+    if (_voice == null || _session?.phase != SessionPhase.ready || _voice!.busy)
+      return;
+    _inputFocus.unfocus();
+    _configureHaptics();
+    _haptics.holdStart();
+  }
+
+  void _holdRelease() {
+    // Diagnostics have a fixed fixture and intentionally no voice controller.
+    if (_voice == null) return;
+    if (_session?.phase != SessionPhase.ready ||
+        _voice?.busy == true ||
+        !_foreground ||
+        !widget.active ||
+        _covered) {
+      _haptics.cancel();
+      return;
+    }
+    _configureHaptics();
+    _haptics.holdRelease();
+    setState(() {
+      _inputMode = true;
+      _result = null;
+    });
+    _visuals();
+    unawaited(_startVoice(fromHold: true));
   }
 
   Widget _auraForm(double height) => SizedBox(
+    key: const ValueKey('main-form-bounds'),
     height: height,
     width: double.infinity,
     child: AuraTouchSurface(
       interaction: _interaction,
       label: t(
-        'Живая форма. Коснись, чтобы задать вопрос',
-        'Living form. Tap to ask a question',
+        'Живая форма. Коснись для текста, удерживай и отпусти для голоса',
+        'Living form. Tap to type, hold and release to speak',
       ),
       active: _foreground && widget.active && !_covered && !_answerOpen,
       phase: _auraPhase,
-      onShortTap: _openInput,
+      onShortTap: _formTap,
       onTouchFeedback: _haptic,
+      onHoldStart: _holdStart,
+      onHoldRelease: _holdRelease,
+      onTouchCancel: _haptics.cancel,
       child: AuraScene(
         background: _appearance.background.name,
         form: _appearance.answerStyle.name,
@@ -778,7 +864,7 @@ class _SessionPageState extends State<SessionPage>
     ),
   );
 
-  Widget _auraContent(QuestionSession session, double height) {
+  Widget _auraContent(QuestionSession session) {
     final phase = session.phase;
     if (phase == SessionPhase.failed || phase == SessionPhase.interrupted)
       return _content(session);
@@ -787,7 +873,6 @@ class _SessionPageState extends State<SessionPage>
         phase == SessionPhase.pending) {
       return Column(
         children: [
-          _auraForm(height),
           const SizedBox(height: 16),
           Text(
             phase == SessionPhase.pending
@@ -804,7 +889,6 @@ class _SessionPageState extends State<SessionPage>
           '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
       return Column(
         children: [
-          _auraForm(height),
           Text(
             t('Вселенная уже ответила', 'The Universe has answered'),
             style: Theme.of(context).textTheme.titleLarge,
@@ -832,7 +916,6 @@ class _SessionPageState extends State<SessionPage>
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          _auraForm(height * .6),
           Text(
             t('Это твой вопрос?', 'Is this your question?'),
             style: Theme.of(context).textTheme.headlineSmall,
@@ -865,38 +948,27 @@ class _SessionPageState extends State<SessionPage>
     }
     if (!_inputMode && !widget.diagnostic) {
       return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          _auraForm(height),
           Text(
             t('О чём ты думаешь?', 'What is on your mind?'),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           Text(
             t('Один вопрос. Один ответ.', 'One question. One answer.'),
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-          const SizedBox(height: 24),
-          FilledButton(
-            key: const ValueKey('ask-question'),
-            onPressed: _openInput,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  child: Text(
-                    t('Задать вопрос', 'Ask a question'),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const AuraIcon(kind: AuraIconKind.arrowRight, size: 20),
-              ],
+          const SizedBox(height: 8),
+          Text(
+            t(
+              'Удерживай и отпусти, чтобы говорить',
+              'Hold and release to speak',
             ),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
         ],
       );
@@ -904,8 +976,7 @@ class _SessionPageState extends State<SessionPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _auraForm(height * .55),
-        if (!widget.diagnostic)
+        if (!widget.diagnostic && !_inputFocus.hasFocus)
           Padding(
             padding: const EdgeInsets.only(bottom: 16),
             child: Text(
@@ -918,8 +989,12 @@ class _SessionPageState extends State<SessionPage>
           TextField(
             key: const ValueKey('question-input'),
             controller: _input,
+            focusNode: _inputFocus,
+            onTapOutside: (_) => _inputFocus.unfocus(),
+            textInputAction: TextInputAction.done,
+            onSubmitted: (_) => _inputFocus.unfocus(),
             minLines: 1,
-            maxLines: 5,
+            maxLines: 3,
             maxLength: 8192,
             enableSuggestions: false,
             autocorrect: false,
@@ -942,7 +1017,17 @@ class _SessionPageState extends State<SessionPage>
             },
           ),
         if (!widget.diagnostic) ...[
-          const SizedBox(height: 12),
+          if (_inputFocus.hasFocus ||
+              MediaQuery.viewInsetsOf(context).bottom > 0)
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                key: const ValueKey('dismiss-keyboard'),
+                onPressed: _inputFocus.unfocus,
+                child: Text(t('Скрыть клавиатуру', 'Hide keyboard')),
+              ),
+            ),
+          const SizedBox(height: 4),
           Center(
             child: IconButton(
               key: const ValueKey('voice-input'),
@@ -973,7 +1058,7 @@ class _SessionPageState extends State<SessionPage>
               child: Text(t('Отменить запись', 'Cancel recording')),
             ),
         ],
-        const SizedBox(height: 24),
+        const SizedBox(height: 8),
         FilledButton(
           onPressed:
               session.busy ||
@@ -1022,45 +1107,110 @@ class _SessionPageState extends State<SessionPage>
     builder: (context, constraints) {
       if (!_foreground || !widget.active || _covered || _answerOpen)
         return const SizedBox.shrink();
-      final height = (constraints.maxHeight * .60).clamp(180.0, 430.0);
-      return SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 520),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                if (widget.nickname.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Text(
-                      t(
+      final size = MediaQuery.sizeOf(context);
+      final padding = MediaQuery.paddingOf(context);
+      final keyboard = MediaQuery.viewInsetsOf(context).bottom;
+      // Physical display geometry, independent of keyboard and text panel height.
+      final formSize = (size.width * .90).clamp(220.0, 430.0);
+      final footer = widget.embedded ? 104.0 : 20.0;
+      final bottom = keyboard > footer
+          ? (keyboard - padding.bottom).clamp(0.0, size.height)
+          : footer;
+      final maxPanelHeight = (constraints.maxHeight - bottom - 90).clamp(
+        100.0,
+        constraints.maxHeight,
+      );
+      final session = _session;
+      final idle =
+          !_inputMode &&
+          session?.phase == SessionPhase.ready &&
+          !widget.diagnostic;
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Center(
+            child: SizedBox(
+              width: formSize,
+              height: formSize,
+              child: _auraForm(formSize),
+            ),
+          ),
+          if (idle)
+            Positioned(
+              top: widget.embedded ? 92 : 18,
+              left: 30,
+              right: 30,
+              child: Text(
+                widget.nickname.isEmpty
+                    ? t('Привет', 'Hello')
+                    : t(
                         'Привет, ${widget.nickname}',
                         'Hello, ${widget.nickname}',
                       ),
-                      style: Theme.of(context).textTheme.titleMedium,
+                key: const ValueKey('main-greeting'),
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ),
+          Positioned(
+            left: 24,
+            right: 24,
+            bottom: bottom,
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: 520,
+                  maxHeight: idle
+                      ? maxPanelHeight
+                      : maxPanelHeight.clamp(
+                          100.0,
+                          keyboard > 0 ? 280.0 : 340.0,
+                        ),
+                ),
+                child: IgnorePointer(
+                  ignoring: idle,
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: idle
+                          ? Colors.transparent
+                          : const Color(0xe609101b),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+                    child: SingleChildScrollView(
+                      key: const ValueKey('question-panel'),
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      padding: EdgeInsets.all(idle ? 0 : 16),
+                      child: _failed
+                          ? Column(
+                              children: [
+                                Text(_loadFailure),
+                                TextButton(
+                                  onPressed: _load,
+                                  child: Text(
+                                    t('Повторить загрузку', 'Retry loading'),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : _loading || session == null
+                          ? Text(
+                              t(
+                                'Вселенная пробуждается…',
+                                'The Universe is waking…',
+                              ),
+                              textAlign: TextAlign.center,
+                            )
+                          : _auraContent(session),
                     ),
                   ),
-                if (_failed) ...[
-                  Text(_loadFailure),
-                  TextButton(
-                    onPressed: _load,
-                    child: Text(t('Повторить загрузку', 'Retry loading')),
-                  ),
-                ] else if (_loading || _session == null) ...[
-                  _auraForm(height),
-                  Center(
-                    child: Text(
-                      t('Вселенная пробуждается…', 'The Universe is waking…'),
-                    ),
-                  ),
-                ] else
-                  _auraContent(_session!, height),
-              ],
+                ),
+              ),
             ),
           ),
-        ),
+        ],
       );
     },
   );
@@ -1313,6 +1463,7 @@ class _SessionPageState extends State<SessionPage>
               active: _foreground && widget.active && !_answerOpen,
               child: Scaffold(
                 backgroundColor: Colors.transparent,
+                resizeToAvoidBottomInset: false,
                 body: SafeArea(child: body),
               ),
             );
@@ -1464,6 +1615,9 @@ class _SessionPageState extends State<SessionPage>
     _voiceRevisionActive = false;
     _voice?.removeListener(_voiceChanged);
     _voice?.dispose();
+    _haptics.dispose();
+    _inputFocus.removeListener(_focusChanged);
+    _inputFocus.dispose();
     _input.dispose();
     super.dispose();
   }

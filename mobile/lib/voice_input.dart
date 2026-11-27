@@ -172,6 +172,7 @@ class VoiceInputController extends ChangeNotifier {
   late final StreamSubscription<VoiceEvent> _subscription;
   VoiceInputState _state = VoiceInputState.idle;
   String _text = '';
+  String _baseDraft = '';
   String? _errorCode;
   double _level = 0;
   int? _id;
@@ -218,6 +219,7 @@ class VoiceInputController extends ChangeNotifier {
   int? _invalidate() {
     final id = _id;
     _id = null;
+    _baseDraft = '';
     _stopTimer?.cancel();
     _stopTimer = null;
     final completion = _stopCompletion;
@@ -260,6 +262,7 @@ class VoiceInputController extends ChangeNotifier {
       _changed();
       return;
     }
+    _baseDraft = initialText;
     final id = _id = ++_nextId;
     _state = VoiceInputState.starting;
     _changed();
@@ -338,6 +341,26 @@ class VoiceInputController extends ChangeNotifier {
     unawaited(_cancelNative(id));
   }
 
+  // Native text describes this capture only. Keep the editor's existing draft
+  // immutable while partial hypotheses revise the newly dictated suffix.
+  bool _transcript(int id, String speech) {
+    if (speech.trim().isEmpty) return true;
+    final separator =
+        _baseDraft.isEmpty ||
+            _baseDraft.trimRight().length != _baseDraft.length ||
+            speech.trimLeft().length != speech.length
+        ? ''
+        : ' ';
+    final next = '$_baseDraft$separator$speech';
+    if (next.length > maxVoiceTextLength) {
+      // Retain the last complete editable draft; never silently truncate speech.
+      _fail(id, 'failed');
+      return false;
+    }
+    _text = next;
+    return true;
+  }
+
   void _event(VoiceEvent event) {
     if (!_current(event.id) || !event.isValid) return;
     switch (event.type) {
@@ -345,12 +368,12 @@ class VoiceInputController extends ChangeNotifier {
         if (_state != VoiceInputState.starting) return;
         _state = VoiceInputState.listening;
       case VoiceEventType.transcript:
-        _text = event.text!;
+        if (!_transcript(event.id, event.text!)) return;
       case VoiceEventType.level:
         if (_state != VoiceInputState.listening) return;
         _level = event.level!;
       case VoiceEventType.finished:
-        if (event.text != null) _text = event.text!;
+        if (event.text != null && !_transcript(event.id, event.text!)) return;
         _invalidate();
         _state = VoiceInputState.idle;
         _errorCode = null;

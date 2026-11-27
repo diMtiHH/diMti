@@ -2,6 +2,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'aura_renderer.dart';
 import 'aura_ui.dart';
+import 'aura_haptics.dart';
 import 'presentation_profile.dart';
 
 String backgroundLabel(PresentationBackground value, String language) {
@@ -33,6 +34,7 @@ class PersonalizationControls extends StatefulWidget {
   final String language;
   final bool busy, active;
   final ValueChanged<PresentationProfile> onChanged;
+  final AuraHapticsBackend? hapticsBackend;
   const PersonalizationControls({
     super.key,
     required this.profile,
@@ -40,6 +42,7 @@ class PersonalizationControls extends StatefulWidget {
     required this.onChanged,
     this.busy = false,
     this.active = true,
+    this.hapticsBackend,
   });
   @override
   State<PersonalizationControls> createState() =>
@@ -52,7 +55,11 @@ class _PersonalizationControlsState extends State<PersonalizationControls>
     vsync: this,
     duration: const Duration(milliseconds: 4500),
   )..addStatusListener(_status);
+  late final AuraHapticsController _haptics = AuraHapticsController(
+    backend: widget.hapticsBackend,
+  );
   bool _foreground = true;
+  bool _reducedPreview = false;
   bool get _active => widget.active && _foreground;
   String t(String ru, String en) => widget.language == 'ru' ? ru : en;
   @override
@@ -61,20 +68,31 @@ class _PersonalizationControlsState extends State<PersonalizationControls>
     WidgetsBinding.instance.addObserver(this);
     final state = WidgetsBinding.instance.lifecycleState;
     _foreground = state == null || state == AppLifecycleState.resumed;
+    _configureHaptics();
   }
 
+  void _configureHaptics() => _haptics.configure(
+    enabled: widget.profile.hapticsEnabled,
+    active: _active,
+  );
+
   void _status(AnimationStatus status) {
+    if (status == AnimationStatus.completed && !_reducedPreview) {
+      _haptics.reveal();
+    }
     if (mounted) setState(() {});
   }
 
   void _stopPreview() {
     _preview.stop();
     _preview.reset();
+    _haptics.cancel();
   }
 
   @override
   void didUpdateWidget(PersonalizationControls oldWidget) {
     super.didUpdateWidget(oldWidget);
+    _configureHaptics();
     if (!_active ||
         oldWidget.profile.background != widget.profile.background ||
         oldWidget.profile.answerStyle != widget.profile.answerStyle)
@@ -84,17 +102,25 @@ class _PersonalizationControlsState extends State<PersonalizationControls>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     _foreground = state == AppLifecycleState.resumed;
+    _configureHaptics();
     if (!_foreground) _stopPreview();
     if (mounted) setState(() {});
   }
 
   void _startPreview() {
     if (!_active || widget.busy || _preview.isAnimating) return;
-    _preview.duration =
+    _reducedPreview =
         MediaQuery.disableAnimationsOf(context) ||
-            MediaQuery.accessibleNavigationOf(context)
+        MediaQuery.accessibleNavigationOf(context);
+    _preview.duration = _reducedPreview
         ? const Duration(milliseconds: 350)
         : const Duration(milliseconds: 4500);
+    _configureHaptics();
+    if (_reducedPreview) {
+      _haptics.tap();
+    } else {
+      _haptics.animationStart();
+    }
     _preview.forward(from: 0);
   }
 
@@ -209,6 +235,7 @@ class _PersonalizationControlsState extends State<PersonalizationControls>
     WidgetsBinding.instance.removeObserver(this);
     _preview.removeStatusListener(_status);
     _preview.dispose();
+    _haptics.dispose();
     super.dispose();
   }
 }
