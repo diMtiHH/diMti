@@ -100,42 +100,34 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets(
-    'carousels use full width180/210 previews and localized AURA names',
-    (tester) async {
-      final state = await controls(tester);
-      expect(
-        tester
-            .getSize(find.byKey(const ValueKey('background-carousel')))
-            .height,
-        180,
-      );
-      expect(
-        tester
-            .getSize(find.byKey(const ValueKey('answer-style-carousel')))
-            .height,
-        210,
-      );
-      expect(find.byType(ChoiceChip), findsNothing);
-      expect(find.text('Полярное сияние'), findsOneWidget);
-      expect(find.text('Живая материя'), findsOneWidget);
-      expect(scenes(tester).where((scene) => scene.active).length, 2);
-      for (final name in ['stars', 'galaxy', 'aurora', 'gravity']) {
-        final size = tester.getSize(find.byKey(ValueKey('background-$name')));
-        expect(size.width, greaterThanOrEqualTo(44));
-        expect(size.height, greaterThanOrEqualTo(44));
-      }
-      state.update(() => state.language = 'en');
-      await flush(tester);
-      expect(find.text('Space'), findsOneWidget);
-      expect(find.text('Answer form'), findsOneWidget);
-      expect(find.text('Aurora'), findsOneWidget);
-      expect(find.text('Living Matter'), findsOneWidget);
-      expect(find.text('Preview animation'), findsOneWidget);
-      expect(state.changes, isEmpty);
-      await close(tester);
-    },
-  );
+  testWidgets('one static combined preview and labeled independent selectors', (
+    tester,
+  ) async {
+    final state = await controls(tester);
+    expect(
+      tester.getSize(find.byKey(const ValueKey('appearance-preview'))).height,
+      224,
+    );
+    expect(scenes(tester), hasLength(1));
+    expect(find.byType(ChoiceChip), findsNothing);
+    expect(find.text('Полярное сияние'), findsOneWidget);
+    expect(find.text('Живая материя'), findsOneWidget);
+    expect(scenes(tester).where((scene) => scene.active), isEmpty);
+    for (final name in ['stars', 'galaxy', 'aurora', 'gravity']) {
+      final size = tester.getSize(find.byKey(ValueKey('background-$name')));
+      expect(size.width, greaterThanOrEqualTo(44));
+      expect(size.height, greaterThanOrEqualTo(44));
+    }
+    state.update(() => state.language = 'en');
+    await flush(tester);
+    expect(find.text('Space'), findsOneWidget);
+    expect(find.text('Answer form'), findsOneWidget);
+    expect(find.text('Aurora'), findsOneWidget);
+    expect(find.text('Living Matter'), findsOneWidget);
+    expect(find.text('Preview animation'), findsOneWidget);
+    expect(state.changes, isEmpty);
+    await close(tester);
+  });
 
   testWidgets(
     'arrows swipe and dots change only the intended independent preference',
@@ -177,8 +169,7 @@ void main() {
           ),
         );
         await flush(tester);
-        final scene = scenes(tester)
-            .singleWhere((scene) => scene.active && scene.showForm);
+        final scene = scenes(tester).singleWhere((scene) => scene.showForm);
         expect(scene.background, background.name);
         expect(scene.form, form.name);
         expect(scene.preview, isTrue);
@@ -196,8 +187,7 @@ void main() {
       await tester.tap(find.byKey(const ValueKey('preview-animation')));
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 2200));
-      var scene = scenes(tester)
-          .singleWhere((scene) => scene.active && scene.showForm);
+      var scene = scenes(tester).singleWhere((scene) => scene.showForm);
       expect(scene.phase, AuraPhase.answerAnimation);
       expect(scene.progress, closeTo(2200 / 4500, .01));
       expect(scenes(tester).where((scene) => scene.active).length, 1);
@@ -213,14 +203,11 @@ void main() {
       }
       await tester.pump(const Duration(milliseconds: 2200));
       expect(
-        scenes(tester)
-            .singleWhere((scene) => scene.active && scene.showForm)
-            .phase,
+        scenes(tester).singleWhere((scene) => scene.showForm).phase,
         AuraPhase.answerAnimation,
       );
       await tester.pump(const Duration(milliseconds: 110));
-      scene = scenes(tester)
-          .singleWhere((scene) => scene.active && scene.showForm);
+      scene = scenes(tester).singleWhere((scene) => scene.showForm);
       expect(scene.phase, AuraPhase.idle);
       expect(state.changes, isEmpty);
       await close(tester);
@@ -250,8 +237,7 @@ void main() {
           );
         }
         await flush(tester);
-        final scene = scenes(tester)
-            .singleWhere((scene) => scene.active && scene.showForm);
+        final scene = scenes(tester).singleWhere((scene) => scene.showForm);
         expect(scene.phase, AuraPhase.idle);
         expect(scene.progress, 0);
         expect(state.changes, isEmpty);
@@ -300,9 +286,7 @@ void main() {
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 400));
       expect(
-        scenes(tester)
-            .singleWhere((scene) => scene.active && scene.showForm)
-            .phase,
+        scenes(tester).singleWhere((scene) => scene.showForm).phase,
         AuraPhase.idle,
       );
       expect(state.changes, isEmpty);

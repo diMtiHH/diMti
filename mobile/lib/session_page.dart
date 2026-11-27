@@ -141,6 +141,8 @@ class _SessionPageState extends State<SessionPage>
   final _input = TextEditingController();
   VoiceInputController? _voice;
   bool _voiceRevisionActive = false;
+  int _voiceIntent = 0;
+  bool _formDismissedKeyboard = false;
   String _beforeVoice = '';
   late final ClockContinuityGuard _clockGuard;
   bool _started = false;
@@ -481,6 +483,7 @@ class _SessionPageState extends State<SessionPage>
   }
 
   void _discardVoice() {
+    ++_voiceIntent;
     _voiceRevisionActive = false;
     _beforeVoice = '';
     unawaited(_voice?.cancel());
@@ -795,7 +798,8 @@ class _SessionPageState extends State<SessionPage>
       unawaited(_voice!.stop());
       return;
     }
-    if (_inputFocus.hasFocus) {
+    if (_formDismissedKeyboard || _inputFocus.hasFocus) {
+      _formDismissedKeyboard = false;
       _inputFocus.unfocus();
       return;
     }
@@ -810,7 +814,7 @@ class _SessionPageState extends State<SessionPage>
     _haptics.holdStart();
   }
 
-  void _holdRelease() {
+  Future<void> _holdRelease() async {
     // Diagnostics have a fixed fixture and intentionally no voice controller.
     if (_voice == null) return;
     if (_session?.phase != SessionPhase.ready ||
@@ -822,13 +826,57 @@ class _SessionPageState extends State<SessionPage>
       return;
     }
     _configureHaptics();
-    _haptics.holdRelease();
+    final generation = _auraGeneration, intent = ++_voiceIntent;
     setState(() {
       _inputMode = true;
       _result = null;
     });
     _visuals();
-    unawaited(_startVoice(fromHold: true));
+    await _haptics.holdRelease();
+    if (!mounted ||
+        generation != _auraGeneration ||
+        intent != _voiceIntent ||
+        !_foreground ||
+        !widget.active ||
+        _covered ||
+        _inputFocus.hasFocus)
+      return;
+    await _startVoice(fromHold: true);
+  }
+
+  Widget _questionAction(String label, VoidCallback? onPressed, {Key? key}) {
+    final accent = auraAccent(_appearance.background.name);
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: accent.withValues(alpha: onPressed == null ? .13 : .5),
+            width: .6,
+          ),
+        ),
+      ),
+      child: FilledButton(
+        key: key,
+        onPressed: onPressed,
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          disabledBackgroundColor: Colors.transparent,
+          foregroundColor: accent,
+          minimumSize: const Size(48, 50),
+          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 12),
+          shape: const RoundedRectangleBorder(),
+          side: BorderSide.none,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(child: Text(label, textAlign: TextAlign.center)),
+            const SizedBox(width: 12),
+            const Icon(Icons.arrow_forward_rounded, size: 19),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _auraForm(double height) => SizedBox(
@@ -844,7 +892,13 @@ class _SessionPageState extends State<SessionPage>
       active: _foreground && widget.active && !_covered && !_answerOpen,
       phase: _auraPhase,
       onShortTap: _formTap,
-      onTouchFeedback: _haptic,
+      onTouchFeedback: () {
+        // TapRegion may unfocus on pointer-down before this form's release.
+        // Remember the keyboard state so release cannot reopen it immediately.
+        _formDismissedKeyboard =
+            _inputFocus.hasFocus || MediaQuery.viewInsetsOf(context).bottom > 0;
+        _haptic();
+      },
       onHoldStart: _holdStart,
       onHoldRelease: _holdRelease,
       onTouchCancel: _haptics.cancel,
@@ -931,10 +985,10 @@ class _SessionPageState extends State<SessionPage>
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(height: 32),
-          FilledButton(
+          _questionAction(
+            t('Спросить Вселенную', 'Ask the Universe'),
+            _confirm,
             key: const ValueKey('confirm-question'),
-            onPressed: _confirm,
-            child: Text(t('Спросить Вселенную', 'Ask the Universe')),
           ),
           TextButton(
             onPressed: () {
@@ -976,14 +1030,36 @@ class _SessionPageState extends State<SessionPage>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (!widget.diagnostic && !_inputFocus.hasFocus)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 16),
-            child: Text(
-              t('Твой вопрос', 'Your question'),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
+        if (!widget.diagnostic)
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  t('ТВОЙ ВОПРОС', 'YOUR QUESTION'),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    fontSize: 10,
+                    letterSpacing: 2,
+                    color: auraAccent(_appearance.background.name),
+                  ),
+                ),
+              ),
+              IconButton(
+                key: const ValueKey('voice-input'),
+                tooltip: _voice!.recording
+                    ? t('Остановить запись', 'Stop recording')
+                    : t('Голосовой ввод', 'Voice input'),
+                onPressed: _voice!.recording
+                    ? _voice!.stop
+                    : (_voice!.busy ? null : _startVoice),
+                color: auraAccent(_appearance.background.name),
+                icon: AuraIcon(
+                  kind: _voice!.recording
+                      ? AuraIconKind.close
+                      : AuraIconKind.microphone,
+                  size: 22,
+                ),
+              ),
+            ],
           ),
         if (!widget.diagnostic)
           TextField(
@@ -999,11 +1075,15 @@ class _SessionPageState extends State<SessionPage>
             enableSuggestions: false,
             autocorrect: false,
             style: Theme.of(context).textTheme.headlineSmall,
+            cursorColor: auraAccent(_appearance.background.name),
             decoration: InputDecoration(
               hintText: t('Стоит ли мне…', 'Should I…'),
               filled: false,
               counterText: '',
-              border: const UnderlineInputBorder(),
+              border: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              contentPadding: const EdgeInsets.symmetric(vertical: 10),
             ),
             onTap: () {
               if (_voice?.busy == true) _discardVoice();
@@ -1017,33 +1097,20 @@ class _SessionPageState extends State<SessionPage>
             },
           ),
         if (!widget.diagnostic) ...[
-          if (_inputFocus.hasFocus ||
-              MediaQuery.viewInsetsOf(context).bottom > 0)
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                key: const ValueKey('dismiss-keyboard'),
-                onPressed: _inputFocus.unfocus,
-                child: Text(t('Скрыть клавиатуру', 'Hide keyboard')),
-              ),
-            ),
-          const SizedBox(height: 4),
-          Center(
-            child: IconButton(
-              key: const ValueKey('voice-input'),
-              tooltip: _voice!.recording
-                  ? t('Остановить запись', 'Stop recording')
-                  : t('Голосовой ввод', 'Voice input'),
-              onPressed: _voice!.recording
-                  ? _voice!.stop
-                  : (_voice!.busy ? null : _startVoice),
-              icon: AuraIcon(
-                kind: _voice!.recording
-                    ? AuraIconKind.close
-                    : AuraIconKind.microphone,
+          Container(
+            height: .6,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  auraAccent(_appearance.background.name)
+                      .withValues(alpha: .45),
+                  auraAccent(_appearance.background.name)
+                      .withValues(alpha: .04),
+                ],
               ),
             ),
           ),
+          const SizedBox(height: 12),
           if (_voice!.busy || _voice!.state == VoiceInputState.error)
             Text(
               _voiceStatus
@@ -1059,9 +1126,11 @@ class _SessionPageState extends State<SessionPage>
             ),
         ],
         const SizedBox(height: 8),
-        FilledButton(
-          onPressed:
-              session.busy ||
+        _questionAction(
+          widget.diagnostic
+              ? t('Подготовить тестовый ответ', 'Prepare test answer')
+              : t('Продолжить', 'Continue'),
+          session.busy ||
                   _voice?.busy == true ||
                   (!widget.diagnostic && session.draft.trim().isEmpty)
               ? null
@@ -1071,11 +1140,6 @@ class _SessionPageState extends State<SessionPage>
                   _prepare();
                   _visuals();
                 },
-          child: Text(
-            widget.diagnostic
-                ? t('Подготовить тестовый ответ', 'Prepare test answer')
-                : t('Продолжить', 'Continue'),
-          ),
         ),
         TextButton(
           onPressed: () {
@@ -1154,6 +1218,31 @@ class _SessionPageState extends State<SessionPage>
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
             ),
+          if (!idle)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: bottom,
+              child: IgnorePointer(
+                child: SizedBox(
+                  height: maxPanelHeight.clamp(100.0, 360.0),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: const [0, .4, 1],
+                        colors: const [
+                          Color(0x00050a12),
+                          Color(0xb3050a12),
+                          Color(0xf5050a12),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           Positioned(
             left: 24,
             right: 24,
@@ -1171,40 +1260,35 @@ class _SessionPageState extends State<SessionPage>
                 ),
                 child: IgnorePointer(
                   ignoring: idle,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: idle
-                          ? Colors.transparent
-                          : const Color(0xe609101b),
-                      borderRadius: BorderRadius.circular(24),
+                  child: SingleChildScrollView(
+                    key: const ValueKey('question-panel'),
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: idle ? 0 : 6,
+                      vertical: idle ? 0 : 12,
                     ),
-                    child: SingleChildScrollView(
-                      key: const ValueKey('question-panel'),
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      padding: EdgeInsets.all(idle ? 0 : 16),
-                      child: _failed
-                          ? Column(
-                              children: [
-                                Text(_loadFailure),
-                                TextButton(
-                                  onPressed: _load,
-                                  child: Text(
-                                    t('Повторить загрузку', 'Retry loading'),
-                                  ),
+                    child: _failed
+                        ? Column(
+                            children: [
+                              Text(_loadFailure),
+                              TextButton(
+                                onPressed: _load,
+                                child: Text(
+                                  t('Повторить загрузку', 'Retry loading'),
                                 ),
-                              ],
-                            )
-                          : _loading || session == null
-                          ? Text(
-                              t(
-                                'Вселенная пробуждается…',
-                                'The Universe is waking…',
                               ),
-                              textAlign: TextAlign.center,
-                            )
-                          : _auraContent(session),
-                    ),
+                            ],
+                          )
+                        : _loading || session == null
+                        ? Text(
+                            t(
+                              'Вселенная пробуждается…',
+                              'The Universe is waking…',
+                            ),
+                            textAlign: TextAlign.center,
+                          )
+                        : _auraContent(session),
                   ),
                 ),
               ),

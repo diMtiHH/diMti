@@ -220,6 +220,7 @@ void main() {
         );
         await expectFrozen(tester);
         tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);
+        expect(tester.binding.transientCallbackCount, 0);
         tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
         expect(tester.binding.transientCallbackCount, 0);
         tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.hidden);

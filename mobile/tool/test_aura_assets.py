@@ -41,9 +41,9 @@ class AuraAssetsTests(unittest.TestCase):
         self.assertEqual(manifest['protocol'], 'aura-offline-typography-v2')
         self.assertFalse(manifest['runtime_network'])
         self.assertEqual(manifest['google_fonts_commit'], 'b31870aff700ab7a1d74fa0c6887d95beb9e0037')
-        self.assertEqual({f['family'] for f in manifest['families']}, {'Cormorant Garamond', 'Literata'})
+        self.assertEqual({f['family'] for f in manifest['families']}, {'Cormorant Garamond', 'Literata', 'Manrope'})
         for family in manifest['families']:
-            weights = {300, 400, 500, 600} if family['role'] == 'headings' else {400, 500, 600}
+            weights = {'Cormorant Garamond': {300, 400, 500, 600}, 'Literata': {400, 500, 600}, 'Manrope': {400, 500}}[family['family']]
             self.assertEqual({entry['weight'] for entry in family['static_faces'].values()}, weights)
             self.assertEqual(len(family['static_faces']), len(weights))
             for name, entry in {**family['source_files'], **family['static_faces']}.items():

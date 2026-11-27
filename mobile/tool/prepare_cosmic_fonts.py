@@ -20,6 +20,8 @@ FAMILIES = (
      {'Light': 300, 'Regular': 400, 'Medium': 500, 'SemiBold': 600}),
     ('Literata', 'Literata', 'literata', 'Literata%5Bopsz,wght%5D.ttf',
      'body', {'opsz': 14}, {'Regular': 400, 'Medium': 500, 'SemiBold': 600}),
+    ('Manrope', 'Manrope', 'manrope', 'Manrope%5Bwght%5D.ttf',
+     'settings body and controls', {}, {'Regular': 400, 'Medium': 500}),
 )
 
 
@@ -41,15 +43,17 @@ def main() -> None:
     for family, prefix, folder, remote_font, role, axes, weights in FAMILIES:
         base = f'https://raw.githubusercontent.com/google/fonts/{COMMIT}/ofl/{folder}/'
         sources, faces = {}, {}
+        license_name = 'OFL.txt' if family == 'Manrope' else f'{prefix}-OFL.txt'
+        metadata_name = 'upstream-METADATA.pb' if family == 'Manrope' else f'{prefix}-upstream-METADATA.pb'
         for remote, local in ((remote_font, f'{prefix}-Variable.source.ttf'),
-                              ('OFL.txt', f'{prefix}-OFL.txt'),
-                              ('METADATA.pb', f'{prefix}-upstream-METADATA.pb')):
+                              ('OFL.txt', license_name),
+                              ('METADATA.pb', metadata_name)):
             with urllib.request.urlopen(base + remote, timeout=30) as response:
                 content = response.read()
             (target / local).write_bytes(content)
             sources[local] = {'url': base + remote, 'sha256': hashlib.sha256(content).hexdigest(),
                               'bytes': len(content)}
-        license_text = (target / f'{prefix}-OFL.txt').read_text(encoding='utf-8')
+        license_text = (target / license_name).read_text(encoding='utf-8')
         assert 'SIL OPEN FONT LICENSE Version 1.1' in license_text
         variable = (target / f'{prefix}-Variable.source.ttf').read_bytes()
         for label, weight in weights.items():
@@ -74,7 +78,7 @@ def main() -> None:
             faces[path.name] = {'weight': weight, 'sha256': hashlib.sha256(content).hexdigest(),
                                'bytes': len(content), 'russian_latin_digits_verified': True}
         families.append({'family': family, 'role': role, 'license': 'SIL Open Font License 1.1',
-                         'license_file': f'{prefix}-OFL.txt', 'fixed_axes': axes,
+                         'license_file': license_name, 'fixed_axes': axes,
                          'source_files': sources, 'static_faces': faces})
     manifest = {'protocol': 'aura-offline-typography-v2', 'google_fonts_commit': COMMIT,
                 'fonttools_version': fontTools.__version__, 'families': families,

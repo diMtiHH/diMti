@@ -8,10 +8,13 @@ import 'package:universe_lab/aura_motion.dart';
 class HapticsProbe implements AuraHapticsBackend {
   final calls = <String>[];
   Completer<void>? blocked;
+  Completer<void>? releaseBlocked;
   @override
   Future<void> event(String name) async {
     calls.add(name);
     if (name == 'hold' && blocked != null) await blocked!.future;
+    if (name == 'release' && releaseBlocked != null)
+      await releaseBlocked!.future;
   }
 }
 
@@ -87,6 +90,52 @@ void main() {
     expect(calls[0].arguments, isNot(calls[1].arguments));
     messenger.setMockMethodCallHandler(channel, null);
   });
+  test(
+    'release awaits the native impulse acknowledgement before audio capture',
+    () async {
+      final backend = HapticsProbe()..releaseBlocked = Completer<void>();
+      final h = AuraHapticsController(backend: backend)
+        ..configure(enabled: true, active: true);
+      var captureMayStart = false;
+      final release = h.holdRelease().then((_) => captureMayStart = true);
+      await Future<void>.delayed(Duration.zero);
+      expect(backend.calls, ['release']);
+      expect(captureMayStart, isFalse);
+      backend.releaseBlocked!.complete();
+      await release;
+      expect(captureMayStart, isTrue);
+      h.dispose();
+      await h.settled;
+    },
+  );
+  test('unresponsive release cannot indefinitely block voice input', () async {
+    final backend = HapticsProbe()..releaseBlocked = Completer<void>();
+    final h = AuraHapticsController(
+      backend: backend,
+      releaseDeadline: const Duration(milliseconds: 8),
+    )..configure(enabled: true, active: true);
+    await h.holdRelease();
+    expect(backend.calls, ['release', 'cancel']);
+    backend.releaseBlocked!.complete();
+    await h.settled;
+    expect(backend.calls.last, 'cancel');
+    h.dispose();
+    await h.settled;
+  });
+  test(
+    'disabled feedback adds no platform work to the release handoff',
+    () async {
+      final backend = HapticsProbe();
+      final h = AuraHapticsController(backend: backend)
+        ..configure(enabled: false, active: true);
+      await h.settled;
+      backend.calls.clear();
+      await h.holdRelease();
+      expect(backend.calls, isEmpty);
+      h.dispose();
+      await h.settled;
+    },
+  );
   group('motion', () {
     const channel = MethodChannel('tests/tilt');
     late AuraMotionController m;

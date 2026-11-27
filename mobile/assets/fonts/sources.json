@@ -98,6 +98,44 @@
           "russian_latin_digits_verified": true
         }
       }
+    },
+    {
+      "family": "Manrope",
+      "role": "settings body and controls",
+      "license": "SIL Open Font License 1.1",
+      "license_file": "OFL.txt",
+      "fixed_axes": {},
+      "source_files": {
+        "Manrope-Variable.source.ttf": {
+          "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/manrope/Manrope%5Bwght%5D.ttf",
+          "sha256": "3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6",
+          "bytes": 164700
+        },
+        "OFL.txt": {
+          "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/manrope/OFL.txt",
+          "sha256": "58172e0c0fac2cda8a37b348164bb55e44b0e69051e557e92b1d3f6910141f7b",
+          "bytes": 4387
+        },
+        "upstream-METADATA.pb": {
+          "url": "https://raw.githubusercontent.com/google/fonts/b31870aff700ab7a1d74fa0c6887d95beb9e0037/ofl/manrope/METADATA.pb",
+          "sha256": "fb204147a7c16d009d4fa53248b6075bc941d7adfa450a825bc5d4cef2f9ded9",
+          "bytes": 732
+        }
+      },
+      "static_faces": {
+        "Manrope-Regular.ttf": {
+          "weight": 400,
+          "sha256": "2602c71d1f36c96da0022706f15da7d51102d19d10510b77b5a39bf861122807",
+          "bytes": 97436,
+          "russian_latin_digits_verified": true
+        },
+        "Manrope-Medium.ttf": {
+          "weight": 500,
+          "sha256": "729037f5dc28daa949c5ce8e69d945bf14faf2649db737e6eb085c120c778dd0",
+          "bytes": 97536,
+          "russian_latin_digits_verified": true
+        }
+      }
     }
   ],
   "runtime_network": false,

@@ -18,6 +18,7 @@ import 'ambient_audio_test.dart' show TestAmbientBackend;
 import 'presentation_profile_test.dart' show MemoryPresentationBackend;
 import 'session_page_test.dart' show TestBackend, TestRandom;
 import 'voice_page_test.dart' show PageVoiceBackend, pauseApp, resumeApp;
+import 'aura_test_support.dart';
 
 class ShellFixture {
   final presentation = MemoryPresentationBackend();
@@ -150,6 +151,14 @@ void main() {
       final fixture = ShellFixture(sound: true, backend: backend);
       await show(tester, fixture);
       expect(find.byType(UniverseStartup), findsOneWidget);
+      tester.view.padding = const FakeViewPadding(top: 59, bottom: 34);
+      addTearDown(tester.view.resetPadding);
+      await frames(tester);
+      expect(
+        tester.getRect(find.byKey(const ValueKey('startup-full-bleed'))),
+        const Rect.fromLTWH(0, 0, 390, 844),
+        reason: 'The startup backdrop must include the status/home-indicator areas.',
+      );
       expect(find.byType(AuraTouchSurface), findsNothing);
       expect(
         tester
@@ -197,6 +206,7 @@ void main() {
       expect(fixture.ambient.plays, isEmpty);
       await tap(tester, find.byKey(const ValueKey('open-settings')));
       expect(find.text('Проверка ядра'), findsNothing);
+      await tap(tester, find.byKey(const ValueKey('settings-senses')));
       await tap(tester, find.byKey(const ValueKey('ambient-enabled')));
       expect(fixture.ambient.plays, ['aurora']);
       await tap(tester, find.byKey(const ValueKey('haptics-enabled')));
@@ -213,6 +223,7 @@ void main() {
       await frames(tester);
       expect(fixture.ambient.plays, hasLength(1));
       await tap(tester, find.byKey(const ValueKey('open-settings')));
+      await tap(tester, find.byKey(const ValueKey('settings-senses')));
       await tap(tester, find.text('Возобновить звук'));
       expect(fixture.ambient.plays, hasLength(2));
       expect(fixture.random.calls, 0);
@@ -343,10 +354,16 @@ void main() {
           }
           await font.load();
         }
+        final body = FontLoader('Manrope');
+        for (final weight in ['Regular', 'Medium']) {
+          body.addFont(rootBundle.load('assets/fonts/Manrope-$weight.ttf'));
+        }
+        await body.load();
       });
       final fixture = ShellFixture();
       await show(tester, fixture);
       Future<void> capture(String name) async {
+        await settleAuraRaster(tester);
         expect(tester.takeException(), isNull);
         final boundary = tester.renderObject<RenderRepaintBoundary>(
           find.byKey(const ValueKey('aura-capture')),
@@ -380,15 +397,22 @@ void main() {
       await capture('aura-world');
       await tap(tester, find.byKey(const ValueKey('open-settings')));
       await tester.pump(const Duration(milliseconds: 200));
-      await capture('aura-settings-personal');
-      await tester.ensureVisible(find.text('Твоя Вселенная'));
-      await frames(tester);
+      await capture('aura-settings-constellation');
+      await tap(tester, find.byKey(const ValueKey('settings-appearance')));
       await capture('aura-settings-space');
       await tap(tester, find.byKey(const ValueKey('preview-animation')));
       await tester.pump(const Duration(milliseconds: 500));
       await capture('aura-settings-controls');
       expect(fixture.random.calls, 0);
       expect(fixture.session.writes, 0);
+      await clean(tester);
+      final blocked = GatedShellBackend();
+      final starting = ShellFixture(backend: blocked);
+      tester.view.padding = const FakeViewPadding(top: 59, bottom: 34);
+      addTearDown(tester.view.resetPadding);
+      await show(tester, starting);
+      await capture('aura-startup');
+      blocked.gate.complete();
       await clean(tester);
     },
   );

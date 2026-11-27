@@ -127,10 +127,61 @@ class _PersonalizationControlsState extends State<PersonalizationControls>
   @override
   Widget build(BuildContext context) {
     final profile = widget.profile;
+    final accent = auraAccent(profile.background.name);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _PreviewCarousel(
+        // A single composed sample replaces two independently animated scenes.
+        // Idle settings are still; only this explicit preview owns a ticker.
+        SizedBox(
+          height: 224,
+          child: AnimatedBuilder(
+            animation: _preview,
+            builder: (context, _) => _PreviewScene(
+              background: profile.background.name,
+              form: profile.answerStyle.name,
+              active: _active && _preview.isAnimating,
+              phase: _preview.isAnimating
+                  ? AuraPhase.answerAnimation
+                  : AuraPhase.idle,
+              progress: _preview.isAnimating ? _preview.value : 0,
+            ),
+          ),
+        ),
+        Align(
+          alignment: Alignment.center,
+          child: OutlinedButton.icon(
+            key: const ValueKey('preview-animation'),
+            style: OutlinedButton.styleFrom(
+              minimumSize: const Size(48, 48),
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              side: BorderSide(color: accent.withValues(alpha: .28), width: .7),
+            ),
+            onPressed: !_active || widget.busy || _preview.isAnimating
+                ? null
+                : _startPreview,
+            icon: AuraIcon(
+              kind: AuraIconKind.universe,
+              size: 16,
+              color: accent,
+            ),
+            label: Text(t('Посмотреть анимацию', 'Preview animation')),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          t(
+            'Предпросмотр · без вопроса и ответа',
+            'Preview · no question or answer',
+          ),
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontSize: 11),
+        ),
+        const SizedBox(height: 24),
+        _AppearanceSelector(
           kind: 'background',
           title: t('Пространство', 'Space'),
           language: widget.language,
@@ -142,10 +193,9 @@ class _PersonalizationControlsState extends State<PersonalizationControls>
             for (final value in PresentationBackground.values)
               backgroundLabel(value, widget.language),
           ],
-          height: 180,
           active: _active,
           busy: widget.busy,
-          accent: auraAccent(profile.background.name),
+          accent: accent,
           onSelected: (index) {
             _stopPreview();
             widget.onChanged(
@@ -154,19 +204,9 @@ class _PersonalizationControlsState extends State<PersonalizationControls>
               ),
             );
           },
-          scene: (index, active) => _PreviewScene(
-            background: PresentationBackground.values[index].name,
-            form: profile.answerStyle.name,
-            active: active && !_preview.isAnimating,
-            showForm: false,
-            label: backgroundLabel(
-              PresentationBackground.values[index],
-              widget.language,
-            ),
-          ),
         ),
-        const SizedBox(height: 28),
-        _PreviewCarousel(
+        const SizedBox(height: 24),
+        _AppearanceSelector(
           kind: 'answer-style',
           title: t('Форма ответа', 'Answer form'),
           language: widget.language,
@@ -178,10 +218,9 @@ class _PersonalizationControlsState extends State<PersonalizationControls>
             for (final value in PresentationAnswerStyle.values)
               answerStyleLabel(value, widget.language),
           ],
-          height: 210,
           active: _active,
           busy: widget.busy,
-          accent: auraAccent(profile.background.name),
+          accent: accent,
           onSelected: (index) {
             _stopPreview();
             widget.onChanged(
@@ -190,41 +229,6 @@ class _PersonalizationControlsState extends State<PersonalizationControls>
               ),
             );
           },
-          scene: (index, active) => AnimatedBuilder(
-            animation: _preview,
-            builder: (context, _) => _PreviewScene(
-              background: profile.background.name,
-              form: PresentationAnswerStyle.values[index].name,
-              active: active,
-              phase: _preview.isAnimating && active
-                  ? AuraPhase.answerAnimation
-                  : AuraPhase.idle,
-              progress: active ? _preview.value : 0,
-              showForm: true,
-              label: t(
-                'Интерактивное превью формы',
-                'Interactive form preview',
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        OutlinedButton.icon(
-          key: const ValueKey('preview-animation'),
-          onPressed: !_active || widget.busy || _preview.isAnimating
-              ? null
-              : _startPreview,
-          icon: const AuraIcon(kind: AuraIconKind.universe, size: 20),
-          label: Text(t('Посмотреть анимацию', 'Preview animation')),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          t(
-            'Предпросмотр · без вопроса и ответа',
-            'Preview · no question or answer',
-          ),
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodySmall,
         ),
       ],
     );
@@ -240,197 +244,176 @@ class _PersonalizationControlsState extends State<PersonalizationControls>
   }
 }
 
-class _PreviewCarousel extends StatefulWidget {
+/// Both controls edit the confirmed profile directly. There is no optimistic
+/// page index which could visually diverge from a rejected native save.
+class _AppearanceSelector extends StatelessWidget {
   final String kind, title, language;
   final List<String> names, labels;
   final int selected;
-  final double height;
   final bool active, busy;
   final Color accent;
   final ValueChanged<int> onSelected;
-  final Widget Function(int index, bool active) scene;
-  const _PreviewCarousel({
+  const _AppearanceSelector({
     required this.kind,
     required this.title,
     required this.language,
     required this.names,
     required this.labels,
     required this.selected,
-    required this.height,
     required this.active,
     required this.busy,
     required this.accent,
     required this.onSelected,
-    required this.scene,
   });
-  @override
-  State<_PreviewCarousel> createState() => _PreviewCarouselState();
-}
-
-class _PreviewCarouselState extends State<_PreviewCarousel> {
-  late final PageController _pages = PageController(
-    initialPage: widget.selected,
-  );
-  late int _page = widget.selected;
-  bool _syncing = false;
-  bool get _enabled => widget.active && !widget.busy;
-  @override
-  void didUpdateWidget(_PreviewCarousel oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // A rejected save restores the confirmed choice without another write.
-    if (!widget.busy && _page != widget.selected) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted ||
-            !_pages.hasClients ||
-            widget.busy ||
-            _page == widget.selected)
-          return;
-        _syncing = true;
-        _pages.jumpToPage(widget.selected);
-        setState(() => _page = widget.selected);
-        _syncing = false;
-      });
-    }
-  }
-
-  void _choose(int index) {
-    if (!_enabled ||
-        index < 0 ||
-        index >= widget.names.length ||
-        index == _page)
-      return;
-    if ((index - _page).abs() > 1 ||
-        MediaQuery.disableAnimationsOf(context) ||
-        MediaQuery.accessibleNavigationOf(context)) {
-      _pages.jumpToPage(index);
-    } else {
-      _pages.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 280),
-        curve: Curves.easeInOutCubic,
-      );
-    }
+  bool get enabled => active && !busy;
+  void choose(int index) {
+    if (enabled && index >= 0 && index < names.length && index != selected)
+      onSelected(index);
   }
 
   @override
   Widget build(BuildContext context) {
-    final ru = widget.language == 'ru';
+    final theme = Theme.of(context).textTheme;
+    final ru = language == 'ru';
+    var dragDistance = 0.0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text(widget.title, style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 14),
-        SizedBox(
-          height: widget.height,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(22),
-            child: PageView.builder(
-              key: ValueKey('${widget.kind}-carousel'),
-              controller: _pages,
-              itemCount: widget.names.length,
-              physics: _enabled
-                  ? const PageScrollPhysics()
-                  : const NeverScrollableScrollPhysics(),
-              onPageChanged: (index) {
-                setState(() => _page = index);
-                if (!_syncing && _enabled && index != widget.selected)
-                  widget.onSelected(index);
-              },
-              itemBuilder: (context, index) =>
-                  widget.scene(index, widget.active && index == _page),
-            ),
-          ),
-        ),
-        const SizedBox(height: 4),
         Row(
           children: [
+            Expanded(child: Text(title, style: theme.titleMedium)),
             IconButton(
-              key: ValueKey('${widget.kind}-previous'),
+              key: ValueKey('$kind-previous'),
               tooltip: ru ? 'Предыдущий вариант' : 'Previous option',
-              onPressed: _enabled && _page > 0
-                  ? () => _choose(_page - 1)
+              onPressed: enabled && selected > 0
+                  ? () => choose(selected - 1)
                   : null,
-              icon: const AuraIcon(kind: AuraIconKind.back),
+              icon: const AuraIcon(kind: AuraIconKind.back, size: 17),
             ),
-            Expanded(
-              child: Text(
-                widget.labels[_page],
-                key: ValueKey('${widget.kind}-label'),
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyLarge,
-              ),
+            Text(
+              '${selected + 1} / ${names.length}',
+              style: theme.bodySmall?.copyWith(fontSize: 11),
             ),
             IconButton(
-              key: ValueKey('${widget.kind}-next'),
+              key: ValueKey('$kind-next'),
               tooltip: ru ? 'Следующий вариант' : 'Next option',
-              onPressed: _enabled && _page < widget.names.length - 1
-                  ? () => _choose(_page + 1)
+              onPressed: enabled && selected < names.length - 1
+                  ? () => choose(selected + 1)
                   : null,
               icon: const RotatedBox(
                 quarterTurns: 2,
-                child: AuraIcon(kind: AuraIconKind.back),
+                child: AuraIcon(kind: AuraIconKind.back, size: 17),
               ),
             ),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            for (var index = 0; index < widget.names.length; ++index)
-              Semantics(
-                label:
-                    '${widget.labels[index]}, ${index + 1} ${ru ? 'из' : 'of'} ${widget.names.length}',
-                button: true,
-                selected: _page == index,
-                enabled: _enabled,
-                child: InkResponse(
-                  key: ValueKey('${widget.kind}-${widget.names[index]}'),
-                  onTap: _enabled ? () => _choose(index) : null,
-                  radius: 22,
-                  child: SizedBox(
-                    width: 44,
-                    height: 44,
-                    child: Center(
-                      child: Container(
-                        width: _page == index ? 7 : 4,
-                        height: _page == index ? 7 : 4,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: widget.accent.withValues(
-                            alpha: _page == index ? 0.95 : 0.3,
+        GestureDetector(
+          key: ValueKey('$kind-carousel'),
+          behavior: HitTestBehavior.opaque,
+          onHorizontalDragStart: enabled ? (_) => dragDistance = 0 : null,
+          onHorizontalDragUpdate: enabled
+              ? (details) => dragDistance += details.primaryDelta ?? 0
+              : null,
+          onHorizontalDragEnd: enabled
+              ? (details) {
+                  if (dragDistance.abs() > 28)
+                    choose(selected + (dragDistance < 0 ? 1 : -1));
+                }
+              : null,
+          child: LayoutBuilder(
+            builder: (context, bounds) {
+              final width = (bounds.maxWidth - 12) / 2;
+              return Wrap(
+                spacing: 12,
+                runSpacing: 6,
+                children: [
+                  for (var index = 0; index < names.length; index++)
+                    SizedBox(
+                      width: width,
+                      child: Semantics(
+                        selected: index == selected,
+                        child: TextButton(
+                          key: ValueKey('$kind-${names[index]}'),
+                          onPressed: enabled ? () => choose(index) : null,
+                          style: TextButton.styleFrom(
+                            minimumSize: const Size(44, 52),
+                            padding: const EdgeInsets.fromLTRB(10, 12, 8, 12),
+                            alignment: Alignment.centerLeft,
+                            shape: const RoundedRectangleBorder(),
+                            backgroundColor: index == selected
+                                ? accent.withValues(alpha: .07)
+                                : Colors.transparent,
+                            foregroundColor: index == selected
+                                ? const Color(0xfff2f3f5)
+                                : const Color(0xffa8b2c2),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 2,
+                                      right: 8,
+                                    ),
+                                    child: Text(
+                                      '0${index + 1}',
+                                      style: theme.bodySmall?.copyWith(
+                                        fontSize: 10,
+                                        color: index == selected
+                                            ? accent
+                                            : const Color(0xff747f94),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      labels[index],
+                                      style: theme.bodySmall?.copyWith(
+                                        fontSize: 12,
+                                        color: index == selected
+                                            ? const Color(0xfff2f3f5)
+                                            : const Color(0xffa8b2c2),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Container(
+                                height: .7,
+                                color: index == selected
+                                    ? accent.withValues(alpha: .75)
+                                    : const Color(0x26a8b2c2),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-          ],
+                ],
+              );
+            },
+          ),
         ),
       ],
     );
   }
-
-  @override
-  void dispose() {
-    _pages.dispose();
-    super.dispose();
-  }
 }
 
 class _PreviewScene extends StatefulWidget {
-  final String background, form, label;
-  final bool active, showForm;
+  final String background, form;
+  final bool active;
   final AuraPhase phase;
   final double progress;
   const _PreviewScene({
     required this.background,
     required this.form,
     required this.active,
-    required this.showForm,
-    required this.label,
-    this.phase = AuraPhase.idle,
-    this.progress = 0,
+    required this.phase,
+    required this.progress,
   });
   @override
   State<_PreviewScene> createState() => _PreviewSceneState();
@@ -439,23 +422,31 @@ class _PreviewScene extends StatefulWidget {
 class _PreviewSceneState extends State<_PreviewScene> {
   final _interaction = AuraInteractionController();
   @override
-  Widget build(BuildContext context) => AuraTouchSurface(
-    interaction: _interaction,
-    active: widget.active,
-    label: widget.label,
-    phase: widget.phase,
-    child: AuraScene(
-      background: widget.background,
-      form: widget.form,
-      interaction: _interaction,
-      active: widget.active,
-      showForm: widget.showForm,
-      preview: true,
-      phase: widget.phase,
-      progress: widget.progress,
-      formAlignment: Alignment.center,
-      formScale: 0.9,
-      child: const SizedBox.expand(),
+  Widget build(BuildContext context) => RepaintBoundary(
+    key: const ValueKey('appearance-preview'),
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        IgnorePointer(
+          child: CustomPaint(
+            painter: _PreviewOrbit(auraAccent(widget.background)),
+          ),
+        ),
+        AuraScene(
+          background: widget.background,
+          form: widget.form,
+          interaction: _interaction,
+          active: widget.active,
+          showBackground: false,
+          showForm: true,
+          preview: true,
+          phase: widget.phase,
+          progress: widget.progress,
+          formAlignment: Alignment.center,
+          formScale: .86,
+          child: const SizedBox.expand(),
+        ),
+      ],
     ),
   );
   @override
@@ -463,4 +454,35 @@ class _PreviewSceneState extends State<_PreviewScene> {
     _interaction.dispose();
     super.dispose();
   }
+}
+
+class _PreviewOrbit extends CustomPainter {
+  final Color accent;
+  const _PreviewOrbit(this.accent);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.height * .43;
+    final line = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = .65
+      ..color = accent.withValues(alpha: .16);
+    canvas.drawCircle(center, radius, line);
+    canvas.drawLine(
+      Offset(0, center.dy),
+      Offset(center.dx - radius - 10, center.dy),
+      line,
+    );
+    canvas.drawLine(
+      Offset(center.dx + radius + 10, center.dy),
+      Offset(size.width, center.dy),
+      line,
+    );
+    final dot = Paint()..color = accent.withValues(alpha: .7);
+    canvas.drawCircle(center + Offset(0, -radius), 1.5, dot);
+    canvas.drawCircle(center + Offset(0, radius), 1.5, dot);
+  }
+
+  @override
+  bool shouldRepaint(_PreviewOrbit oldDelegate) => oldDelegate.accent != accent;
 }

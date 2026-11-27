@@ -29,15 +29,18 @@ class IosAuraHapticsBackend implements AuraHapticsBackend {
 class AuraHapticsController {
   final AuraHapticsBackend backend;
   final bool _supported;
+  final Duration releaseDeadline;
   bool _enabled = true, _active = false, _disposed = false;
   int _generation = 0;
   Future<void> _tail = Future<void>.value();
   Future<void> get settled => _tail;
-  AuraHapticsController({AuraHapticsBackend? backend})
-    : backend = backend ?? IosAuraHapticsBackend(),
-      _supported =
-          backend != null ||
-          (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS);
+  AuraHapticsController({
+    AuraHapticsBackend? backend,
+    this.releaseDeadline = const Duration(milliseconds: 350),
+  }) : backend = backend ?? IosAuraHapticsBackend(),
+       _supported =
+           backend != null ||
+           (!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS);
   void configure({required bool enabled, required bool active}) {
     if (_disposed) return;
     if ((_enabled && !enabled) || (_active && !active)) cancel();
@@ -45,8 +48,10 @@ class AuraHapticsController {
     _active = active;
   }
 
-  void _event(String event) {
-    if (_disposed || !_supported || !_enabled || !_active) return;
+  Future<void> _event(String event) {
+    if (_disposed || !_supported || !_enabled || !_active) {
+      return Future<void>.value();
+    }
     final generation = _generation;
     _tail = _tail
         .then((_) async {
@@ -55,13 +60,27 @@ class AuraHapticsController {
           }
         })
         .catchError((Object _) {});
+    return _tail;
   }
 
-  void tap() => _event('tap');
-  void holdStart() => _event('hold');
-  void holdRelease() => _event('release');
-  void animationStart() => _event('animation');
-  void reveal() => _event('reveal');
+  void tap() => unawaited(_event('tap'));
+  void holdStart() => unawaited(_event('hold'));
+
+  /// The native acknowledgement follows the release envelope. An audio-capture
+  /// owner can await this before changing AVAudioSession to its recording mode,
+  /// which suppresses haptics by default. Cosmetic feedback cannot block voice
+  /// input indefinitely when the platform is unavailable or unresponsive.
+  Future<void> holdRelease() async {
+    final generation = _generation;
+    try {
+      await _event('release').timeout(releaseDeadline);
+    } on TimeoutException {
+      if (!_disposed && generation == _generation) cancel();
+    }
+  }
+
+  void animationStart() => unawaited(_event('animation'));
+  void reveal() => unawaited(_event('reveal'));
   void cancel() {
     ++_generation;
     if (!_supported) return;

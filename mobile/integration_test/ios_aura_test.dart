@@ -121,6 +121,17 @@ void main() {
         expect(painter.environmentShader, isNotNull);
         if (form == 'livingMatter') expect(painter.matterShader, isNotNull);
         if (form == 'liquidMetal') expect(painter.metalShader, isNotNull);
+        final cache = painter.raster!;
+        await (() async {
+          while (cache.inFlight > 0) {
+            await cache.settled;
+          }
+        })().timeout(const Duration(seconds: 5));
+        expect(cache.inFlight, 0);
+        expect(cache.image, isNotNull);
+        expect(cache.pixelSize.width, lessThanOrEqualTo(512));
+        expect(cache.pixelSize.height, lessThanOrEqualTo(720));
+        await tester.pump();
         expect(tester.takeException(), isNull);
         final boundary = tester.renderObject<RenderRepaintBoundary>(
           find.byKey(boundaryKey),

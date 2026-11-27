@@ -242,7 +242,7 @@ void main() {
   );
 
   testWidgets(
-    'form geometry survives input and keyboard; explicit dismiss preserves text',
+    'form geometry survives input and keyboard; outside tap preserves text without extra button',
     (tester) async {
       final backend = TestBackend(), random = TestRandom();
       await show(tester, backend: backend, random: random);
@@ -255,7 +255,10 @@ void main() {
       addTearDown(tester.view.resetViewInsets);
       await frames(tester);
       expect(tester.getRect(bounds), original);
-      await tap(tester, find.byKey(const ValueKey('dismiss-keyboard')));
+      expect(find.byKey(const ValueKey('dismiss-keyboard')), findsNothing);
+      expect(find.text('Скрыть клавиатуру'), findsNothing);
+      await tester.tapAt(tester.getTopLeft(bounds) + const Offset(30, 30));
+      await frames(tester);
       expect(
         tester.widget<TextField>(find.byType(TextField)).focusNode!.hasFocus,
         isFalse,
@@ -271,6 +274,53 @@ void main() {
       await clean(tester);
     },
   );
+
+  for (final interruption in ['none', 'background', 'typing']) {
+    testWidgets(
+      'release finishes before capture; $interruption cannot revive a stale voice intent',
+      (tester) async {
+        debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+        addTearDown(() => debugDefaultTargetPlatformOverride = null);
+        final released = Completer<void>();
+        tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+          const MethodChannel('ask_universe/haptics'),
+          (call) async {
+            if (call.method == 'release') await released.future;
+            return null;
+          },
+        );
+        addTearDown(
+          () => tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+            const MethodChannel('ask_universe/haptics'),
+            null,
+          ),
+        );
+        final backend = TestBackend(),
+            random = TestRandom(),
+            voice = PageVoiceBackend();
+        await show(tester, backend: backend, random: random, voice: voice);
+        final gesture = await tester.startGesture(
+          tester.getCenter(find.byType(AuraTouchSurface)),
+        );
+        await tester.pump(const Duration(milliseconds: 400));
+        await gesture.up();
+        await frames(tester, 2);
+        expect(voice.starts, isEmpty);
+        if (interruption == 'background') {
+          pauseApp(tester.binding);
+        }
+        if (interruption == 'typing') {
+          await tester.enterText(find.byType(TextField), 'typed instead');
+        }
+        released.complete();
+        await frames(tester);
+        expect(voice.starts.length, interruption == 'none' ? 1 : 0);
+        expect(random.calls, 0);
+        expect(backend.writes, 0);
+        await clean(tester);
+      },
+    );
+  }
 
   testWidgets(
     'AURA confirmation preserves wording and every production outcome stays closed',

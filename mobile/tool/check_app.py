@@ -27,8 +27,8 @@ for name, expected in {
     print(f'{name}: verified in Runner.app')
 print('App bytes:', sum(p.stat().st_size for p in app.rglob('*') if p.is_file()))
 info = plistlib.loads((app / 'Info.plist').read_bytes())
-assert info.get('CFBundleShortVersionString') == '0.6.1', 'Wrong app version'
-assert str(info.get('CFBundleVersion')) == '11', 'Wrong app build number'
+assert info.get('CFBundleShortVersionString') == '0.6.2', 'Wrong app version'
+assert str(info.get('CFBundleVersion')) == '12', 'Wrong app build number'
 assert info.get('UniverseEnglishNoticeApproved') is False
 for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription', 'NSMotionUsageDescription'):
     assert isinstance(info.get(key), str) and info[key].strip(), key
@@ -68,8 +68,7 @@ font_manifest = json.loads((font_source / 'sources.json').read_text(encoding='ut
 packaged_fonts = json.loads((flutter_assets / 'FontManifest.json').read_text(encoding='utf-8'))
 assert font_manifest['protocol'] == 'aura-offline-typography-v2'
 assert font_manifest['runtime_network'] is False
-assert {family['family'] for family in font_manifest['families']} == {'Cormorant Garamond', 'Literata'}
-assert not any(entry['family'] == 'Manrope' for entry in packaged_fonts), 'Obsolete runtime typography'
+assert {family['family'] for family in font_manifest['families']} == {'Cormorant Garamond', 'Literata', 'Manrope'}
 for family in font_manifest['families']:
     packaged = [entry for entry in packaged_fonts if entry['family'] == family['family']]
     assert len(packaged) == 1, f'Missing or duplicate {family["family"]} family'
@@ -85,7 +84,7 @@ for family in font_manifest['families']:
         data = (flutter_assets / 'assets/fonts' / name).read_bytes()
         assert len(data) == expected['bytes'], name
         assert hashlib.sha256(data).hexdigest() == expected['sha256'], name
-print('Seven static Cormorant Garamond/Literata faces and both SIL OFL licenses: verified')
+print('Nine static Cormorant Garamond/Literata/Manrope faces and three SIL OFL licenses: verified')
 
 ambient = flutter_assets / 'assets/audio/ambient'
 ambient_source = repo / 'mobile/assets/audio/ambient'
@@ -133,4 +132,4 @@ for name in ('aura_environment.frag', 'aura_matter.frag', 'aura_metal.frag'):
     # copied GLSL file cannot satisfy this check or work in the shipped renderer.
     assert len(data) > 128 and data[4:8] == b'IPLR', f'Uncompiled/missing shader: {name}'
     assert data != (repo / 'mobile/shaders' / name).read_bytes(), name
-print('Three compiled AURA runtime shaders and version 0.6.1+11: verified')
+print('Three compiled AURA runtime shaders and version 0.6.2+12: verified')

@@ -590,7 +590,7 @@ void main() {
         if (destination == 'world tab') {
           await tap(tester, find.byKey(const ValueKey('tab-0')));
         } else {
-          await tap(tester, find.byTooltip('Назад'));
+          await tap(tester, find.text('Готово'));
         }
         await tap(tester, find.byType(AuraTouchSurface));
         expect(

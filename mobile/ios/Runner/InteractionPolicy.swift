@@ -13,6 +13,9 @@ enum InteractionPolicy {
   static let holdIntensity: Float = 0.14
   static let holdSharpness: Float = 0.12
   static let holdDeadline = 15.0
+  // Allow the short release impulse to finish before the microphone owner
+  // switches AVAudioSession into recording (where haptics default to muted).
+  static let releaseAcknowledgementDelay = 0.12
   static func owner(_ arguments: Any?) -> Int? {
     guard let args = arguments as? [String: Any], args.count == 1,
       let raw = args["owner"] as? NSNumber, CFGetTypeID(raw) != CFBooleanGetTypeID(),
@@ -32,7 +35,7 @@ enum InteractionPolicy {
       (3.5,0.22,0.25),(3.8,0.46,0.4),(4.15,0.30,0.3)]
     case "release", "reveal": values = [(0,0.60,0.55)]
     case "tap": values = [(0,0.18,0.14)]
-    case "hold": values = [(0.45,0.12,0.08)]
+    case "hold": values = [(0,0.22,0.12),(0.45,0.12,0.08)]
     default: values = []
     }
     return values.map { HapticPulse(time:$0.0,intensity:$0.1,sharpness:$0.2) }

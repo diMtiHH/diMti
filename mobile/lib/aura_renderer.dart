@@ -48,6 +48,7 @@ class AuraInteractionController extends ChangeNotifier {
   double _pressure = 0, _hold = 0, _release = 0, _pulse = 0;
   double _elapsed = 0, _quality = .60;
   Duration? _frame;
+  int _clocks = 0;
   bool _disposed = false;
 
   Offset get point => _point;
@@ -58,6 +59,14 @@ class AuraInteractionController extends ChangeNotifier {
   double get inputPulse => _pulse;
   double get elapsed => _elapsed;
   double get quality => _quality;
+
+  void _clockStarted() {
+    if (_clocks++ == 0) _frame = null;
+  }
+
+  void _clockStopped() {
+    if (_clocks > 0 && --_clocks == 0) _frame = null;
+  }
 
   void pulse([double strength = 1]) {
     if (_disposed) return;
@@ -107,7 +116,7 @@ class AuraInteractionController extends ChangeNotifier {
     if (_disposed || frame == _frame) return;
     final dt = _frame == null
         ? 1 / 60
-        : ((frame - _frame!).inMicroseconds / 1000000).clamp(0.0, 0.05);
+        : ((frame - _frame!).inMicroseconds / 1000000).clamp(0.0, 0.25);
     _frame = frame;
     _elapsed += dt;
     _pressure = _mix(
@@ -351,18 +360,138 @@ class _PaintSignal extends ChangeNotifier {
   void repaint() => notifyListeners();
 }
 
+/// Physical texture dimensions, deliberately independent of display DPR.
+/// Fonts and controls are never drawn into this decoration-only texture.
+Size auraRasterSize(
+  Size logical, {
+  required bool form,
+  bool preview = false,
+  double quality = 1,
+}) {
+  if (logical.isEmpty || !logical.width.isFinite || !logical.height.isFinite)
+    return Size.zero;
+  final cap = quality.isFinite ? quality.clamp(.3, 1.0) : 1.0;
+  final longEdge =
+      (form ? (preview ? 320.0 : 512.0) : 720.0) * (.65 + cap * .35);
+  final widthCap = form ? longEdge : 420.0 * (.65 + cap * .35);
+  final scale = math.min(
+    form ? 1.25 : 1.0,
+    math.min(widthCap / logical.width, longEdge / logical.longestSide),
+  );
+  return Size(
+    math.max(1, (logical.width * scale).floor()).toDouble(),
+    math.max(1, (logical.height * scale).floor()).toDouble(),
+  );
+}
+
+typedef AuraRasterizer = Future<ui.Image> Function(
+  ui.Picture picture,
+  int width,
+  int height,
+);
+
+/// One image and at most one in-flight raster. There is no animation-frame queue.
+/// The owner retries its latest state only; superseded work is discarded.
+class AuraRasterCache extends ChangeNotifier {
+  final AuraRasterizer _rasterize;
+  ui.Image? _image;
+  bool _busy = false, _disposed = false;
+  int _generation = 0;
+  int startedFrames = 0,
+      completedFrames = 0,
+      discardedFrames = 0,
+      busyDrops = 0;
+  Size pixelSize = Size.zero;
+  Future<void> _settled = Future<void>.value();
+  AuraRasterCache({AuraRasterizer? rasterize})
+    : _rasterize = rasterize ?? ((picture, w, h) => picture.toImage(w, h));
+  ui.Image? get image => _image;
+  int get inFlight => _busy ? 1 : 0;
+  Future<void> get settled => _settled;
+  void invalidate({bool clear = true}) {
+    ++_generation;
+    if (clear) {
+      _image?.dispose();
+      _image = null;
+    }
+  }
+
+  bool render(Size logical, Size pixels, void Function(Canvas, Size) paint) {
+    if (_disposed || pixels.isEmpty || logical.isEmpty) return false;
+    if (_busy) {
+      ++busyDrops;
+      return false;
+    }
+    _busy = true;
+    pixelSize = pixels;
+    ++startedFrames;
+    final generation = _generation;
+    final recorder = ui.PictureRecorder();
+    final canvas = Canvas(recorder)
+      ..scale(pixels.width / logical.width, pixels.height / logical.height);
+    try {
+      paint(canvas, logical);
+    } catch (_) {
+      recorder.endRecording().dispose();
+      _busy = false;
+      return false;
+    }
+    final picture = recorder.endRecording();
+    _settled =
+        Future<ui.Image>.sync(
+              () => _rasterize(
+                picture,
+                pixels.width.toInt(),
+                pixels.height.toInt(),
+              ),
+            )
+            .then<void>((next) {
+              if (_disposed || generation != _generation) {
+                next.dispose();
+                ++discardedFrames;
+                return;
+              }
+              final old = _image;
+              _image = next;
+              ++completedFrames;
+              old?.dispose();
+            })
+            .catchError((Object _) {
+              // A bounded procedural fallback stays available if rasterization fails.
+            })
+            .whenComplete(() {
+              picture.dispose();
+              _busy = false;
+              if (!_disposed) notifyListeners();
+            });
+    return true;
+  }
+
+  @override
+  void dispose() {
+    if (_disposed) return;
+    _disposed = true;
+    invalidate();
+    super.dispose();
+  }
+}
+
 class _AuraSceneState extends State<AuraScene>
     with SingleTickerProviderStateMixin, WidgetsBindingObserver {
   late AuraInteractionController _interaction;
   late AuraPowerBudget _power;
   late final Ticker _ticker = createTicker(_tick);
   final _signal = _PaintSignal();
+  final _raster = AuraRasterCache();
   final _deviceMotion = AuraMotionController.instance;
   bool _motionLease = false;
   bool _timingsAttached = false;
   ui.FragmentShader? _environment, _matter, _metal;
   bool _foreground = true, _motion = false;
-  Duration? _paintedAt;
+  bool _tickerEnabled = true, _forceRaster = true;
+  Size _logicalSize = Size.zero;
+  Duration? _paintedAt, _rasteredAt;
+  Duration _frameStamp = Duration.zero;
   @override
   void initState() {
     super.initState();
@@ -370,6 +499,7 @@ class _AuraSceneState extends State<AuraScene>
     _interaction.addListener(_changed);
     _power = widget.powerBudget ?? AuraPowerBudget.instance;
     _power.addListener(_powerChanged);
+    _raster.addListener(_rasterChanged);
     WidgetsBinding.instance.addObserver(this);
     final state = WidgetsBinding.instance.lifecycleState;
     _foreground = state == null || state == AppLifecycleState.resumed;
@@ -381,11 +511,13 @@ class _AuraSceneState extends State<AuraScene>
       final cached = _ShaderLibrary.ready;
       if (cached != null) {
         _syncShaders(cached);
+        _forceRaster = true;
         return;
       }
       final library = await _ShaderLibrary.load();
       if (!mounted) return;
       _syncShaders(library);
+      _forceRaster = true;
       setState(() {});
     } catch (_) {
       // The bounded procedural geometry still responds to touch. Native tests
@@ -415,11 +547,67 @@ class _AuraSceneState extends State<AuraScene>
   }
 
   void _changed() {
-    if (mounted && widget.active) _signal.repaint();
+    if (!mounted || !widget.active || !_foreground || !_tickerEnabled) return;
+    if (!_motion) _forceRaster = true;
+    // Affine drift/recoil responds immediately on the cached texture. Expensive
+    // shader work waits for the next bounded raster interval.
+    _signal.repaint();
+    _renderFrame();
+  }
+
+  void _rasterChanged() {
+    if (!mounted || !_foreground || !_tickerEnabled) return;
+    _signal.repaint();
+    if (_forceRaster) _renderFrame();
+  }
+
+  bool get _responsive =>
+      _interaction.pressed ||
+      widget.energy > .05 ||
+      widget.phase == AuraPhase.answerAnimation;
+  int get _rasterFps => math.min(
+    _power.maxFps,
+    !widget.showForm
+        ? 8
+        : widget.preview
+        ? 12
+        : _responsive
+        ? 30
+        : 24,
+  );
+  void _renderFrame() {
+    if (!mounted || !_foreground || !_tickerEnabled || _logicalSize.isEmpty)
+      return;
+    if (!_motion && !_forceRaster) return;
+    // Pointer input and raster completion can arrive between scheduler frames.
+    // Keep the last frame's clock instead of reading currentFrameTimeStamp there.
+    final now = _frameStamp;
+    final interval = Duration(
+      microseconds: (1000000 / _rasterFps - 500).round(),
+    );
+    if (!_forceRaster && _rasteredAt != null && now - _rasteredAt! < interval)
+      return;
+    final painter = _painter(raw: true);
+    if (_raster.render(
+      _logicalSize,
+      auraRasterSize(
+        _logicalSize,
+        form: widget.showForm,
+        preview: widget.preview,
+        quality: _power.qualityCap,
+      ),
+      painter.paint,
+    )) {
+      _forceRaster = false;
+      _rasteredAt = now;
+    }
   }
 
   void _powerChanged() {
-    if (mounted) setState(() {});
+    if (mounted) {
+      _forceRaster = true;
+      setState(() {});
+    }
   }
 
   void _timings(List<FrameTiming> frames) {
@@ -429,32 +617,33 @@ class _AuraSceneState extends State<AuraScene>
 
   void _tick(Duration elapsed) {
     final stamp = SchedulerBinding.instance.currentFrameTimeStamp;
-    final responsive =
-        _interaction.pressed ||
-        widget.energy > .05 ||
-        widget.phase == AuraPhase.answerAnimation;
+    _frameStamp = stamp;
     final fps = math.min(
       _power.maxFps,
-      widget.preview
-          ? 20
-          : responsive
-          ? 45
-          : 30,
+      !widget.showForm
+          ? 8
+          : widget.preview
+          ? 30
+          : 60,
     );
     final interval = Duration(microseconds: (1000000 / fps - 500).round());
     if (_paintedAt != null && stamp - _paintedAt! < interval) return;
     _paintedAt = stamp;
     _interaction._advance(stamp);
+    _renderFrame();
     _signal.repaint();
   }
 
   void _sync() {
+    final wasMoving = _motion;
+    _tickerEnabled = TickerMode.valuesOf(context).enabled;
     _motion =
         widget.active &&
         _foreground &&
-        TickerMode.valuesOf(context).enabled &&
+        _tickerEnabled &&
         !MediaQuery.disableAnimationsOf(context) &&
         !MediaQuery.accessibleNavigationOf(context);
+    if (wasMoving != _motion) _forceRaster = true;
     final needsTilt = _motion && widget.showForm && !widget.preview;
     final needsTimings = _motion && widget.showBackground && !widget.preview;
     if (needsTimings != _timingsAttached) {
@@ -475,9 +664,13 @@ class _AuraSceneState extends State<AuraScene>
     }
     if (_motion && !_ticker.isActive) {
       _paintedAt = null;
+      _rasteredAt = null;
+      _interaction._clockStarted();
       _ticker.start();
-    } else if (!_motion && _ticker.isActive)
+    } else if (!_motion && _ticker.isActive) {
       _ticker.stop();
+      _interaction._clockStopped();
+    }
   }
 
   @override
@@ -489,6 +682,13 @@ class _AuraSceneState extends State<AuraScene>
   @override
   void didUpdateWidget(AuraScene oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.background != widget.background ||
+        oldWidget.form != widget.form ||
+        oldWidget.showBackground != widget.showBackground ||
+        oldWidget.showForm != widget.showForm) {
+      _raster.invalidate();
+      _forceRaster = true;
+    }
     final library = _ShaderLibrary.ready;
     if (library != null) _syncShaders(library);
     if (oldWidget.powerBudget != widget.powerBudget) {
@@ -497,60 +697,100 @@ class _AuraSceneState extends State<AuraScene>
       _power.addListener(_powerChanged);
     }
     if (oldWidget.interaction != widget.interaction) {
+      _raster.invalidate();
+      _forceRaster = true;
       _interaction.removeListener(_changed);
+      if (_ticker.isActive) _interaction._clockStopped();
       if (oldWidget.interaction == null) _interaction.dispose();
       _interaction = widget.interaction ?? AuraInteractionController();
+      if (_ticker.isActive) _interaction._clockStarted();
       _interaction.addListener(_changed);
     }
     _sync();
+    if (!_motion &&
+        (oldWidget.phase != widget.phase ||
+            oldWidget.progress != widget.progress ||
+            oldWidget.energy != widget.energy ||
+            oldWidget.formScale != widget.formScale ||
+            oldWidget.formAlignment != widget.formAlignment ||
+            oldWidget.preview != widget.preview))
+      _forceRaster = true;
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    _foreground = state == AppLifecycleState.resumed;
-    if (!_foreground) _interaction.cancel();
+    final foreground = state == AppLifecycleState.resumed;
+    // inactive → hidden → paused is one suspension. Rebuilding on each
+    // background notification would schedule layout work after clocks stop.
+    if (_foreground == foreground) return;
+    _foreground = foreground;
+    if (!_foreground) {
+      _interaction.cancel();
+      _raster.invalidate();
+    }
+    _forceRaster = true;
     _sync();
     if (mounted) setState(() {});
   }
 
+  AuraPainter _painter({bool raw = false}) => AuraPainter(
+    background: widget.background,
+    form: widget.form,
+    phase: widget.phase,
+    interaction: _interaction,
+    energy: widget.energy,
+    progress: widget.progress,
+    showBackground: widget.showBackground,
+    showForm: widget.showForm,
+    formAlignment: widget.formAlignment,
+    formScale: widget.formScale,
+    preview: widget.preview,
+    qualityCap: _power.qualityCap,
+    motion: _motion,
+    deviceMotion: raw
+        ? null
+        : _motionLease
+        ? _deviceMotion
+        : null,
+    environmentShader: _environment,
+    matterShader: _matter,
+    metalShader: _metal,
+    raster: raw ? null : _raster,
+    rasterPass: raw,
+    repaint: raw ? null : _signal,
+  );
+
   @override
-  Widget build(BuildContext context) => Stack(
-    fit: StackFit.expand,
-    children: [
-      Positioned.fill(
-        child: IgnorePointer(
-          child: ExcludeSemantics(
-            child: RepaintBoundary(
-              child: CustomPaint(
-                isComplex: true,
-                willChange: _motion,
-                painter: AuraPainter(
-                  background: widget.background,
-                  form: widget.form,
-                  phase: widget.phase,
-                  interaction: _interaction,
-                  energy: widget.energy,
-                  progress: widget.progress,
-                  showBackground: widget.showBackground,
-                  showForm: widget.showForm,
-                  formAlignment: widget.formAlignment,
-                  formScale: widget.formScale,
-                  preview: widget.preview,
-                  qualityCap: _power.qualityCap,
-                  motion: _motion,
-                  deviceMotion: _motionLease ? _deviceMotion : null,
-                  environmentShader: _environment,
-                  matterShader: _matter,
-                  metalShader: _metal,
-                  repaint: _signal,
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, bounds) {
+      _frameStamp = SchedulerBinding.instance.currentFrameTimeStamp;
+      final size = Size(bounds.maxWidth, bounds.maxHeight);
+      if (size != _logicalSize && size.width.isFinite && size.height.isFinite) {
+        _logicalSize = size;
+        _raster.invalidate();
+        _forceRaster = true;
+      }
+      _renderFrame();
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: IgnorePointer(
+              child: ExcludeSemantics(
+                child: RepaintBoundary(
+                  child: CustomPaint(
+                    isComplex: true,
+                    willChange: _motion,
+                    painter: _painter(),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ),
-      widget.child,
-    ],
+          widget.child,
+        ],
+      );
+    },
   );
   @override
   void dispose() {
@@ -560,8 +800,11 @@ class _AuraSceneState extends State<AuraScene>
     _interaction.removeListener(_changed);
     _power.removeListener(_powerChanged);
     if (_motionLease) _deviceMotion.release();
+    if (_ticker.isActive) _interaction._clockStopped();
     if (widget.interaction == null) _interaction.dispose();
     _ticker.dispose();
+    _raster.removeListener(_rasterChanged);
+    _raster.dispose();
     _signal.dispose();
     _environment?.dispose();
     _matter?.dispose();
@@ -580,6 +823,8 @@ class AuraPainter extends CustomPainter {
   final Alignment formAlignment;
   final ui.FragmentShader? environmentShader, matterShader, metalShader;
   final AuraMotionController? deviceMotion;
+  final AuraRasterCache? raster;
+  final bool rasterPass;
   AuraPainter({
     required this.background,
     required this.form,
@@ -598,6 +843,8 @@ class AuraPainter extends CustomPainter {
     this.matterShader,
     this.metalShader,
     this.deviceMotion,
+    this.raster,
+    this.rasterPass = false,
     super.repaint,
   });
 
@@ -621,8 +868,22 @@ class AuraPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     if (size.isEmpty || !size.width.isFinite || !size.height.isFinite) return;
+    final cached = raster?.image;
+    if (cached != null) {
+      canvas.save();
+      if (showForm && !showBackground) _formMotion(canvas, size);
+      canvas.drawImageRect(
+        cached,
+        Rect.fromLTWH(0, 0, cached.width.toDouble(), cached.height.toDouble()),
+        Offset.zero & size,
+        Paint()..filterQuality = FilterQuality.medium,
+      );
+      canvas.restore();
+      return;
+    }
     if (showBackground) {
-      final shader = environmentShader;
+      // While a texture is pending, never run a costly full-DPR shader.
+      final shader = raster == null ? environmentShader : null;
       if (shader != null) {
         final values = [
           size.width,
@@ -665,12 +926,15 @@ class AuraPainter extends CustomPainter {
     final origin = formAlignment.alongSize(free);
     final objectSize = Size.square(diameter);
     canvas.save();
+    if (!rasterPass) _formMotion(canvas, size);
     final tilt = deviceMotion?.value ?? Offset.zero;
     canvas.translate(
       origin.dx + tilt.dx * diameter * .035,
       origin.dy + tilt.dy * diameter * .035,
     );
-    final shader = form == 'liquidMetal'
+    final shader = raster != null
+        ? null
+        : form == 'liquidMetal'
         ? metalShader
         : form == 'livingMatter'
         ? matterShader
@@ -712,6 +976,43 @@ class AuraPainter extends CustomPainter {
       );
     }
     canvas.restore();
+  }
+
+  void _formMotion(Canvas canvas, Size size) {
+    if (!motion) return;
+    final t = interaction.elapsed;
+    final seed = math.max(0, auraForms.indexOf(form)) * 1.37;
+    final fluid = form == 'livingMatter'
+        ? 1.0
+        : form == 'liquidMetal'
+        ? .45
+        : form == 'infinity'
+        ? 1.35
+        : .75;
+    final settle = interaction.release;
+    final driftX =
+        math.sin(t * .31 + seed) * .006 + math.sin(t * .73 + seed * 2) * .003;
+    final driftY =
+        math.cos(t * .23 + seed) * .005 + math.sin(t * .61 - seed) * .003;
+    final tilt = deviceMotion?.value ?? Offset.zero;
+    final angle =
+        math.sin(t * .27 + seed) * .025 +
+        math.sin(t * .53 - seed) * .012 +
+        interaction.point.dx * interaction.pressure * .055 * fluid +
+        math.sin((1 - settle) * math.pi * 4) * settle * .045 * fluid;
+    canvas.translate(
+      size.width / 2 + size.width * (driftX + tilt.dx * .03),
+      size.height / 2 + size.height * (driftY + tilt.dy * .03),
+    );
+    canvas.rotate(angle);
+    if (form == 'livingMatter')
+      canvas.skew(
+        math.sin(t * .7) * interaction.pressure * .025,
+        -interaction.point.dy * interaction.pressure * .018,
+      );
+    final recoil = math.sin((1 - settle) * math.pi * 3) * settle * .025;
+    canvas.scale(1 + recoil, 1 - recoil * .5);
+    canvas.translate(-size.width / 2, -size.height / 2);
   }
 
   @override
@@ -863,6 +1164,8 @@ void paintAuraForm(
   final accent = auraAccent(environment), center = size.center(Offset.zero);
   final pressure = interaction?.pressure ?? 0, hold = interaction?.hold ?? 0;
   final pointer = interaction?.point ?? Offset.zero;
+  final release = interaction?.release ?? 0;
+  final wake = math.sin((1 - release) * math.pi * 3) * release;
   final burst = math.sin(_unit(progress) * math.pi);
   final radius = size.shortestSide * (.42 - hold * .030 - burst * .045);
   final clock = time * .17;
@@ -887,9 +1190,15 @@ void paintAuraForm(
       point = _P3(
         point.x +
             pointer.dx * influence +
-            burst * math.sin(i * 1.7 + clock) * .18,
-        point.y + pointer.dy * influence + burst * math.cos(i * 1.1) * .15,
-        point.z,
+            burst * math.sin(i * 1.7 + clock) * .18 -
+            point.y * influence * .5 +
+            wake * math.sin(i * 1.7 + clock) * .09,
+        point.y +
+            pointer.dy * influence +
+            burst * math.cos(i * 1.1) * .15 +
+            point.x * influence * .5 +
+            wake * math.cos(i * 1.1 - clock) * .08,
+        point.z + math.sin(clock * .71 + i * 2.3) * .025,
       );
       nodes.add(point);
     }
@@ -969,9 +1278,13 @@ void paintAuraForm(
           -.38 + .36 * math.sin(clock * .16),
         );
         final touched = _P3(
-          point.x + pointer.dx * pressure * .12 * math.sin(a),
+          point.x +
+              pointer.dx * pressure * .12 * math.sin(a) +
+              wake * .07 * math.cos(a * 3 + clock),
           point.y + pointer.dy * pressure * .16 * math.cos(a * 2),
-          point.z,
+          point.z +
+              pressure * .10 * math.sin(a * 3 + clock) +
+              wake * .08 * math.cos(a * 2),
         );
         if (previous != null) {
           final depth = (touched.z + previous.z) / 2;

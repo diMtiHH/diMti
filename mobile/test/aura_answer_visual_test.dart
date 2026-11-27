@@ -12,6 +12,7 @@ import 'package:universe_lab/presentation_profile.dart';
 import 'package:universe_lab/session_core.dart';
 
 import 'session_core_test.dart' show Fixture;
+import 'aura_test_support.dart';
 
 // This isolated core fixture is the only source of an allowed question. The
 // production gate is not changed, and the visual route never chooses a result.
@@ -335,6 +336,7 @@ void main() {
           tester.getRect(find.byKey(const ValueKey('close-answer'))).right,
           lessThanOrEqualTo(tester.view.physicalSize.width),
         );
+        await settleAuraRaster(tester);
         final boundary = tester.renderObject<RenderRepaintBoundary>(
           find.byKey(f.boundary),
         );

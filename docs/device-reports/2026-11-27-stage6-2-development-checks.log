@@ -1,0 +1,35 @@
+First local full run: 409 passed, one lifecycle failure. Later corrected; this is not the final passing run.
+
+03:04 +104: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: inactive, disabled animation and TickerMode suspend motion
+03:05 +105: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: background lifecycle suspends both clocks and resume obeys active
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <0>
+  Actual: <1>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart:224:9)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1968:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart line 224
+The test description was:
+  background lifecycle suspends both clocks and resume obeys active
+════════════════════════════════════════════════════════════════════════════════════════════════════
+03:05 +105 -1: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: background lifecycle suspends both clocks and resume obeys active [E]
+  Test failed. See exception logs above.
+  The test description was: background lifecycle suspends both clocks and resume obeys active
+  
+04:34 +407 -1: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: star has button semantics and cannot activate when disabled
+04:34 +408 -1: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: malformed audio levels render safely and inactive speech ignores stale energy
+04:34 +409 -1: Some tests failed.
+
+Failing tests:
+  C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: background lifecycle suspends both clocks and resume obeys active
+Command '['C:\\Users\\user\\AppData\\Local\\AskTheUniverse\\flutter-3.50.1\\bin\\flutter.bat', 'test', '--no-pub', '--concurrency=1', '--reporter=expanded', 'test']' returned non-zero exit status 1.

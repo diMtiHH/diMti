@@ -49,7 +49,16 @@ final class InteractionBridge {
         self.hapticOwner = owner
         self.feedback(call.method)
       }
-      result(nil)
+      if call.method == "release" {
+        // Dart awaits this acknowledgement before requesting microphone access.
+        // Reply immediately for other events, including cancellation. The short
+        // completion retains no bridge/player and cannot resume a stopped effect.
+        DispatchQueue.main.asyncAfter(deadline: .now() + InteractionPolicy.releaseAcknowledgementDelay) {
+          result(nil)
+        }
+      } else {
+        result(nil)
+      }
     }
     for name in [UIApplication.willResignActiveNotification, UIApplication.didEnterBackgroundNotification] {
       observers.append(NotificationCenter.default.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
@@ -106,11 +115,17 @@ final class InteractionBridge {
   private func stopHaptics() {
     cancelPlayers(); engine?.stop(completionHandler: nil); engine = nil
   }
+  private func fallback(_ event: String) {
+    guard UIApplication.shared.applicationState == .active else { return }
+    let impact = UIImpactFeedbackGenerator(style: event == "release" || event == "reveal" ? .medium : .soft)
+    impact.prepare()
+    impact.impactOccurred()
+  }
   private func feedback(_ event: String) {
     cancelPlayers()
     guard event != "cancel", UIApplication.shared.applicationState == .active else { return }
     guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else {
-      UIImpactFeedbackGenerator(style: event == "release" || event == "reveal" ? .medium : .soft).impactOccurred()
+      fallback(event)
       return
     }
     do {
@@ -136,7 +151,8 @@ final class InteractionBridge {
         let continuous = CHHapticEvent(eventType: .hapticContinuous, parameters: [
           CHHapticEventParameter(parameterID: .hapticIntensity, value: InteractionPolicy.holdIntensity),
           CHHapticEventParameter(parameterID: .hapticSharpness, value: InteractionPolicy.holdSharpness)], relativeTime: 0, duration: 1)
-        let pattern = try CHHapticPattern(events: [continuous, pulse(0.45, 0.12, 0.08)], parameters: [])
+        let accents = InteractionPolicy.pulses("hold").map { pulse($0.time, $0.intensity, $0.sharpness) }
+        let pattern = try CHHapticPattern(events: [continuous] + accents, parameters: [])
         let next = try engine.makeAdvancedPlayer(with: pattern)
         next.loopEnabled = true; next.loopEnd = 1
         holdPlayer = next; try next.start(atTime: CHHapticTimeImmediate)
@@ -149,7 +165,12 @@ final class InteractionBridge {
       let timeout = DispatchWorkItem { [weak self] in self?.cancelPlayers() }
       expiry = timeout
       DispatchQueue.main.asyncAfter(deadline: .now() + (event == "hold" ? InteractionPolicy.holdDeadline : event == "animation" ? 5 : 1), execute: timeout)
-    } catch { stopHaptics() }
+    } catch {
+      // A transient Core Haptics server error must not silently erase feedback.
+      // Use one bounded system impulse; never retry a continuous hold in a loop.
+      stopHaptics()
+      fallback(event)
+    }
   }
   deinit { stopMotion(); stopHaptics(); observers.forEach { NotificationCenter.default.removeObserver($0) } }
 }

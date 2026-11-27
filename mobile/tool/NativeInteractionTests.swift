@@ -38,6 +38,14 @@ private enum Failure: Error { case failed(String) }
     print("PASS interaction 9: nonfinite motion is ignored")
     try check(InteractionPolicy.motionInterval >= 0.05 && InteractionPolicy.holdDeadline == 15,"bounded sampling and hold")
     print("PASS interaction 10: sample rate and lost-pointer lifetime bounded")
-    print("Native interaction checks: 10/10 passed")
+    let hold = InteractionPolicy.pulses("hold")
+    try check(hold.first?.time == 0 && hold.first!.intensity > InteractionPolicy.holdIntensity,
+      "hold must be perceptible at onset, before its quiet sustained texture")
+    try check(hold.allSatisfy({ $0.intensity < 0.3 }), "hold accents stay soft")
+    print("PASS interaction 11: soft hold onset is immediate and bounded")
+    try check(InteractionPolicy.releaseAcknowledgementDelay >= 0.1 && InteractionPolicy.releaseAcknowledgementDelay <= 0.2,
+      "release acknowledgement must precede capture with bounded latency")
+    print("PASS interaction 12: release acknowledgement waits for the short impulse")
+    print("Native interaction checks: 12/12 passed")
   }
 }

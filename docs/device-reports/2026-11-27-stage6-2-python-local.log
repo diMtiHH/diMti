@@ -1,0 +1,25 @@
+test_ambient_is_provisional_and_off_by_default (test_aura_assets.AuraAssetsTests.test_ambient_is_provisional_and_off_by_default) ... ok
+test_app_icons_match_catalog_and_are_opaque_rgb (test_aura_assets.AuraAssetsTests.test_app_icons_match_catalog_and_are_opaque_rgb) ... ok
+test_audio_format_hash_quiet_peak_and_seam (test_aura_assets.AuraAssetsTests.test_audio_format_hash_quiet_peak_and_seam) ... ok
+test_fonts_match_pinned_sources_and_static_weights (test_aura_assets.AuraAssetsTests.test_fonts_match_pinned_sources_and_static_weights) ... ok
+test_neutral_cues_are_short_quiet_and_answer_independent (test_aura_assets.AuraAssetsTests.test_neutral_cues_are_short_quiet_and_answer_independent) ... ok
+test_inherited_stdout_does_not_keep_successful_step_open (test_ios_runner.IOSCommandRunner.test_inherited_stdout_does_not_keep_successful_step_open) ... ok
+test_nonzero_exit_is_not_hidden_by_success_looking_output (test_ios_runner.IOSCommandRunner.test_nonzero_exit_is_not_hidden_by_success_looking_output) ... ok
+test_real_timeout_stops_direct_process_and_returns_124 (test_ios_runner.IOSCommandRunner.test_real_timeout_stops_direct_process_and_returns_124) ... ok
+test_slow_live_console_cannot_turn_success_into_failure (test_ios_runner.IOSCommandRunner.test_slow_live_console_cannot_turn_success_into_failure) ... ok
+test_spawn_failure_is_not_reported_as_success (test_ios_runner.IOSCommandRunner.test_spawn_failure_is_not_reported_as_success) ... ok
+test_stdout_stderr_and_non_utf8_bytes_are_preserved (test_ios_runner.IOSCommandRunner.test_stdout_stderr_and_non_utf8_bytes_are_preserved) ... ok
+test_timeout_escalates_to_kill_for_unresponsive_process_group (test_ios_runner.IOSCommandRunner.test_timeout_escalates_to_kill_for_unresponsive_process_group) ... ok
+test_all_required_cases (test_xctest_result.XCTestResultContract.test_all_required_cases) ... ok
+test_duplicate_cannot_replace_missing_case (test_xctest_result.XCTestResultContract.test_duplicate_cannot_replace_missing_case) ... ok
+test_empty_report_cannot_pass (test_xctest_result.XCTestResultContract.test_empty_report_cannot_pass) ... ok
+test_failed_case_cannot_pass (test_xctest_result.XCTestResultContract.test_failed_case_cannot_pass) ... ok
+test_missing_case_cannot_pass (test_xctest_result.XCTestResultContract.test_missing_case_cannot_pass) ... ok
+test_retry_cannot_disguise_failure (test_xctest_result.XCTestResultContract.test_retry_cannot_disguise_failure) ... ok
+test_same_name_from_wrong_suite_cannot_pass (test_xctest_result.XCTestResultContract.test_same_name_from_wrong_suite_cannot_pass) ... ok
+test_skipped_case_cannot_pass (test_xctest_result.XCTestResultContract.test_skipped_case_cannot_pass) ... ok
+
+----------------------------------------------------------------------
+Ran 20 tests in 1.552s
+
+OK
