@@ -1,0 +1,43 @@
+Flutter SDK: C:\Users\user\AppData\Local\AskTheUniverse\flutter-3.50.1
+model.onnx: verified (470268510 bytes)
+tokenizer.json: verified (17082730 bytes)
+Resolving dependencies...
+Downloading packages...
+  crypto 3.0.7 (3.0.8 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.14 (0.7.15 available)
+Got dependencies!
+3 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing mobile...                                             
+No issues found! (ran in 2.2s)
+00:00 +0: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ambient_audio_test.dart
+00:00 +0: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ambient_audio_test.dart: disabled is silent and stable enabled preferences do not restart loops
+00:00 +1: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ambient_audio_test.dart: background latches silence until a new explicit user intent
+04:12 +413: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: language change cancels the old capture and selects the next locale
+04:12 +414: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: permissionDenied leaves manual input and closed confirmation available
+04:12 +415: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: unavailable leaves manual input and closed confirmation available
+04:12 +416: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: permission dialog inactivity can finish only after returning active
+04:12 +417: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: background during permission request invalidates the late start
+04:12 +418: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: diagnostic fixture never creates microphone controls
+04:12 +419: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: persisted cooldown disables microphone without altering its deadline
+04:12 +420: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart
+04:13 +420: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: measured level changes rendered brightness and creates a preview
+04:13 +421: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: reduced motion stops the breathing ticker while retaining audio feedback
+04:13 +422: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: inactive star freezes animation and disabled star does not tick
+04:13 +423: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: star has button semantics and cannot activate when disabled
+04:13 +424: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: malformed audio levels render safely and inactive speech ignores stale energy
+04:13 +425: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart
+04:14 +425: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: no consent means no writes or upload; unknown IDs never enter queue
+04:14 +426: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: only fixed fields leave the device; aggregated counts and receipt survive restart
+04:14 +427: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: withdrawal clears persisted queue and invalidates late acknowledgement
+04:14 +428: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: new counts while a batch is in flight survive successful acknowledgement
+04:14 +429: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: personal build excludes all counts even with consent and retries
+04:14 +430: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: lost storage acknowledgement stops upload rather than sending uncommitted consent
+04:14 +431: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: cache survives offline restart and follows exact period and language
+04:14 +432: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: wrong filter, current day, unknown topic, rare count and extra text are rejected
+04:14 +433: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: corrupt saved data is not replaced by defaults or used for collection
+04:14 +434: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: reduce motion persists independently of session and consent
+04:14 +435: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: HTTPS origin only; credentials, redirects destination parameters and cleartext disallowed
+04:14 +436: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/world_data_test.dart: old offline receipts are discarded instead of endlessly retrying rejected uploads
+04:14 +437: All tests passed!

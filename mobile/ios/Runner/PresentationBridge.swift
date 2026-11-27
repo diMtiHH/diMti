@@ -58,6 +58,12 @@ final class PresentationBridge: NSObject, AVAudioPlayerDelegate {
   private func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
     do {
       switch call.method {
+      case "readWorld": result(try storage().readWorld())
+      case "writeWorld":
+        guard let args = call.arguments as? [String: Any], Set(args.keys) == ["value"],
+              let value = args["value"] as? String else { throw PresentationDataError.invalid }
+        try storage().writeWorld(value)
+        result(nil)
       case "readProfile": result(try storage().readProfile())
       case "writeProfile":
         guard let args = call.arguments as? [String: Any], Set(args.keys) == ["value"],

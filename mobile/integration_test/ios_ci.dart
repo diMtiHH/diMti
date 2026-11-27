@@ -7,6 +7,7 @@ import 'ios_aura_test.dart' as aura;
 import 'ios_presentation_test.dart' as presentation;
 import 'ios_session_test.dart' as session;
 import 'ios_voice_test.dart' as voice;
+import 'ios_world_test.dart' as world;
 
 void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -22,5 +23,6 @@ void main() {
   voice.main();
   presentation.main();
   aura.main();
+  world.main();
   model.main();
 }

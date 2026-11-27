@@ -27,9 +27,10 @@ for name, expected in {
     print(f'{name}: verified in Runner.app')
 print('App bytes:', sum(p.stat().st_size for p in app.rglob('*') if p.is_file()))
 info = plistlib.loads((app / 'Info.plist').read_bytes())
-assert info.get('CFBundleShortVersionString') == '0.6.3', 'Wrong app version'
-assert str(info.get('CFBundleVersion')) == '13', 'Wrong app build number'
-assert info.get('UniverseEnglishNoticeApproved') is False
+assert info.get('CFBundleShortVersionString') == '0.8.0', 'Wrong app version'
+assert str(info.get('CFBundleVersion')) == '14', 'Wrong app build number'
+assert info.get('UniverseEnglishNoticeApproved') is True
+assert info.get('UniversePersonalTestBuild') is True
 for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription', 'NSMotionUsageDescription'):
     assert isinstance(info.get(key), str) and info[key].strip(), key
 for language in ('ru', 'en'):
@@ -37,7 +38,7 @@ for language in ('ru', 'en'):
     for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription', 'NSMotionUsageDescription'):
         assert localized.get(key, '').strip(), (language, key)
 assert not info.get('UIBackgroundModes'), 'Background recording is not authorized'
-print('Local speech/motion permission descriptions RU/EN and closed notification flag: verified')
+print('Local permission descriptions RU/EN, bilingual reminders and personal-build marker: verified')
 native = (app / info['CFBundleExecutable']).read_bytes()
 for channel in ('presentation', 'voice', 'ambient', 'graphicsBudget', 'motion', 'haptics'):
     assert f'ask_universe/{channel}'.encode() in native, f'Missing native channel: {channel}'

@@ -19,11 +19,16 @@ import 'aura_answer_page.dart';
 import 'aura_renderer.dart';
 import 'aura_ui.dart';
 import 'universe_startup.dart';
+import 'world_data.dart';
+import 'world_catalog.dart';
+import 'world_page.dart';
+import 'app_information.dart';
+import 'release_features.dart';
 
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 
-class UniverseApp extends StatelessWidget {
+class UniverseApp extends StatefulWidget {
   final AmbientBackend? ambientBackend;
   final PresentationBackend? presentationBackend;
   final SessionBackend? sessionBackend;
@@ -42,25 +47,59 @@ class UniverseApp extends StatelessWidget {
     this.ambientBackend,
   });
   @override
+  State<UniverseApp> createState() => _UniverseAppState();
+}
+
+class _UniverseAppState extends State<UniverseApp> {
+  String language = 'ru';
+  late final WorldController world = WorldController(
+    store: IosWorldStore(),
+    transport: HttpWorldTransport(),
+  )..load();
+  @override
   Widget build(BuildContext context) => SessionClockScope(
     child: MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Спроси Вселенную',
       theme: cosmicTheme,
+      locale: Locale(language),
+      supportedLocales: const [Locale('ru'), Locale('en')],
+      localizationsDelegates: GlobalMaterialLocalizations.delegates,
+      builder: (context, child) => ListenableBuilder(
+        listenable: world,
+        builder: (context, _) => MediaQuery(
+          data: MediaQuery.of(context).copyWith(
+            disableAnimations:
+                MediaQuery.disableAnimationsOf(context) || world.reduceMotion,
+          ),
+          child: child!,
+        ),
+      ),
       home: UniverseShell(
-        presentationBackend: presentationBackend,
-        sessionBackend: sessionBackend,
-        narrationBackend: narrationBackend,
-        voiceBackend: voiceBackend,
-        inspector: inspector,
-        random: random,
-        ambientBackend: ambientBackend,
+        onLanguageChanged: (value) {
+          if (mounted && language != value) setState(() => language = value);
+        },
+        worldController: world,
+        presentationBackend: widget.presentationBackend,
+        sessionBackend: widget.sessionBackend,
+        narrationBackend: widget.narrationBackend,
+        voiceBackend: widget.voiceBackend,
+        inspector: widget.inspector,
+        random: widget.random,
+        ambientBackend: widget.ambientBackend,
       ),
     ),
   );
+  @override
+  void dispose() {
+    world.dispose();
+    super.dispose();
+  }
 }
 
 class UniverseShell extends StatefulWidget {
+  final ValueChanged<String>? onLanguageChanged;
+  final WorldController? worldController;
   final AmbientBackend? ambientBackend;
   final PresentationBackend? presentationBackend;
   final SessionBackend? sessionBackend;
@@ -70,6 +109,8 @@ class UniverseShell extends StatefulWidget {
   final AnswerSource? random;
   const UniverseShell({
     super.key,
+    this.onLanguageChanged,
+    this.worldController,
     this.presentationBackend,
     this.sessionBackend,
     this.narrationBackend,
@@ -84,6 +125,9 @@ class UniverseShell extends StatefulWidget {
 
 class _UniverseShellState extends State<UniverseShell>
     with WidgetsBindingObserver {
+  late final WorldController _world;
+  WorldTopic? _selectedTopic;
+  int _selectionRevision = 0;
   late final PresentationController _presentation;
   late final SessionBackend _sessionBackend;
   late final AmbientController _ambient;
@@ -102,6 +146,14 @@ class _UniverseShellState extends State<UniverseShell>
   @override
   void initState() {
     super.initState();
+    _world =
+        widget.worldController ??
+        WorldController(
+          store: IosWorldStore(),
+          transport: HttpWorldTransport(),
+        );
+    _world.addListener(_worldChanged);
+    if (!_world.loaded) unawaited(_world.load());
     _sessionBackend = widget.sessionBackend ?? const IosSessionBackend();
     _ambient = AmbientController(backend: widget.ambientBackend);
     _presentation = PresentationController(
@@ -122,6 +174,23 @@ class _UniverseShellState extends State<UniverseShell>
       /* Scene fallback stays available. */
     }
     if (mounted) setState(() => _shadersPrepared = true);
+  }
+
+  void _worldChanged() {
+    if (mounted) setState(() {});
+  }
+
+  void _selectTopic(WorldTopic topic) {
+    setState(() {
+      _selectedTopic = topic;
+      ++_selectionRevision;
+      _tab = 0;
+    });
+  }
+
+  Future<void> _recordTopic(String id, String language) async {
+    await _world.record(id, language);
+    if (_foreground) await _world.flush();
   }
 
   void _prepared(bool succeeded) {
@@ -192,6 +261,7 @@ class _UniverseShellState extends State<UniverseShell>
       final preferences = await _sessionBackend.preferences();
       if (!mounted) return;
       _language = preferences.language;
+      widget.onLanguageChanged?.call(_language);
       await _presentation.load();
     } catch (_) {
       _preferencesFailed = true;
@@ -209,6 +279,7 @@ class _UniverseShellState extends State<UniverseShell>
         _language = language;
         ++_languageRevision;
       });
+      widget.onLanguageChanged?.call(language);
     } catch (_) {
       if (mounted) setState(() => _preferencesFailed = true);
     } finally {
@@ -221,6 +292,7 @@ class _UniverseShellState extends State<UniverseShell>
     if (mounted)
       setState(() => _foreground = state == AppLifecycleState.resumed);
     _syncAmbient();
+    if (_foreground) unawaited(_world.flush());
   }
 
   Future<void> _settings() async {
@@ -229,6 +301,7 @@ class _UniverseShellState extends State<UniverseShell>
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => PresentationSettings(
+          world: _world,
           controller: _presentation,
           backend: _sessionBackend,
           language: _language,
@@ -242,7 +315,15 @@ class _UniverseShellState extends State<UniverseShell>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) => MediaQuery(
+    data: MediaQuery.of(context).copyWith(
+      disableAnimations:
+          MediaQuery.disableAnimationsOf(context) || _world.reduceMotion,
+    ),
+    child: Builder(builder: _buildBody),
+  );
+
+  Widget _buildBody(BuildContext context) {
     final profile = _presentation.profile;
     if (_preferencesLoading ||
         _presentation.loading ||
@@ -319,6 +400,11 @@ class _UniverseShellState extends State<UniverseShell>
                           !_covered &&
                           !_answerCover,
                       child: SessionPage(
+                        personalAccess: personalTestBuild,
+                        selectedTopic: _selectedTopic,
+                        selectionRevision: _selectionRevision,
+                        onCatalogConfirmed: (id, language) =>
+                            unawaited(_recordTopic(id, language)),
                         embedded: true,
                         aura: true,
                         appearance: profile,
@@ -341,7 +427,9 @@ class _UniverseShellState extends State<UniverseShell>
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 90, bottom: 100),
-                      child: _WorldPage(
+                      child: WorldPage(
+                        controller: _world,
+                        onSelect: _selectTopic,
                         language: _language,
                         background: profile.background.name,
                         active:
@@ -529,6 +617,8 @@ class _UniverseShellState extends State<UniverseShell>
     WidgetsBinding.instance.removeObserver(this);
     _presentation.removeListener(_changed);
     _presentation.dispose();
+    _world.removeListener(_worldChanged);
+    if (widget.worldController == null) _world.dispose();
     _ambient.dispose();
     _interaction.dispose();
     _visual.dispose();
@@ -536,49 +626,8 @@ class _UniverseShellState extends State<UniverseShell>
   }
 }
 
-class _WorldPage extends StatelessWidget {
-  final String language, background;
-  final bool active;
-  const _WorldPage({
-    required this.language,
-    required this.background,
-    required this.active,
-  });
-  @override
-  Widget build(BuildContext context) => SingleChildScrollView(
-    padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
-    child: Column(
-      children: [
-        SizedBox(
-          height: 300,
-          child: AuraScene(
-            background: background,
-            form: 'constellation',
-            showBackground: false,
-            formAlignment: Alignment.center,
-            active: active,
-            child: const SizedBox.expand(),
-          ),
-        ),
-        Text(
-          language == 'ru' ? 'Что волнует мир' : 'What concerns the world',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
-        const SizedBox(height: 18),
-        Text(
-          language == 'ru'
-              ? 'Здесь появится тихое отражение общих тем. Раздел ещё создаётся — сейчас данные не собираются.'
-              : 'A quiet reflection of shared themes will appear here. This space is still taking shape — no data is being collected.',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-      ],
-    ),
-  );
-}
-
 class PresentationSettings extends StatefulWidget {
+  final WorldController? world;
   final AmbientController? ambient;
   final VoidCallback? onResumeAmbient;
   final PresentationController controller;
@@ -587,6 +636,7 @@ class PresentationSettings extends StatefulWidget {
   final Future<void> Function(String) onLanguage;
   const PresentationSettings({
     super.key,
+    this.world,
     required this.controller,
     required this.backend,
     required this.language,
@@ -644,6 +694,43 @@ class _PresentationSettingsState extends State<PresentationSettings> {
   Future<void> _saveProfile(PresentationProfile value) async {
     final saved = await widget.controller.save(value);
     if (mounted) setState(() => _saved = saved);
+  }
+
+  Future<void> _resetAppearance() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          t('Сбросить оформление и звук?', 'Reset appearance and sound?'),
+        ),
+        content: Text(
+          t(
+            'Имя, язык, согласия и текущая пауза сохранятся.',
+            'Your name, language, consent and current pause will be preserved.',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(t('Отмена', 'Cancel')),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(t('Сбросить оформление', 'Reset appearance')),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    final current = widget.controller.profile!;
+    await _saveProfile(
+      const PresentationProfile.defaults().copyWith(
+        name: current.name,
+        completed: current.completed,
+        onboardingStep: current.onboardingStep,
+        termsVersion: current.termsVersion,
+      ),
+    );
   }
 
   Future<void> _languageTo(String language) async {
@@ -935,6 +1022,29 @@ class _PresentationSettingsState extends State<PresentationSettings> {
             ),
           ],
         ),
+        if (widget.world != null) ...[
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              key: const ValueKey('settings-information'),
+              onPressed: () => _open(
+                AppInformationPage(
+                  section: InformationSection.accessibility,
+                  language: _language,
+                  controller: widget.world!,
+                ),
+              ),
+              child: Text(
+                t(
+                  'Доступность, помощь и документы',
+                  'Accessibility, help and documents',
+                ),
+                style: text.bodySmall,
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -1077,6 +1187,14 @@ class _PresentationSettingsState extends State<PresentationSettings> {
                   ),
               ],
             ),
+            const SizedBox(height: 24),
+            TextButton(
+              key: const ValueKey('reset-appearance'),
+              onPressed: busy ? null : _resetAppearance,
+              child: Text(
+                t('Сбросить оформление и звук', 'Reset appearance and sound'),
+              ),
+            ),
           ],
         );
       case _SettingsDestination.senses:
@@ -1116,6 +1234,21 @@ class _PresentationSettingsState extends State<PresentationSettings> {
               Text(
                 t('Звук сейчас недоступен.', 'Sound is currently unavailable.'),
                 style: text.bodySmall,
+              ),
+            if (profile.ambientEnabled && widget.ambient?.playing == true)
+              Wrap(
+                spacing: 8,
+                children: [
+                  for (final event in [
+                    ('touch', t('Касание', 'Touch')),
+                    ('transform', t('Движение', 'Motion')),
+                    ('reveal', t('Появление', 'Reveal')),
+                  ])
+                    TextButton(
+                      onPressed: () => unawaited(widget.ambient!.cue(event.$1)),
+                      child: Text(event.$2),
+                    ),
+                ],
               ),
             if (profile.ambientEnabled && widget.ambient?.interrupted == true)
               Align(

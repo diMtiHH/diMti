@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'release_features.dart';
+
 enum Answer { yes, no }
 
 enum Admission { allowed, held, risk, unavailable }
@@ -458,6 +460,32 @@ class QuestionSession {
       if (_record.kind != _RecordKind.cooldown) await _reconcileNotification();
     } catch (_) {
       _fail();
+    } finally {
+      _busy = false;
+      _changed();
+    }
+  }
+
+  /// Temporary personal-build tool. It cannot interrupt checking/pending or
+  /// generate a replacement answer. Public builds compile this path closed.
+  Future<bool> resetPersonalPause() async {
+    if (!personalTestBuild ||
+        _busy ||
+        !_active ||
+        phase != SessionPhase.cooldown)
+      return false;
+    _busy = true;
+    _clearInput();
+    try {
+      await notifications.cancel().timeout(const Duration(seconds: 5));
+      await _save(const _Record(_RecordKind.idle));
+      _remainingMs = 0;
+      _phase = SessionPhase.ready;
+      _notificationFailed = false;
+      return true;
+    } catch (_) {
+      _fail();
+      return false;
     } finally {
       _busy = false;
       _changed();

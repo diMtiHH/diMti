@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'closed_model_gate.dart';
+import 'personal_test_gate.dart';
+import 'world_catalog.dart';
 import 'engine.dart';
 import 'ios_session.dart';
 import 'session_core.dart';
@@ -21,6 +23,10 @@ import 'aura_haptics.dart';
 enum _LoadStage { preferences, clock, model, state }
 
 class SessionPage extends StatefulWidget {
+  final bool personalAccess;
+  final WorldTopic? selectedTopic;
+  final int selectionRevision;
+  final void Function(String, String)? onCatalogConfirmed;
   final bool aura;
   final PresentationProfile? appearance;
   final AuraInteractionController? interaction;
@@ -38,6 +44,10 @@ class SessionPage extends StatefulWidget {
   final VoiceBackend? voiceBackend;
   const SessionPage({
     super.key,
+    this.personalAccess = false,
+    this.selectedTopic,
+    this.selectionRevision = 0,
+    this.onCatalogConfirmed,
     this.diagnostic = false,
     this.backend,
     this.inspector,
@@ -241,6 +251,34 @@ class _SessionPageState extends State<SessionPage>
       _hidePrivateView();
       _load();
     }
+    if (oldWidget.selectionRevision != widget.selectionRevision) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _applyCatalogSelection(),
+      );
+    }
+  }
+
+  void _applyCatalogSelection() {
+    final topic = widget.selectedTopic;
+    final session = _session;
+    if (!mounted ||
+        topic == null ||
+        !widget.active ||
+        !_foreground ||
+        _covered ||
+        session == null ||
+        session.phase != SessionPhase.ready ||
+        session.busy)
+      return;
+    _discardVoice();
+    final text = topic.text(_language);
+    if (!session.edit(text, language: _language)) return;
+    setState(() {
+      _input.text = text;
+      _inputMode = true;
+      _result = null;
+    });
+    _visuals();
   }
 
   Future<void> _load() async {
@@ -312,7 +350,9 @@ class _SessionPageState extends State<SessionPage>
           );
           inspect = worker.inspect;
         }
-        validator = ClosedModelGate(inspect).call;
+        validator = widget.personalAccess
+            ? PersonalTestGate(inspect).call
+            : ClosedModelGate(inspect).call;
       }
       if (!mounted || _reloadPending) {
         _worker?.close();
@@ -435,6 +475,11 @@ class _SessionPageState extends State<SessionPage>
     _input.clear();
     _review = null;
     final result = await session.confirm(review);
+    if (result == SubmitResult.pending && !widget.diagnostic) {
+      final topic = matchWorldTopic(question, review.language);
+      if (topic != null)
+        widget.onCatalogConfirmed?.call(topic.id, review.language);
+    }
     if (mounted &&
         _foreground &&
         !_covered &&
@@ -614,6 +659,37 @@ class _SessionPageState extends State<SessionPage>
     }
   }
 
+  Future<void> _resetPersonalPause() async {
+    if (!widget.personalAccess ||
+        _session?.phase != SessionPhase.cooldown ||
+        _session!.busy)
+      return;
+    final accepted = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(t('Сбросить паузу?', 'Reset the pause?')),
+        content: Text(
+          t(
+            'Временная функция личной сборки. Текущая пауза и её напоминание будут удалены. Новый ответ не выбирается.',
+            'Temporary personal-build tool. The current pause and its reminder will be removed. No new answer is selected.',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(t('Отмена', 'Cancel')),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(t('Сбросить', 'Reset')),
+          ),
+        ],
+      ),
+    );
+    if (accepted == true && mounted && widget.active && _foreground)
+      await _session?.resetPersonalPause();
+  }
+
   void _afterVisibleFrame(Answer answer) {
     if (_ackQueued) return;
     _ackQueued = true;
@@ -633,10 +709,16 @@ class _SessionPageState extends State<SessionPage>
   }
 
   String _outcome(SubmitResult result) => switch (result) {
-    SubmitResult.held => t(
-      'Проверка завершена. Допуск закрыт.',
-      'Check complete. Admission is closed.',
-    ),
+    SubmitResult.held =>
+      widget.personalAccess
+          ? t(
+              'Этот вопрос пока не допущен. Для личной проверки выбери пример в «Что волнует мир».',
+              'This question is not eligible yet. For personal testing, choose a catalog example in What moves the world.',
+            )
+          : t(
+              'Проверка завершена. Допуск закрыт.',
+              'Check complete. Admission is closed.',
+            ),
     SubmitResult.risk => t(
       'Модель отметила возможный риск. Допуск закрыт.',
       'The model flagged possible risk. Admission is closed.',
@@ -960,6 +1042,12 @@ class _SessionPageState extends State<SessionPage>
               onPressed: () =>
                   _openAuraAnswer(session, _visibleAnswer!, _auraGeneration),
               child: Text(t('Посмотреть ответ', 'View answer')),
+            ),
+          if (widget.personalAccess)
+            TextButton(
+              key: const ValueKey('reset-personal-limit'),
+              onPressed: session.busy ? null : _resetPersonalPause,
+              child: Text(t('Сбросить лимит · тест', 'Reset limit · test')),
             ),
         ],
       );

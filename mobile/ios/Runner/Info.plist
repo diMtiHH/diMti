@@ -3,7 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>UniverseEnglishNoticeApproved</key>
-	<false/>
+	<true/>
+	<key>UniversePersonalTestBuild</key>
+	<true/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>

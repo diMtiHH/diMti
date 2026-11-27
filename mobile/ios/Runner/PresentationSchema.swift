@@ -1,6 +1,108 @@
 import CoreFoundation
 import Foundation
 
+// Only catalog identifiers and aggregate counts cross this persistence boundary.
+// No arbitrary user text, name, answer, audio, endpoint or device ID is accepted.
+enum WorldSchema {
+  static let maxBytes = 65536
+  static let topics: Set<String> = ["read_novel", "watch_comedy", "draw_stars", "listen_music", "read_mystery", "write_poem", "paper_star", "puzzle"]
+  static func object(_ raw: Any?, keys: Set<String>) throws -> [String: Any] {
+    guard let value = raw as? [String: Any], Set(value.keys) == keys else { throw PresentationDataError.invalid }
+    return value
+  }
+  static func number(_ raw: Any?, min: Int = 0, max: Int = 16_000_000_000) throws -> Int {
+    guard let n = raw as? NSNumber, CFGetTypeID(n) != CFBooleanGetTypeID(),
+      n.doubleValue >= Double(min), n.doubleValue <= Double(max), n.doubleValue.rounded() == n.doubleValue else { throw PresentationDataError.invalid }
+    return n.intValue
+  }
+  static func bool(_ raw: Any?) throws -> Bool {
+    guard let n = raw as? NSNumber, CFGetTypeID(n) == CFBooleanGetTypeID() else { throw PresentationDataError.invalid }
+    return n.boolValue
+  }
+  static func day(_ raw: Any?) throws -> String {
+    guard let value = raw as? String, value.range(of: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", options: .regularExpression) != nil else { throw PresentationDataError.invalid }
+    let format = DateFormatter()
+    format.locale = Locale(identifier: "en_US_POSIX")
+    format.timeZone = TimeZone(secondsFromGMT: 0)
+    format.dateFormat = "yyyy-MM-dd"
+    format.isLenient = false
+    guard let date = format.date(from: value), format.string(from: date) == value else { throw PresentationDataError.invalid }
+    return value
+  }
+  static func buckets(_ raw: Any?) throws -> Int {
+    guard let rows = raw as? [Any], rows.count <= 64 else { throw PresentationDataError.invalid }
+    var seen: Set<String> = []
+    for raw in rows {
+      let row = try object(raw, keys: ["topic", "language", "day", "count"])
+      guard let topic = row["topic"] as? String, topics.contains(topic),
+        let language = row["language"] as? String, ["ru", "en"].contains(language) else { throw PresentationDataError.invalid }
+      let date = try day(row["day"])
+      guard seen.insert("\(topic)/\(language)/\(date)").inserted else { throw PresentationDataError.invalid }
+      _ = try number(row["count"], min: 1, max: 48)
+    }
+    return rows.count
+  }
+  static func validate(_ raw: String) throws {
+    guard raw.utf8.count <= maxBytes else { throw PresentationDataError.invalid }
+    let value = try object(JSONSerialization.jsonObject(with: Data(raw.utf8)), keys: ["version", "consent", "reduceMotion", "pending", "batch", "cache"])
+    // Reject duplicate keys in every nested object and noninteger JSON numbers.
+    let bytes = Array(raw.utf8)
+    var stack: [Set<String>] = [], i = 0
+    while i < bytes.count {
+      if bytes[i] == 123 { stack.append([]) }
+      if bytes[i] == 125 { _ = stack.popLast() }
+      if bytes[i] == 34 {
+        let start = i
+        i += 1
+        while i < bytes.count { if bytes[i] == 92 { i += 2; continue }; if bytes[i] == 34 { break }; i += 1 }
+        i += 1
+        var next = i
+        while next < bytes.count && [9,10,13,32].contains(bytes[next]) { next += 1 }
+        if next < bytes.count && bytes[next] == 58 {
+          guard let key = try JSONSerialization.jsonObject(with: Data(bytes[start..<i]), options: [.fragmentsAllowed]) as? String,
+            !stack.isEmpty, stack[stack.count-1].insert(key).inserted else { throw PresentationDataError.invalid }
+        }
+        continue
+      }
+      if bytes[i] == 45 || (48...57).contains(bytes[i]) {
+        while i < bytes.count && ([45,43,46,69,101].contains(bytes[i]) || (48...57).contains(bytes[i])) {
+          if [46,69,101].contains(bytes[i]) { throw PresentationDataError.invalid }; i += 1
+        }
+        continue
+      }
+      i += 1
+    }
+    guard try number(value["version"]) == 1 else { throw PresentationDataError.invalid }
+    let consent = try bool(value["consent"])
+    _ = try bool(value["reduceMotion"])
+    let pending = try buckets(value["pending"])
+    if !(value["batch"] is NSNull) {
+      let batch = try object(value["batch"], keys: ["version", "batch", "buckets"])
+      guard try number(batch["version"]) == 1, let id = batch["batch"] as? String,
+        id.range(of: "^[0-9a-f]{32}$", options: .regularExpression) != nil, consent else { throw PresentationDataError.invalid }
+      _ = try buckets(batch["buckets"])
+    }
+    guard consent || pending == 0, let cache = value["cache"] as? [Any], cache.count <= 9 else { throw PresentationDataError.invalid }
+    var snapshots: Set<String> = []
+    for raw in cache {
+      let row = try object(raw, keys: ["version", "environment", "period", "language", "through", "threshold", "items"])
+      guard try number(row["version"]) == 1, try number(row["threshold"]) == 10,
+        ["test", "production"].contains(row["environment"] as? String ?? ""),
+        let period = row["period"] as? String, ["day", "week", "month"].contains(period),
+        let language = row["language"] as? String, ["all", "ru", "en"].contains(language),
+        snapshots.insert("\(period)/\(language)").inserted,
+        let items = row["items"] as? [Any], items.count <= topics.count else { throw PresentationDataError.invalid }
+      _ = try day(row["through"])
+      var seen: Set<String> = []
+      for raw in items {
+        let item = try object(raw, keys: ["topic", "count"])
+        guard let topic = item["topic"] as? String, topics.contains(topic), seen.insert(topic).inserted,
+          try number(item["count"], min: 10) % 5 == 0 else { throw PresentationDataError.invalid }
+      }
+    }
+  }
+}
+
 enum PresentationDataError: Error { case invalid }
 
 enum PresentationSchema {

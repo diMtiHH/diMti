@@ -14,6 +14,8 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
       - name: Test CI runner and rejection of incomplete XCTest reports
         run: python -m unittest discover -s mobile/tool -p "test_*.py" -v
+      - name: Test private aggregate API and HTTP boundary
+        run: python -m unittest server.test_world_api -v
       - name: Set up pinned SDK, analyze and run all application tests
         shell: cmd
         run: setup-windows.cmd
@@ -39,6 +41,8 @@ jobs:
         run: bash mobile/tool/run_native_interaction.sh
       - name: Test CI runner and XCTest result validation
         run: python3 -m unittest discover -s mobile/tool -p "test_*.py" -v
+      - name: Test private aggregate API and HTTP boundary
+        run: python3 -m unittest server.test_world_api -v
       - name: Install pinned Flutter SDK
         run: |
           git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"

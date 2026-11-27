@@ -311,6 +311,38 @@ private enum ProfileTestError: Error { case failed(String), injected }
       try check(NarrationPolicy.durationMilliseconds(invalid) == nil, "invalid or unbounded duration")
     }
     pass("narration durations are finite positive and bounded")
+    let world = "{\"version\":1,\"consent\":false,\"reduceMotion\":true,\"pending\":[],\"batch\":null,\"cache\":[]}"
+    try store.writeWorld(world)
+    try check(try store.readWorld() == world, "world preferences not restored")
+    pass("world consent and quiet mode persist in separate state")
+    for unsafe in [world.replacingOccurrences(of: "\"version\":1", with: "\"version\":1,\"name\":\"private\""),
+                   world.replacingOccurrences(of: "\"version\":1", with: "\"version\":1,\"version\":1"),
+                   world.replacingOccurrences(of: "\"version\":1", with: "\"version\":1.0"),
+                   world.replacingOccurrences(of: "\"consent\":false", with: "\"consent\":0")] {
+      try reject("unsafe world record accepted") { try store.writeWorld(unsafe) }
+      try check(try store.readWorld() == world, "unsafe world write replaced original")
+    }
+    pass("world data rejects unknown personal fields, duplicate keys and wrong types")
+    let counts = world.replacingOccurrences(of: "\"consent\":false", with: "\"consent\":true")
+      .replacingOccurrences(of: "\"pending\":[]", with: "\"pending\":[{\"topic\":\"read_novel\",\"language\":\"ru\",\"day\":\"2026-11-27\",\"count\":1}]")
+    try store.writeWorld(counts)
+    for unsafe in [counts.replacingOccurrences(of: "read_novel", with: "private question"),
+                   counts.replacingOccurrences(of: "2026-11-27", with: "2026-02-30"),
+                   counts.replacingOccurrences(of: "\"count\":1", with: "\"count\":49"),
+                   counts.replacingOccurrences(of: "\"consent\":true", with: "\"consent\":false")] {
+      try reject("unsafe counter accepted") { try store.writeWorld(unsafe) }
+    }
+    pass("world queue accepts only known topics and bounded consented daily counts")
+    for point in PresentationWriteStep.allCases {
+      try store.writeWorld(world)
+      let injected = PresentationStorage(root: profileRoot, checkpoint: { step in
+        if step == point { throw ProfileTestError.injected }
+      })
+      try reject("world storage error swallowed") { try injected.writeWorld(counts) }
+      let committed = [.afterRename, .afterDirectorySync].contains(point)
+      try check(try store.readWorld() == (committed ? counts : world), "partial world state restored")
+    }
+    pass("world atomic replacement preserves old or new state at five fault boundaries")
     print("Native presentation checks: \(passed)/\(passed) passed; \(interruptions) process interruptions")
   }
 }

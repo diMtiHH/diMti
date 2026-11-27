@@ -321,14 +321,7 @@ void main() {
         );
         expect(find.byKey(const ValueKey('review-question')), findsOneWidget);
         await tap(tester, find.byKey(const ValueKey('tab-1')));
-        expect(
-          find.textContaining(
-            language == 'ru'
-                ? 'данные не собираются'
-                : 'no data is being collected',
-          ),
-          findsOneWidget,
-        );
+        expect(find.byKey(const ValueKey('world-page')), findsOneWidget);
         expect(tester.takeException(), isNull);
         expect(fixture.session.writes, 0);
         await clean(tester);

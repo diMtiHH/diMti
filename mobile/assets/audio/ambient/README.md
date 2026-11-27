@@ -14,4 +14,4 @@ session itself, never overlaps multiple cues, and stops with the ambient loop.
 No cue plays when sound is disabled, interrupted, in the background or capturing
 speech. Their zero endpoints and peak below -23 dBFS are checked automatically.
 
-These are provisional implementation assets. Final timbre, listening comfort on physical devices, sound design and user acceptance remain Stage 8 work; no final approval is claimed.
+These original assets are the sound candidate shipped in personal 0.8.0, with explicit cue previews in settings. Automated level, continuity, ownership and interruption checks cover them. Final timbre, listening comfort on physical devices and founder acceptance remain unconfirmed; the metadata deliberately preserves that distinction. See `docs/STAGE_8.md` for implementation and acceptance boundaries.
