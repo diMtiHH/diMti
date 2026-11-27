@@ -1,0 +1,28 @@
+{
+  "protocol": "stage6-1-local-checks-v1",
+  "date": "2026-11-27",
+  "source_commit": "d5112768169956271a3d18fb4fb71652c76e8f5c",
+  "version": "0.6.1",
+  "build": 11,
+  "setup_windows": {
+    "exit_code": 0,
+    "flutter_tests_passed": 392,
+    "flutter_reported_seconds": 173,
+    "analyzer": "No issues found",
+    "analyzer_seconds": 2.3,
+    "log": "setup-windows-stage6-1-final.log"
+  },
+  "python": {
+    "passed": 20,
+    "reported_seconds": 1.566,
+    "log": "mobile/build/stage6-1-python-tests.log"
+  },
+  "focused": {
+    "voice": 39,
+    "ui_before_permission_fix": 41,
+    "renderer_and_system_services": 43,
+    "aura_session_after_permission_fix": 15
+  },
+  "admission": "closed",
+  "physical_061_tested": false
+}

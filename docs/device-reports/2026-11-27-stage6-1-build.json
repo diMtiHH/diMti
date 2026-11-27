@@ -1,0 +1,278 @@
+{
+  "protocol": "stage6-1-build-verification-v1",
+  "date": "2026-11-27",
+  "version": "0.6.1",
+  "build": 11,
+  "repository": "diMtiHH/diMti",
+  "branch": "stage6-iphone",
+  "source_commit": "d5112768169956271a3d18fb4fb71652c76e8f5c",
+  "admission": "closed",
+  "english_notifications_approved": false,
+  "source_verification": "docs/device-reports/2026-11-27-stage6-1-source.json",
+  "local": {
+    "protocol": "stage6-1-local-checks-v1",
+    "date": "2026-11-27",
+    "source_commit": "d5112768169956271a3d18fb4fb71652c76e8f5c",
+    "version": "0.6.1",
+    "build": 11,
+    "setup_windows": {
+      "exit_code": 0,
+      "flutter_tests_passed": 392,
+      "flutter_reported_seconds": 173,
+      "analyzer": "No issues found",
+      "analyzer_seconds": 2.3,
+      "log": "setup-windows-stage6-1-final.log"
+    },
+    "python": {
+      "passed": 20,
+      "reported_seconds": 1.566,
+      "log": "mobile/build/stage6-1-python-tests.log"
+    },
+    "focused": {
+      "voice": 39,
+      "ui_before_permission_fix": 41,
+      "renderer_and_system_services": 43,
+      "aura_session_after_permission_fix": 15
+    },
+    "admission": "closed",
+    "physical_061_tested": false
+  },
+  "workflows": [
+    {
+      "id": 45942281743,
+      "name": "iPhone release build",
+      "url": "https://github.com/diMtiHH/diMti/actions/runs/45942281743",
+      "head_sha": "d5112768169956271a3d18fb4fb71652c76e8f5c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    },
+    {
+      "id": 45942281729,
+      "name": "Application complete checks",
+      "url": "https://github.com/diMtiHH/diMti/actions/runs/45942281729",
+      "head_sha": "d5112768169956271a3d18fb4fb71652c76e8f5c",
+      "status": "completed",
+      "conclusion": "success",
+      "run_attempt": 1
+    }
+  ],
+  "windows": {
+    "flutter_tests_passed": 392,
+    "flutter_reported_seconds": 234,
+    "analyzer": "No issues found",
+    "analyzer_seconds": 10,
+    "python_tests_passed": 20,
+    "log": "docs/device-reports/2026-11-27-stage6-1-windows-ci.log"
+  },
+  "native": {
+    "groups": {
+      "safety": 16,
+      "storage": 12,
+      "voice": 19,
+      "presentation": 16,
+      "ambient": 7,
+      "interaction": 10
+    },
+    "total": 80,
+    "passed_in_both_workflows": true,
+    "python_tests_passed": 20,
+    "log": "docs/device-reports/2026-11-27-stage6-1-native-ci-excerpt.log"
+  },
+  "xctest": {
+    "cases": [
+      "RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()",
+      "UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn",
+      "UniverseIntegrationTests/testNativeAuraShadersRenderAllSixteenEnvironmentsAndLivingForms",
+      "UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState",
+      "UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery",
+      "UniverseIntegrationTests/testNativePresentationProfileAndBundledNarrationRejectUnsafeMutation",
+      "UniverseIntegrationTests/testNativeVoiceCapabilityAndCancellationNeverRequestCapture"
+    ],
+    "summary": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "x86_64",
+            "deviceId": "5AFA6F71-ACA9-4290-B63C-1A22ABF8A388",
+            "deviceName": "Universe XCTest 18.5",
+            "modelName": "iPhone 16",
+            "osBuildNumber": "22F77",
+            "osVersion": "18.5",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 7,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "Runner · Built with macOS 15.7.9",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1795755820.865,
+      "passedTests": 7,
+      "result": "Passed",
+      "skippedTests": 0,
+      "startTime": 1795755665.181,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - Runner",
+      "topInsights": [],
+      "totalTestCount": 7
+    },
+    "boot_attempts": [
+      "boot-1.log"
+    ],
+    "raw_reports": [
+      {
+        "path": "docs/device-reports/2026-11-27-stage6-1-xctest-summary.json",
+        "bytes": 705,
+        "sha256": "8d13107bedea12181788e3adbf1260410abc0967a160c7b49d9f424c1bbcea70"
+      },
+      {
+        "path": "docs/device-reports/2026-11-27-stage6-1-xctest-tests.json",
+        "bytes": 3776,
+        "sha256": "1ae3335d33c70fd7fce385791386f724343675d1756d9a7c7b3eb45ee36df596"
+      },
+      {
+        "path": "docs/device-reports/2026-11-27-stage6-1-xctest-verified.json",
+        "bytes": 806,
+        "sha256": "d986a6febab6fa48105c872b75130b6861fd94ccb334978f99319d4d52978607"
+      }
+    ],
+    "archive_sha256": "abce108754b8706d65b4a44c9a78b2b17674dd9c7d678b187eb6c2ca41c4f0fe",
+    "digest_verified": true,
+    "crc_verified": true,
+    "results_locally_revalidated": true
+  },
+  "ipa": {
+    "protocol": "stage6-1-ipa-verification-v1",
+    "path": "C:\\Users\\user\\Downloads\\Ask-the-Universe-Stage6-0.6.1\\Ask-the-Universe-0.6.1-build11.ipa",
+    "bytes": 304073415,
+    "sha256": "6a778265c3ba85d6b78448a631ed1a889ce0c3a24d3ed42a56e109abf48764df",
+    "version": "0.6.1",
+    "build": "11",
+    "platform": "iPhoneOS",
+    "unsigned_for_personal_signing": true,
+    "source_commit": "d5112768169956271a3d18fb4fb71652c76e8f5c",
+    "artifact_zip_sha256": "10bd02ed843c27fc4a939f1f068fa3e742d7de3b3a2305ce718483bffac92956",
+    "app_bytes": 548635102,
+    "assets_sha256": {
+      "model.onnx": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665",
+      "tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+      "head.json": "fc3593cfabdc324d4e37b69c4fd49749e957bb582e42367fcbcb7692feab8ea9"
+    },
+    "model_release_enabled": false,
+    "english_notifications_approved": false,
+    "narration": {
+      "ru": {
+        "sha256": "99f4890f1d3f260ff1dbc56faf0e6b9f2028cfd2c505a87ae1f735d91fef7f77",
+        "duration_ms": 34583
+      },
+      "en": {
+        "sha256": "6897a88fb8f54b4ed5fb4fbf6ec83c66db6e7b8c284bd1263bccb6f8df278349",
+        "duration_ms": 30442
+      }
+    },
+    "provisional_narration": true,
+    "english_wording_approved": false,
+    "fonts_sha256": {
+      "CormorantGaramond-Light.ttf": "9faf7cede1c059bf57fede38533fc18aa19846a171b88743826e7aa94970c25c",
+      "CormorantGaramond-Regular.ttf": "67a9da018f4cae694840d9e962215e7e5fca669f6c5de6ab9e675da53ec1e400",
+      "CormorantGaramond-Medium.ttf": "1e077af6a5bf0c9ab147458e815c9ecc3a080bebd7872d7c018f5f4d340e2a6e",
+      "CormorantGaramond-SemiBold.ttf": "b19592bc76e045bba4278a12028562d4f94855b4e12fd62c0dbd325bd1b63666",
+      "CormorantGaramond-OFL.txt": "60700d351cac4650c51f3f9db318d2a420f8b45052dba2715eb5fec41f0f6956",
+      "Literata-Regular.ttf": "c944f14b1be128d5136a7434546155856a9590417f276ef6f6bd03aa33c45222",
+      "Literata-Medium.ttf": "48a52bbd303b258aba7f3e14ec1571d37cdfa9260712e1a4cf34c30b9236f9b7",
+      "Literata-SemiBold.ttf": "f78c3124f410f9628f61769bf736c65dc1e3d1569c2fa6d1e6be95c0b07f4fc4",
+      "Literata-OFL.txt": "8742963604cd89dc81437811a850018fc03b2bfad686d7422c8235967c87614e"
+    },
+    "ambient_audio_sha256": {
+      "stars.wav": "b1d03e4f5395e2000b4eef6ef1d0c04600a21bfe581b69adaa21dfb73ec2e4f6",
+      "galaxy.wav": "214425e251481a2dbf3633c2351eaeca93a3988b470b58212833060c9b262926",
+      "aurora.wav": "f37a5518545c772aa492b5e778c38174e52185cb8c9a9104b9c55e97bebf2fa0",
+      "gravity.wav": "c4af9a2afceb26bf60421521b31cbca0606299964656362e2bc8ef65f4daaa06",
+      "cue-touch.wav": "a65304e28f5f6f2f0a42b9b8c7c024d662961fc2e7243f8f8624f4c7b5048f57",
+      "cue-transform.wav": "7b66dc5b13b02d61d12808b2d7b983c93dc21848b803f80b03fc781e77edf034",
+      "cue-reveal.wav": "6aebb2f70df5933af6c474fb9cda60d17258bd4b4938e3312d1320871bd4d75b"
+    },
+    "ambient_default_enabled": false,
+    "provisional_ambient_and_cues": true,
+    "answer_independent_cues": true,
+    "compiled_shaders": {
+      "aura_environment.frag": {
+        "bytes": 31024,
+        "sha256": "140d9a5056813b2fed12a78b93c9930d62a428576f9b8a6d3efb6c81b701f3cc",
+        "format": "IPLR"
+      },
+      "aura_matter.frag": {
+        "bytes": 5792,
+        "sha256": "e78d530a5f45a2bfa97545e23aa2a3cc32511d34a97eae4c865b73d0023178f2",
+        "format": "IPLR"
+      },
+      "aura_metal.frag": {
+        "bytes": 24648,
+        "sha256": "8c96c6ebc1f1a131143880ce50323e3340f2fb788b550d113accd19fd113d38e",
+        "format": "IPLR"
+      }
+    },
+    "native_channels": [
+      "ask_universe/presentation",
+      "ask_universe/voice",
+      "ask_universe/ambient",
+      "ask_universe/graphicsBudget",
+      "ask_universe/motion",
+      "ask_universe/haptics"
+    ],
+    "verified": [
+      "artifact digest and exact source commit",
+      "artifact and IPA CRC",
+      "unique ZIP entries",
+      "IPA checksum",
+      "version/build and iPhoneOS",
+      "model hashes and closed release flag",
+      "privacy manifest",
+      "English notification flag false",
+      "denied sysctl absent",
+      "permissions RU/EN and no background modes",
+      "on-device speech selector",
+      "presentation voice ambient graphics motion and haptics channels",
+      "no personal signing profile",
+      "narration hashes PCM timing script and draft flags",
+      "seven Cormorant Garamond/Literata faces manifest and two OFL licenses",
+      "four loops three neutral cues hashes PCM peaks",
+      "three compiled IPLR shaders"
+    ],
+    "limits": "Static artifact checks; physical behavior, performance and sound acceptance are not inferred."
+  },
+  "artifacts": [
+    {
+      "id": 15173700262,
+      "name": "Ask-the-Universe-stage3-iphone",
+      "size_in_bytes": 304073956,
+      "digest": "sha256:10bd02ed843c27fc4a939f1f068fa3e742d7de3b3a2305ce718483bffac92956",
+      "run_id": 45942281743,
+      "head_sha": "d5112768169956271a3d18fb4fb71652c76e8f5c"
+    },
+    {
+      "id": 15173508654,
+      "name": "stage3-xctest-results",
+      "size_in_bytes": 90346,
+      "digest": "sha256:abce108754b8706d65b4a44c9a78b2b17674dd9c7d678b187eb6c2ca41c4f0fe",
+      "run_id": 45942281729,
+      "head_sha": "d5112768169956271a3d18fb4fb71652c76e8f5c"
+    }
+  ],
+  "user_feedback": "docs/device-reports/2026-11-27-stage6-user-feedback.json",
+  "limits": [
+    "0.6.1 not manually tested on physical iPhone.",
+    "Virtual scheduling/resource soak does not measure device GPU FPS, thermals, energy or physical haptics.",
+    "Speech timestamps resetting ambiguously inside one capture remain treated as hypothesis correction.",
+    "No admission or English notification approval granted."
+  ]
+}

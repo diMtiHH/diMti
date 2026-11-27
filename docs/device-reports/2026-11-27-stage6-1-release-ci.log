@@ -1,0 +1,562 @@
+2026-11-27T04:50:45.3751220Z Current runner version: '2.338.2'
+2026-11-27T04:50:45.3767350Z ##[group]Runner Image Provisioner
+2026-11-27T04:50:45.3768090Z Hosted Compute Agent
+2026-11-27T04:50:45.3768530Z Version: 20261111.635
+2026-11-27T04:50:45.3768990Z Commit: b8a594ea514ff44cadb5342986c68b1eac6e22ed
+2026-11-27T04:50:45.3769540Z Build Date: 2026-11-11T01:49:01Z
+2026-11-27T04:50:45.3770160Z Worker ID: {55e7315d-74d9-4838-807e-9b49fb8f2d46}
+2026-11-27T04:50:45.3770630Z Region: westus
+2026-11-27T04:50:45.3770980Z Cloud: MacCloud
+2026-11-27T04:50:45.3771330Z ##[endgroup]
+2026-11-27T04:50:45.3772200Z ##[group]Operating System
+2026-11-27T04:50:45.3772590Z macOS
+2026-11-27T04:50:45.3772910Z 26.7.2
+2026-11-27T04:50:45.3773230Z 25G332
+2026-11-27T04:50:45.3773560Z ##[endgroup]
+2026-11-27T04:50:45.3773910Z ##[group]Runner Image
+2026-11-27T04:50:45.3774280Z Image: macos-26-arm64
+2026-11-27T04:50:45.3774650Z Version: 20261117.0516.1
+2026-11-27T04:50:45.3775470Z Included Software: https://github.com/actions/runner-images/blob/macos-26-arm64/20261117.0516/images/macos/macos-26-arm64-Readme.md
+2026-11-27T04:50:45.3776510Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-26-arm64%2F20261117.0516
+2026-11-27T04:50:45.3777270Z ##[endgroup]
+2026-11-27T04:50:45.3778180Z ##[group]GITHUB_TOKEN Permissions
+2026-11-27T04:50:45.3779570Z Contents: read
+2026-11-27T04:50:45.3779960Z Metadata: read
+2026-11-27T04:50:45.3780380Z ##[endgroup]
+2026-11-27T04:50:45.3781950Z Secret source: Actions
+2026-11-27T04:50:45.3782530Z Cache mode: write
+2026-11-27T04:50:45.3782970Z Prepare workflow directory
+2026-11-27T04:50:45.4057420Z Prepare all required actions
+2026-11-27T04:50:45.4090560Z Getting action download info
+2026-11-27T04:50:45.6821470Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+2026-11-27T04:50:46.2096020Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-11-27T04:50:46.5651110Z Complete job name: iphone
+2026-11-27T04:50:46.6191400Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+2026-11-27T04:50:46.6192070Z with:
+2026-11-27T04:50:46.6192370Z   repository: diMtiHH/diMti
+2026-11-27T04:50:46.6195090Z   token: ***
+2026-11-27T04:50:46.6195380Z   ssh-strict: true
+2026-11-27T04:50:46.6195680Z   ssh-user: git
+2026-11-27T04:50:46.6196000Z   persist-credentials: true
+2026-11-27T04:50:46.6196330Z   clean: true
+2026-11-27T04:50:46.6196650Z   sparse-checkout-cone-mode: true
+2026-11-27T04:50:46.6197010Z   fetch-depth: 1
+2026-11-27T04:50:46.6197310Z   fetch-tags: false
+2026-11-27T04:50:46.6197620Z   show-progress: true
+2026-11-27T04:50:46.6197930Z   lfs: false
+2026-11-27T04:50:46.6198220Z   submodules: false
+2026-11-27T04:50:46.6198540Z   set-safe-directory: true
+2026-11-27T04:50:46.6198980Z ##[endgroup]
+2026-11-27T04:50:47.1014980Z Syncing repository: diMtiHH/diMti
+2026-11-27T04:50:47.1016590Z ##[group]Getting Git version info
+2026-11-27T04:50:47.1017130Z Working directory is '/Users/runner/work/diMti/diMti'
+2026-11-27T04:50:47.1017860Z [command]/opt/homebrew/bin/git version
+2026-11-27T04:50:47.1565000Z git version 2.56.1
+2026-11-27T04:50:47.1602870Z ##[endgroup]
+2026-11-27T04:50:47.1616690Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/c85a515f-90ea-4132-b841-9dd7f840a432/.gitconfig'
+2026-11-27T04:50:47.1618380Z Temporarily overriding HOME='/Users/runner/work/_temp/c85a515f-90ea-4132-b841-9dd7f840a432' before making global git config changes
+2026-11-27T04:50:47.1619430Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-27T04:50:47.1620340Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/diMti/diMti
+2026-11-27T04:50:47.1754910Z Deleting the contents of '/Users/runner/work/diMti/diMti'
+2026-11-27T04:50:47.1759050Z ##[group]Initializing the repository
+2026-11-27T04:50:47.1762170Z [command]/opt/homebrew/bin/git init /Users/runner/work/diMti/diMti
+2026-11-27T04:50:47.2022570Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-11-27T04:50:47.2024140Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-11-27T04:50:47.2024920Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-27T04:50:47.2025580Z hint: call:
+2026-11-27T04:50:47.2025880Z hint:
+2026-11-27T04:50:47.2026290Z hint: 	git config --global init.defaultBranch <name>
+2026-11-27T04:50:47.2026770Z hint:
+2026-11-27T04:50:47.2027450Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-11-27T04:50:47.2028200Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-11-27T04:50:47.2028900Z hint:
+2026-11-27T04:50:47.2029400Z hint: 	git branch -m <name>
+2026-11-27T04:50:47.2029850Z hint:
+2026-11-27T04:50:47.2030340Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-11-27T04:50:47.2031260Z Initialized empty Git repository in /Users/runner/work/diMti/diMti/.git/
+2026-11-27T04:50:47.2040980Z [command]/opt/homebrew/bin/git remote add origin https://github.com/diMtiHH/diMti
+2026-11-27T04:50:47.2131200Z ##[endgroup]
+2026-11-27T04:50:47.2131950Z ##[group]Disabling automatic garbage collection
+2026-11-27T04:50:47.2134090Z [command]/opt/homebrew/bin/git config --local gc.auto 0
+2026-11-27T04:50:47.2255180Z ##[endgroup]
+2026-11-27T04:50:47.2328380Z ##[group]Setting up auth
+2026-11-27T04:50:47.2333350Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-27T04:50:47.2361170Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-27T04:50:47.3921270Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-27T04:50:47.4006240Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-27T04:50:47.5608710Z [command]/opt/homebrew/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-11-27T04:50:47.5916210Z ##[endgroup]
+2026-11-27T04:50:47.5976580Z ##[group]Fetching the repository
+2026-11-27T04:50:47.5979050Z [command]/opt/homebrew/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +d5112768169956271a3d18fb4fb71652c76e8f5c:refs/remotes/origin/stage6-iphone
+2026-11-27T04:50:49.3303950Z From https://github.com/diMtiHH/diMti
+2026-11-27T04:50:49.3305430Z  * [new ref]         d5112768169956271a3d18fb4fb71652c76e8f5c -> origin/stage6-iphone
+2026-11-27T04:50:49.3308840Z ##[endgroup]
+2026-11-27T04:50:49.3310120Z ##[group]Determining the checkout info
+2026-11-27T04:50:49.3311090Z ##[endgroup]
+2026-11-27T04:50:49.3311720Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-27T04:50:49.3427560Z [command]/opt/homebrew/bin/git config --local --unset-all extensions.worktreeConfig
+2026-11-27T04:50:49.3515540Z ##[group]Checking out the ref
+2026-11-27T04:50:49.3518630Z [command]/opt/homebrew/bin/git checkout --progress --force -B stage6-iphone refs/remotes/origin/stage6-iphone
+2026-11-27T04:50:49.4955380Z Switched to a new branch 'stage6-iphone'
+2026-11-27T04:50:49.4987670Z branch 'stage6-iphone' set up to track 'origin/stage6-iphone'.
+2026-11-27T04:50:49.5035340Z ##[endgroup]
+2026-11-27T04:50:49.5116110Z [command]/opt/homebrew/bin/git log -1 --format=%H
+2026-11-27T04:50:49.5225740Z d5112768169956271a3d18fb4fb71652c76e8f5c
+2026-11-27T04:50:49.5504290Z ##[group]Run bash mobile/tool/run_native_safety.sh
+2026-11-27T04:50:49.5505920Z [36;1mbash mobile/tool/run_native_safety.sh[0m
+2026-11-27T04:50:49.5559760Z shell: /bin/bash -e {0}
+2026-11-27T04:50:49.5560620Z ##[endgroup]
+2026-11-27T04:50:59.1472290Z PASS 1: commit token before creating kernel marker
+2026-11-27T04:50:59.1481610Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-27T04:50:59.1518030Z PASS 3: simulated reboot rotates token
+2026-11-27T04:50:59.1520870Z PASS 4: failed write recovery
+2026-11-27T04:50:59.1522220Z PASS 5: ambiguous committed write recovery
+2026-11-27T04:50:59.1523110Z PASS 6: crash between persisted token and kernel creation
+2026-11-27T04:50:59.1523790Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-27T04:50:59.1524970Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-27T04:50:59.1525450Z PASS 9: strict private marker validation
+2026-11-27T04:50:59.1526490Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-27T04:50:59.1527230Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-27T04:50:59.1527960Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-27T04:50:59.1528860Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-27T04:50:59.1530040Z PASS 14: notification callback success/error and duplicate completion
+2026-11-27T04:50:59.1530730Z PASS 15: missing OS callback releases the serial queue
+2026-11-27T04:50:59.1531390Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-27T04:50:59.1532220Z Native safety checks: 16/16 passed
+2026-11-27T04:50:59.1641430Z ##[group]Run bash mobile/tool/run_native_storage.sh
+2026-11-27T04:50:59.1641940Z [36;1mbash mobile/tool/run_native_storage.sh[0m
+2026-11-27T04:50:59.1687300Z shell: /bin/bash -e {0}
+2026-11-27T04:50:59.1687590Z ##[endgroup]
+2026-11-27T04:51:00.4401680Z PASS storage 1: fresh preferences use the first supported system language with RU fallback and no write
+2026-11-27T04:51:00.4502990Z PASS storage 2: saved language and opt-in take precedence while corrupt preferences remain blocked
+2026-11-27T04:51:00.5561910Z PASS storage 3: shared Dart/Swift state contract: 74 cases; rejected input preserves bytes
+2026-11-27T04:51:00.5567170Z PASS storage 4: notification preference and channel switch require actual booleans
+2026-11-27T04:51:00.5569930Z PASS storage 5: invalid preferences cannot overwrite saved opt-in
+2026-11-27T04:51:06.2783090Z PASS storage 6: 40 process exits across 5 write checkpoints and both scopes
+2026-11-27T04:51:06.2847480Z PASS storage 7: first uncommitted reservation is never loaded from staging
+2026-11-27T04:51:06.2915470Z PASS storage 8: error after rename propagates; reload recovers the committed timer
+2026-11-27T04:51:06.2960430Z PASS storage 9: corrupt, invalid UTF-8 and oversized committed files never use pending data
+2026-11-27T04:51:06.2984590Z PASS storage 10: diagnostic reset isolation and answer removal in committed cooldown
+2026-11-27T04:51:06.2995350Z PASS storage 11: ambiguous preferences rejected; canonical state committed without leftover staging
+2026-11-27T04:51:06.3002840Z PASS storage 12: both private scope directories excluded from backup
+2026-11-27T04:51:06.3028990Z Native storage checks: 12/12 passed; 74 contract cases; 40 process interruptions
+2026-11-27T04:51:06.3140280Z ##[group]Run bash mobile/tool/run_native_voice.sh
+2026-11-27T04:51:06.3140670Z [36;1mbash mobile/tool/run_native_voice.sh[0m
+2026-11-27T04:51:06.3178600Z shell: /bin/bash -e {0}
+2026-11-27T04:51:06.3178870Z ##[endgroup]
+2026-11-27T04:51:07.0951340Z PASS only explicit RU and EN voice locales are accepted
+2026-11-27T04:51:07.0952280Z PASS request identity rejects booleans strings fractions and overflow
+2026-11-27T04:51:07.0952920Z PASS cancel invalidates delayed permission completion
+2026-11-27T04:51:07.0953680Z PASS supersession rejects callbacks even when caller reuses an ID
+2026-11-27T04:51:07.0954310Z PASS duplicate and stale callbacks cannot start or stop another capture
+2026-11-27T04:51:07.0954950Z PASS graceful stop keeps final results but forbids automatic restart
+2026-11-27T04:51:07.0955560Z PASS terminal delivery retires once and rejects later transcript or level
+2026-11-27T04:51:07.0956130Z PASS silence and low room noise do not produce synthetic animation
+2026-11-27T04:51:07.0957390Z PASS level follows actual RMS with smooth attack and slower release
+2026-11-27T04:51:07.0957980Z PASS invalid audio measurements cannot leak NaN or unbounded levels
+2026-11-27T04:51:07.0958460Z PASS transcript size matches Dart UTF16 limit without silent truncation
+2026-11-27T04:51:07.0959030Z PASS partial and corrected hypotheses replace the same audio range without duplication
+2026-11-27T04:51:07.0959720Z PASS a later disjoint audio range keeps the accepted phrase across a pause
+2026-11-27T04:51:07.0960360Z PASS cumulative final and empty silence results do not duplicate or erase previous speech
+2026-11-27T04:51:07.0960940Z PASS intentional repetition at distinct audio times is preserved without duplicate callbacks
+2026-11-27T04:51:07.0961610Z PASS untimed partials revise only the active phrase and ambiguous resets never guess a boundary
+2026-11-27T04:51:07.0962300Z PASS combined utterances enforce UTF16 bounds without silent truncation or state corruption
+2026-11-27T04:51:07.0962850Z PASS invalid timing cannot corrupt text and a new capture has no retained transcription
+2026-11-27T04:51:07.0963400Z PASS capture permission and finalization waits have explicit limits
+2026-11-27T04:51:07.0963750Z Native voice checks: 19/19 passed
+2026-11-27T04:51:07.1032880Z ##[group]Run bash mobile/tool/run_native_presentation.sh
+2026-11-27T04:51:07.1033250Z [36;1mbash mobile/tool/run_native_presentation.sh[0m
+2026-11-27T04:51:07.1064930Z shell: /bin/bash -e {0}
+2026-11-27T04:51:07.1065120Z ##[endgroup]
+2026-11-27T04:51:10.4276200Z PASS all fixed background and answer style combinations are valid
+2026-11-27T04:51:10.4279510Z PASS all 16 legacy choices migrate in memory without changing the original bytes or consent
+2026-11-27T04:51:10.4280270Z PASS legacy migration rejects mixed schemas and preserves incomplete onboarding and narration choice
+2026-11-27T04:51:10.4280880Z PASS exact profile keys strict booleans integers and enums are enforced
+2026-11-27T04:51:10.4281730Z PASS duplicate escaped keys decimal syntax malformed and oversized JSON are rejected
+2026-11-27T04:51:10.4282230Z PASS names use 40 Unicode scalars and reject every C0 and C1 control
+2026-11-27T04:51:10.4282700Z PASS completion requires slide two and nonzero accepted terms version
+2026-11-27T04:51:10.4283370Z PASS validation happens before writes and valid profile roundtrips canonically
+2026-11-27T04:51:10.4283950Z PASS private no-backup profile storage remains separate from session state
+2026-11-27T04:51:10.4284510Z PASS corruption invalid UTF8 oversized files and symlinks never become defaults
+2026-11-27T04:51:10.4284980Z PASS ten process interruptions preserve only the old or committed profile
+2026-11-27T04:51:10.4285630Z PASS five migration process interruptions preserve exact v1 bytes until atomic v2 commit
+2026-11-27T04:51:10.4286290Z PASS ambiguous post-rename error propagates while committed profile remains readable
+2026-11-27T04:51:10.4286990Z PASS migration write errors before and after rename require readback without silently resetting data
+2026-11-27T04:51:10.4287610Z PASS narration accepts only fixed bundled languages and positive integer identities
+2026-11-27T04:51:10.4288100Z PASS narration durations are finite positive and bounded
+2026-11-27T04:51:10.4288600Z Native presentation checks: 16/16 passed; 15 process interruptions
+2026-11-27T04:51:10.4369850Z ##[group]Run bash mobile/tool/run_native_ambient.sh
+2026-11-27T04:51:10.4370230Z [36;1mbash mobile/tool/run_native_ambient.sh[0m
+2026-11-27T04:51:10.4409910Z shell: /bin/bash -e {0}
+2026-11-27T04:51:10.4410100Z ##[endgroup]
+2026-11-27T04:51:10.9422000Z PASS four fixed environment resources
+2026-11-27T04:51:10.9423040Z PASS no paths URLs or malformed resource types
+2026-11-27T04:51:10.9424280Z PASS bounded finite audio duration
+2026-11-27T04:51:10.9425170Z PASS explicit ambient audio ownership
+2026-11-27T04:51:10.9426110Z PASS recording ownership cannot be deactivated by ambient
+2026-11-27T04:51:10.9428800Z PASS three neutral cues with no answer-dependent resources
+2026-11-27T04:51:10.9430770Z PASS finite short cue duration
+2026-11-27T04:51:10.9432190Z Native ambient groups passed: 7
+2026-11-27T04:51:10.9496010Z ##[group]Run bash mobile/tool/run_native_interaction.sh
+2026-11-27T04:51:10.9496400Z [36;1mbash mobile/tool/run_native_interaction.sh[0m
+2026-11-27T04:51:10.9531060Z shell: /bin/bash -e {0}
+2026-11-27T04:51:10.9531370Z ##[endgroup]
+2026-11-27T04:51:11.5217050Z PASS interaction 1: exact bounded owner identity
+2026-11-27T04:51:11.5217700Z PASS interaction 2: malformed identities rejected
+2026-11-27T04:51:11.5218100Z PASS interaction 3: no answer-dependent haptic commands
+2026-11-27T04:51:11.5218660Z PASS interaction 4: all pattern parameters bounded and ordered
+2026-11-27T04:51:11.5219000Z PASS interaction 5: soft continuous hold
+2026-11-27T04:51:11.5219470Z PASS interaction 6: varied rhythm aligns to animation milestones
+2026-11-27T04:51:11.5220100Z PASS interaction 7: release is stronger than hold
+2026-11-27T04:51:11.5220500Z PASS interaction 8: motion is centred and bounded
+2026-11-27T04:51:11.5220810Z PASS interaction 9: nonfinite motion is ignored
+2026-11-27T04:51:11.5221410Z PASS interaction 10: sample rate and lost-pointer lifetime bounded
+2026-11-27T04:51:11.5221870Z Native interaction checks: 10/10 passed
+2026-11-27T04:51:11.5341750Z ##[group]Run git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+2026-11-27T04:51:11.5342450Z [36;1mgit clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"[0m
+2026-11-27T04:51:11.5343050Z [36;1mtest "$(git -C "$RUNNER_TEMP/flutter" rev-parse HEAD)" = ae9b586f34a8443573f82ef57c3bf914a908cbf7[0m
+2026-11-27T04:51:11.5343530Z [36;1mecho "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"[0m
+2026-11-27T04:51:11.5379910Z shell: /bin/bash -e {0}
+2026-11-27T04:51:11.5380190Z ##[endgroup]
+2026-11-27T04:51:11.5790400Z Cloning into '/Users/runner/work/_temp/flutter'...
+2026-11-27T04:51:14.5481070Z Updating files:  45% (7309/16233)
+2026-11-27T04:51:14.5788060Z Updating files:  46% (7468/16233)
+2026-11-27T04:51:14.6061450Z Updating files:  47% (7630/16233)
+2026-11-27T04:51:14.6362170Z Updating files:  48% (7792/16233)
+2026-11-27T04:51:14.6583010Z Updating files:  49% (7955/16233)
+2026-11-27T04:51:14.6782070Z Updating files:  50% (8117/16233)
+2026-11-27T04:51:14.6979780Z Updating files:  51% (8279/16233)
+2026-11-27T04:51:14.7206840Z Updating files:  52% (8442/16233)
+2026-11-27T04:51:14.7422010Z Updating files:  53% (8604/16233)
+2026-11-27T04:51:14.7599600Z Updating files:  54% (8766/16233)
+2026-11-27T04:51:14.7769760Z Updating files:  55% (8929/16233)
+2026-11-27T04:51:14.7954200Z Updating files:  56% (9091/16233)
+2026-11-27T04:51:14.8301790Z Updating files:  57% (9253/16233)
+2026-11-27T04:51:14.8563070Z Updating files:  58% (9416/16233)
+2026-11-27T04:51:14.8764290Z Updating files:  59% (9578/16233)
+2026-11-27T04:51:14.8965760Z Updating files:  60% (9740/16233)
+2026-11-27T04:51:14.9148140Z Updating files:  61% (9903/16233)
+2026-11-27T04:51:14.9436250Z Updating files:  62% (10065/16233)
+2026-11-27T04:51:14.9604480Z Updating files:  63% (10227/16233)
+2026-11-27T04:51:14.9758200Z Updating files:  64% (10390/16233)
+2026-11-27T04:51:14.9912940Z Updating files:  65% (10552/16233)
+2026-11-27T04:51:15.0065980Z Updating files:  66% (10714/16233)
+2026-11-27T04:51:15.0221320Z Updating files:  67% (10877/16233)
+2026-11-27T04:51:15.0412600Z Updating files:  68% (11039/16233)
+2026-11-27T04:51:15.0604970Z Updating files:  69% (11201/16233)
+2026-11-27T04:51:15.0760210Z Updating files:  70% (11364/16233)
+2026-11-27T04:51:15.0908400Z Updating files:  71% (11526/16233)
+2026-11-27T04:51:15.1112450Z Updating files:  72% (11688/16233)
+2026-11-27T04:51:15.1291450Z Updating files:  73% (11851/16233)
+2026-11-27T04:51:15.1478910Z Updating files:  74% (12013/16233)
+2026-11-27T04:51:15.1731540Z Updating files:  75% (12175/16233)
+2026-11-27T04:51:15.2075390Z Updating files:  76% (12338/16233)
+2026-11-27T04:51:15.2398090Z Updating files:  77% (12500/16233)
+2026-11-27T04:51:15.2707340Z Updating files:  78% (12662/16233)
+2026-11-27T04:51:15.3890650Z Updating files:  79% (12825/16233)
+2026-11-27T04:51:15.4422140Z Updating files:  80% (12987/16233)
+2026-11-27T04:51:15.6852650Z Updating files:  80% (13038/16233)
+2026-11-27T04:51:15.7272420Z Updating files:  81% (13149/16233)
+2026-11-27T04:51:15.7583290Z Updating files:  82% (13312/16233)
+2026-11-27T04:51:15.8280290Z Updating files:  83% (13474/16233)
+2026-11-27T04:51:15.8588860Z Updating files:  84% (13636/16233)
+2026-11-27T04:51:15.8759420Z Updating files:  85% (13799/16233)
+2026-11-27T04:51:15.9296950Z Updating files:  86% (13961/16233)
+2026-11-27T04:51:15.9541590Z Updating files:  87% (14123/16233)
+2026-11-27T04:51:15.9882240Z Updating files:  88% (14286/16233)
+2026-11-27T04:51:16.0255100Z Updating files:  89% (14448/16233)
+2026-11-27T04:51:16.0535980Z Updating files:  90% (14610/16233)
+2026-11-27T04:51:16.1009100Z Updating files:  91% (14773/16233)
+2026-11-27T04:51:16.1433070Z Updating files:  92% (14935/16233)
+2026-11-27T04:51:16.1788350Z Updating files:  93% (15097/16233)
+2026-11-27T04:51:16.2102290Z Updating files:  94% (15260/16233)
+2026-11-27T04:51:16.2600770Z Updating files:  95% (15422/16233)
+2026-11-27T04:51:16.3059650Z Updating files:  96% (15584/16233)
+2026-11-27T04:51:16.3459850Z Updating files:  97% (15747/16233)
+2026-11-27T04:51:16.3661870Z Updating files:  98% (15909/16233)
+2026-11-27T04:51:16.4369160Z Updating files:  99% (16071/16233)
+2026-11-27T04:51:16.4374970Z Updating files: 100% (16233/16233)
+2026-11-27T04:51:16.4394230Z Updating files: 100% (16233/16233), done.
+2026-11-27T04:51:16.4726340Z ##[group]Run python3 -m research.prepare_mobile
+2026-11-27T04:51:16.4726720Z [36;1mpython3 -m research.prepare_mobile[0m
+2026-11-27T04:51:16.4778180Z shell: /bin/bash -e {0}
+2026-11-27T04:51:16.4778400Z ##[endgroup]
+2026-11-27T04:51:25.6558380Z model.onnx: verified (470268510 bytes)
+2026-11-27T04:51:25.6559300Z tokenizer.json: verified (17082730 bytes)
+2026-11-27T04:51:25.6777270Z ##[group]Run xcodebuild -version
+2026-11-27T04:51:25.6777740Z [36;1mxcodebuild -version[0m
+2026-11-27T04:51:25.6778190Z [36;1mflutter config --no-analytics --no-enable-swift-package-manager[0m
+2026-11-27T04:51:25.6778580Z [36;1mflutter pub get --enforce-lockfile[0m
+2026-11-27T04:51:25.6778990Z [36;1mflutter analyze --no-pub[0m
+2026-11-27T04:51:25.6779290Z [36;1mflutter build ios --release --no-codesign --no-pub[0m
+2026-11-27T04:51:25.6779820Z [36;1mpython3 tool/check_app.py build/ios/iphoneos/Runner.app[0m
+2026-11-27T04:51:25.6827020Z shell: /bin/bash -e {0}
+2026-11-27T04:51:25.6827360Z ##[endgroup]
+2026-11-27T04:51:25.9669540Z Xcode 26.6
+2026-11-27T04:51:25.9779200Z Build version 17F113
+2026-11-27T04:51:26.1533620Z Downloading Darwin arm64 Dart SDK from Flutter engine 4d35714800b9266b6693a58e1225ecd7e9e45ed7...
+2026-11-27T04:51:26.1743050Z   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+2026-11-27T04:51:26.1744550Z                                  Dload  Upload   Total   Spent    Left  Speed
+2026-11-27T04:51:26.1745040Z 
+2026-11-27T04:51:26.5193950Z   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+2026-11-27T04:51:27.5189950Z   0  227M    0  121k    0     0   351k      0  0:11:01 --:--:--  0:11:01  351k
+2026-11-27T04:51:28.5327840Z  23  227M   23 52.7M    0     0  39.2M      0  0:00:05  0:00:01  0:00:04 39.2M
+2026-11-27T04:51:29.5200000Z  46  227M   46  106M    0     0  45.2M      0  0:00:05  0:00:02  0:00:03 45.2M
+2026-11-27T04:51:30.3902860Z  73  227M   73  167M    0     0  50.0M      0  0:00:04  0:00:03  0:00:01 50.0M
+2026-11-27T04:51:30.3908530Z 100  227M  100  227M    0     0  53.8M      0  0:00:04  0:00:04 --:--:-- 53.8M
+2026-11-27T04:51:36.8225070Z Building flutter tool...
+2026-11-27T04:51:36.9767690Z Resolving dependencies...
+2026-11-27T04:51:37.3678030Z Downloading packages...
+2026-11-27T04:51:39.7456180Z + _fe_analyzer_shared 107.0.0 (111.0.0 available)
+2026-11-27T04:51:39.7460990Z + analyzer 14.3.0 (14.7.0 available)
+2026-11-27T04:51:39.7461530Z + archive 3.6.1 (4.7.1 available)
+2026-11-27T04:51:39.7508510Z + args 2.7.0
+2026-11-27T04:51:39.7508760Z + async 2.13.1
+2026-11-27T04:51:39.7509130Z + boolean_selector 2.1.2
+2026-11-27T04:51:39.7509540Z + browser_launcher 1.2.0
+2026-11-27T04:51:39.7509910Z + built_collection 5.1.2 (6.0.0 available)
+2026-11-27T04:51:39.7510230Z + built_value 8.13.0
+2026-11-27T04:51:39.7510530Z + checked_yaml 2.0.4
+2026-11-27T04:51:39.7510850Z + cli_config 0.2.0
+2026-11-27T04:51:39.7511160Z + clock 1.1.3
+2026-11-27T04:51:39.7511650Z + code_assets 2.1.0 (2.2.0 available)
+2026-11-27T04:51:39.7512060Z + code_builder 4.12.0 (4.13.0 available)
+2026-11-27T04:51:39.7512340Z + collection 1.19.1
+2026-11-27T04:51:39.7512660Z + completion 1.0.2
+2026-11-27T04:51:39.7512890Z + convert 3.1.2
+2026-11-27T04:51:39.7513170Z + coverage 1.15.1 (1.16.2 available)
+2026-11-27T04:51:39.7513610Z + crypto 3.0.7 (3.0.8 available)
+2026-11-27T04:51:39.7513950Z + csslib 1.0.2
+2026-11-27T04:51:39.7514470Z + dap 1.4.0
+2026-11-27T04:51:39.7514780Z + dap_adapters 1.1.0
+2026-11-27T04:51:39.7515030Z + dart_service_protocol_shared 0.0.3
+2026-11-27T04:51:39.7515350Z + dart_style 3.1.13 (3.1.14 available)
+2026-11-27T04:51:39.7515660Z + data_assets 0.20.0
+2026-11-27T04:51:39.7515900Z + dds 5.4.0
+2026-11-27T04:51:39.7516330Z + dds_service_extensions 2.1.0
+2026-11-27T04:51:39.7516650Z + devtools_shared 13.1.0 (14.0.0 available)
+2026-11-27T04:51:39.7516980Z + dtd 4.0.0
+2026-11-27T04:51:39.7517170Z + dwds 27.2.1
+2026-11-27T04:51:39.7517480Z + extension_discovery 2.1.0 (2.1.1 available)
+2026-11-27T04:51:39.7517820Z + fake_async 1.3.3
+2026-11-27T04:51:39.7518970Z + ffi 2.2.0
+2026-11-27T04:51:39.7519440Z + file 7.0.1
+2026-11-27T04:51:39.7519950Z + file_testing 3.1.0
+2026-11-27T04:51:39.7520240Z + fixnum 1.1.1
+2026-11-27T04:51:39.7520510Z + flutter_template_images 5.0.0 (5.0.1 available)
+2026-11-27T04:51:39.7521300Z + frontend_server_client 4.0.0 (4.2.0 available)
+2026-11-27T04:51:39.7521600Z + glob 2.2.0
+2026-11-27T04:51:39.7522520Z + graphs 2.3.2
+2026-11-27T04:51:39.7522740Z + hooks 2.2.0
+2026-11-27T04:51:39.7523000Z + hooks_runner 1.6.4 (2.0.0 available)
+2026-11-27T04:51:39.7523240Z + html 0.15.7
+2026-11-27T04:51:39.7523460Z + http 1.6.0
+2026-11-27T04:51:39.7523690Z + http_multi_server 3.2.2 (3.2.3 available)
+2026-11-27T04:51:39.7524020Z + http_parser 4.1.2
+2026-11-27T04:51:39.7524270Z + intl 0.20.3
+2026-11-27T04:51:39.7524480Z + io 1.1.0
+2026-11-27T04:51:39.7524900Z + json_annotation 4.12.0
+2026-11-27T04:51:39.7525120Z + json_rpc_2 4.1.0
+2026-11-27T04:51:39.7525380Z + logging 1.3.0
+2026-11-27T04:51:39.7525570Z + matcher 0.12.20
+2026-11-27T04:51:39.7525840Z + meta 1.19.0
+2026-11-27T04:51:39.7526040Z + mime 2.1.0
+2026-11-27T04:51:39.7526360Z + multicast_dns 0.3.3+1
+2026-11-27T04:51:39.7526640Z + mustache_template 2.0.6
+2026-11-27T04:51:39.7526990Z + native_stack_traces 0.6.1 (0.7.1 available)
+2026-11-27T04:51:39.7527390Z + node_preamble 2.0.2
+2026-11-27T04:51:39.7527640Z + package_config 2.2.0 (3.0.0 available)
+2026-11-27T04:51:39.7528010Z + path 1.9.1
+2026-11-27T04:51:39.7528240Z + petitparser 7.1.0
+2026-11-27T04:51:39.7528560Z + platform 3.2.0
+2026-11-27T04:51:39.7528760Z + pool 1.5.3
+2026-11-27T04:51:39.7529070Z + process 5.0.6
+2026-11-27T04:51:39.7529310Z + pub_semver 2.2.1
+2026-11-27T04:51:39.7529570Z + pubspec_parse 1.6.0 (1.7.0 available)
+2026-11-27T04:51:39.7530130Z + record_use 1.1.1
+2026-11-27T04:51:39.7530540Z + shelf 1.4.2 (1.4.3 available)
+2026-11-27T04:51:39.7530860Z + shelf_packages_handler 3.0.2
+2026-11-27T04:51:39.7531250Z + shelf_proxy 1.0.5
+2026-11-27T04:51:39.7531570Z + shelf_static 1.1.3 (1.2.0 available)
+2026-11-27T04:51:39.7531990Z + shelf_web_socket 3.0.0
+2026-11-27T04:51:39.7532350Z + source_map_stack_trace 2.1.2
+2026-11-27T04:51:39.7532640Z + source_maps 0.10.14
+2026-11-27T04:51:39.7532930Z + source_span 1.10.2
+2026-11-27T04:51:39.7533190Z + sprintf 7.0.0
+2026-11-27T04:51:39.7533410Z + sse 4.2.0
+2026-11-27T04:51:39.7533750Z + stack_trace 1.12.2
+2026-11-27T04:51:39.7534040Z + standard_message_codec 0.0.1+5
+2026-11-27T04:51:39.7534390Z + stream_channel 2.1.4
+2026-11-27T04:51:39.7535090Z + string_scanner 1.4.1
+2026-11-27T04:51:39.7535340Z + sync_http 0.3.1
+2026-11-27T04:51:39.7535670Z + term_glyph 1.2.2
+2026-11-27T04:51:39.7535940Z + test 1.32.0 (1.33.0 available)
+2026-11-27T04:51:39.7536230Z + test_api 0.7.14 (0.7.15 available)
+2026-11-27T04:51:39.7536490Z + test_core 0.6.20 (0.6.21 available)
+2026-11-27T04:51:39.7536900Z + typed_data 1.4.0
+2026-11-27T04:51:39.7537190Z + unified_analytics 8.0.18 (8.4.0 available)
+2026-11-27T04:51:39.7537600Z + uuid 4.6.0
+2026-11-27T04:51:39.7537840Z + vm_service 15.3.0 (15.4.0 available)
+2026-11-27T04:51:39.7538210Z + vm_service_interface 2.0.1
+2026-11-27T04:51:39.7538950Z + vm_snapshot_analysis 0.7.6
+2026-11-27T04:51:39.7539720Z + watcher 1.2.1
+2026-11-27T04:51:39.7540030Z + web 1.1.1 (1.1.2 available)
+2026-11-27T04:51:39.7540300Z + web_socket 1.0.1
+2026-11-27T04:51:39.7541440Z + web_socket_channel 3.0.3
+2026-11-27T04:51:39.7541730Z + webdriver 3.2.0
+2026-11-27T04:51:39.7542710Z + webkit_inspection_protocol 1.2.1
+2026-11-27T04:51:39.7543340Z + xml 6.6.1 (7.1.0 available)
+2026-11-27T04:51:39.7544730Z + yaml 3.1.4
+2026-11-27T04:51:39.7546070Z + yaml_edit 2.2.4
+2026-11-27T04:51:39.7547570Z Changed 101 dependencies!
+2026-11-27T04:51:39.7548330Z 27 packages have newer versions incompatible with dependency constraints.
+2026-11-27T04:51:39.7549200Z Try `dart pub outdated` for more information.
+2026-11-27T04:51:56.8164610Z Analytics reporting disabled.
+2026-11-27T04:51:56.8166410Z Setting "enable-swift-package-manager" value to "false".
+2026-11-27T04:51:56.8174770Z 
+2026-11-27T04:51:56.8175240Z Enabling Swift Package Manager will be required in a future version of Flutter.
+2026-11-27T04:51:56.8176790Z You may need to restart any open editors for them to read new settings.
+2026-11-27T04:51:57.8622050Z [1/10] Material Fonts                                              476ms
+2026-11-27T04:51:58.2896190Z [2/10] Gradle Wrapper                                               47ms
+2026-11-27T04:51:58.2999330Z [3/10] Flutter SDK
+2026-11-27T04:51:58.3942270Z   ├─ [1/5] sky_engine                                               90ms
+2026-11-27T04:51:58.6978220Z   ├─ [2/5] flutter_gpu                                              49ms
+2026-11-27T04:51:58.9320500Z   ├─ [3/5] flutter_patched_sdk                                     159ms
+2026-11-27T04:51:59.2652090Z   ├─ [4/5] flutter_patched_sdk_product                             135ms
+2026-11-27T04:52:00.6042380Z   └─ [5/5] darwin-arm64                                          1,088ms
+2026-11-27T04:52:02.5175240Z [4/10] iOS USB Artifact: libimobiledevice                           56ms
+2026-11-27T04:52:02.6499250Z [5/10] iOS USB Artifact: libusbmuxd                                 49ms
+2026-11-27T04:52:02.7543620Z [6/10] iOS USB Artifact: libplist                                   50ms
+2026-11-27T04:52:02.9303710Z [7/10] iOS USB Artifact: openssl                                   142ms
+2026-11-27T04:52:03.1711760Z [8/10] iOS USB Artifact: libimobiledeviceglue                       49ms
+2026-11-27T04:52:03.2623990Z [9/10] iOS USB Artifact: ios-deploy                                 50ms
+2026-11-27T04:52:03.3989110Z [10/10] darwin-arm64/font-subset                                    72ms
+2026-11-27T04:52:03.6286420Z Resolving dependencies...
+2026-11-27T04:52:03.9706780Z Downloading packages...
+2026-11-27T04:52:06.3184330Z   crypto 3.0.7 (3.0.8 available)
+2026-11-27T04:52:06.3184860Z   material_color_utilities 0.13.0 (0.13.1 available)
+2026-11-27T04:52:06.3185350Z   test_api 0.7.14 (0.7.15 available)
+2026-11-27T04:52:06.3185770Z Got dependencies!
+2026-11-27T04:52:06.3186250Z 3 packages have newer versions incompatible with dependency constraints.
+2026-11-27T04:52:06.3186770Z Try `flutter pub outdated` for more information.
+2026-11-27T04:52:16.4339480Z Analyzing mobile...                                             
+2026-11-27T04:52:16.4455780Z No issues found! (ran in 8.9s)
+2026-11-27T04:52:16.9969200Z [1/1] iOS SDK
+2026-11-27T04:52:19.9710200Z   ├─ [1/3] ios                                                   2,971ms
+2026-11-27T04:52:25.4536640Z   ├─ [2/3] ios-profile                                           1,615ms
+2026-11-27T04:52:31.6680650Z   └─ [3/3] ios-release                                           2,810ms
+2026-11-27T04:52:37.8838730Z Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+2026-11-27T04:52:53.6732840Z Building app.asktheuniverse.universeLab for device (ios-release)...
+2026-11-27T04:52:53.7423790Z Swift Package Manager is currently disabled. Enabling Swift Package Manager will be required in a future version of Flutter. To re-enable it, run "flutter config --enable-swift-package-manager"
+2026-11-27T04:52:53.7662760Z The following plugins do not support Swift Package Manager for ios:
+2026-11-27T04:52:53.7670690Z   - onnxruntime_v2
+2026-11-27T04:52:53.7772050Z This will become an error in a future version of Flutter. Please contact the plugin maintainers to request Swift Package Manager adoption.
+2026-11-27T04:53:04.6526490Z Running pod install...                                              8.7s
+2026-11-27T04:54:30.1325840Z Running Xcode build...                                          
+2026-11-27T04:54:30.1340970Z Xcode build done.                                           85.5s
+2026-11-27T04:54:35.2729180Z ✓ Built build/ios/iphoneos/Runner.app (548.6MB)
+2026-11-27T04:54:36.6569590Z model.onnx: verified in Runner.app
+2026-11-27T04:54:36.6571220Z tokenizer.json: verified in Runner.app
+2026-11-27T04:54:36.6572090Z head.json: verified in Runner.app
+2026-11-27T04:54:36.6573490Z App bytes: 548635102
+2026-11-27T04:54:36.6574570Z Local speech/motion permission descriptions RU/EN and closed notification flag: verified
+2026-11-27T04:54:36.6576010Z Six native bridge channels: verified
+2026-11-27T04:54:36.6576950Z Bundled provisional narration RU/EN, timing and text: verified
+2026-11-27T04:54:36.6578700Z Seven static Cormorant Garamond/Literata faces and both SIL OFL licenses: verified
+2026-11-27T04:54:36.6582700Z Four original provisional ambient loops, default off: verified
+2026-11-27T04:54:36.6585050Z Three short neutral touch/transform/reveal cues: verified
+2026-11-27T04:54:36.6586450Z Three compiled AURA runtime shaders and version 0.6.1+11: verified
+2026-11-27T04:54:36.6959910Z ##[group]Run mkdir -p "$RUNNER_TEMP/ipa/Payload"
+2026-11-27T04:54:36.6960510Z [36;1mmkdir -p "$RUNNER_TEMP/ipa/Payload"[0m
+2026-11-27T04:54:36.6961130Z [36;1mditto build/ios/iphoneos/Runner.app "$RUNNER_TEMP/ipa/Payload/Runner.app"[0m
+2026-11-27T04:54:36.6962060Z [36;1mditto -c -k --keepParent "$RUNNER_TEMP/ipa/Payload" "$RUNNER_TEMP/ipa/Ask-the-Universe-stage3.ipa"[0m
+2026-11-27T04:54:36.6963140Z [36;1mprintf '%s\n' "$GITHUB_SHA" > "$RUNNER_TEMP/ipa/SOURCE_COMMIT.txt"[0m
+2026-11-27T04:54:36.8726750Z shell: /bin/bash -e {0}
+2026-11-27T04:54:36.8727210Z ##[endgroup]
+2026-11-27T04:55:44.5416410Z ##[group]Run shasum -a 256 Ask-the-Universe-stage3.ipa > SHA256SUMS
+2026-11-27T04:55:44.5417010Z [36;1mshasum -a 256 Ask-the-Universe-stage3.ipa > SHA256SUMS[0m
+2026-11-27T04:55:44.6001330Z shell: /bin/bash -e {0}
+2026-11-27T04:55:44.6003050Z ##[endgroup]
+2026-11-27T04:55:46.6031250Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-11-27T04:55:46.6032470Z with:
+2026-11-27T04:55:46.6033100Z   name: Ask-the-Universe-stage3-iphone
+2026-11-27T04:55:46.6034610Z   path: /Users/runner/work/_temp/ipa/Ask-the-Universe-stage3.ipa
+/Users/runner/work/_temp/ipa/SHA256SUMS
+/Users/runner/work/_temp/ipa/SOURCE_COMMIT.txt
+
+2026-11-27T04:55:46.6036140Z   if-no-files-found: error
+2026-11-27T04:55:46.6036720Z   compression-level: 0
+2026-11-27T04:55:46.6037370Z   retention-days: 1
+2026-11-27T04:55:46.6037880Z   overwrite: false
+2026-11-27T04:55:46.6038440Z   include-hidden-files: false
+2026-11-27T04:55:46.6039010Z ##[endgroup]
+2026-11-27T04:55:47.1625040Z (node:19728) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-27T04:55:47.1627740Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-27T04:55:47.1701740Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-11-27T04:55:47.1707420Z The least common ancestor is /Users/runner/work/_temp/ipa. This will be the root directory of the artifact
+2026-11-27T04:55:47.1708250Z With the provided path, there will be 3 files uploaded
+2026-11-27T04:55:47.1709100Z Artifact name is valid!
+2026-11-27T04:55:47.1709450Z Root directory input is valid!
+2026-11-27T04:55:47.5225860Z Beginning upload of artifact content to blob storage
+2026-11-27T04:55:47.6200460Z (node:19728) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-27T04:55:48.1462470Z Uploaded bytes 8388608
+2026-11-27T04:55:48.1960610Z Uploaded bytes 16777216
+2026-11-27T04:55:48.2458420Z Uploaded bytes 25165824
+2026-11-27T04:55:48.3120860Z Uploaded bytes 33554432
+2026-11-27T04:55:48.3631930Z Uploaded bytes 41943040
+2026-11-27T04:55:48.4226190Z Uploaded bytes 50331648
+2026-11-27T04:55:48.5224290Z Uploaded bytes 58720256
+2026-11-27T04:55:48.5384400Z Uploaded bytes 67108864
+2026-11-27T04:55:48.5807320Z Uploaded bytes 75497472
+2026-11-27T04:55:48.6213360Z Uploaded bytes 83886080
+2026-11-27T04:55:48.7949110Z Uploaded bytes 92274688
+2026-11-27T04:55:48.8368680Z Uploaded bytes 100663296
+2026-11-27T04:55:48.8423520Z Uploaded bytes 109051904
+2026-11-27T04:55:48.8481070Z Uploaded bytes 117440512
+2026-11-27T04:55:49.1186960Z Uploaded bytes 125829120
+2026-11-27T04:55:49.2322360Z Uploaded bytes 134217728
+2026-11-27T04:55:49.2467110Z Uploaded bytes 142606336
+2026-11-27T04:55:49.2749030Z Uploaded bytes 150994944
+2026-11-27T04:55:49.3600240Z Uploaded bytes 159383552
+2026-11-27T04:55:49.4998820Z Uploaded bytes 167772160
+2026-11-27T04:55:49.5165340Z Uploaded bytes 176160768
+2026-11-27T04:55:49.5266740Z Uploaded bytes 184549376
+2026-11-27T04:55:49.5861310Z Uploaded bytes 192937984
+2026-11-27T04:55:49.8114520Z Uploaded bytes 201326592
+2026-11-27T04:55:49.8214050Z Uploaded bytes 209715200
+2026-11-27T04:55:49.8279630Z Uploaded bytes 218103808
+2026-11-27T04:55:49.8868130Z Uploaded bytes 226492416
+2026-11-27T04:55:50.1330600Z Uploaded bytes 234881024
+2026-11-27T04:55:50.1470510Z Uploaded bytes 243269632
+2026-11-27T04:55:50.1885690Z Uploaded bytes 251658240
+2026-11-27T04:55:50.2072790Z Uploaded bytes 260046848
+2026-11-27T04:55:50.3888540Z Uploaded bytes 268435456
+2026-11-27T04:55:50.3960240Z Uploaded bytes 276824064
+2026-11-27T04:55:50.4327470Z Uploaded bytes 285212672
+2026-11-27T04:55:50.4799920Z Uploaded bytes 293601280
+2026-11-27T04:55:50.6315890Z Uploaded bytes 301989888
+2026-11-27T04:55:50.7256810Z Uploaded bytes 304073956
+2026-11-27T04:55:50.7756280Z Finished uploading artifact content to blob storage!
+2026-11-27T04:55:50.7762660Z SHA256 digest of uploaded artifact zip is 10bd02ed843c27fc4a939f1f068fa3e742d7de3b3a2305ce718483bffac92956
+2026-11-27T04:55:50.7764660Z Finalizing artifact upload
+2026-11-27T04:55:51.1501270Z Artifact Ask-the-Universe-stage3-iphone.zip successfully finalized. Artifact ID 15173700262
+2026-11-27T04:55:51.1503330Z Artifact Ask-the-Universe-stage3-iphone has been successfully uploaded! Final size is 304073956 bytes. Artifact ID is 15173700262
+2026-11-27T04:55:51.1522710Z Artifact download URL: https://github.com/diMtiHH/diMti/actions/runs/45942281743/artifacts/15173700262
+2026-11-27T04:55:51.1929310Z Post job cleanup.
+2026-11-27T04:55:51.3592400Z [command]/opt/homebrew/bin/git version
+2026-11-27T04:55:51.3961500Z git version 2.56.1
+2026-11-27T04:55:51.3986020Z Copying '/Users/runner/.gitconfig' to '/Users/runner/work/_temp/0df9e839-a1f6-4f21-952b-264c534f9767/.gitconfig'
+2026-11-27T04:55:51.3994500Z Temporarily overriding HOME='/Users/runner/work/_temp/0df9e839-a1f6-4f21-952b-264c534f9767' before making global git config changes
+2026-11-27T04:55:51.3995460Z Adding repository directory to the temporary git global config as a safe directory
+2026-11-27T04:55:51.4000240Z [command]/opt/homebrew/bin/git config --global --add safe.directory /Users/runner/work/diMti/diMti
+2026-11-27T04:55:51.4161800Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-11-27T04:55:51.4236620Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-11-27T04:55:51.5429530Z [command]/opt/homebrew/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-11-27T04:55:51.5531160Z http.https://github.com/.extraheader
+2026-11-27T04:55:51.5835840Z [command]/opt/homebrew/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-11-27T04:55:51.5977750Z [command]/opt/homebrew/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-11-27T04:55:51.6835100Z Cleaning up orphan processes
+2026-11-27T04:55:52.1004170Z Terminate orphan process: pid (15620) (ibtoold)
+2026-11-27T04:55:52.4347520Z Terminate orphan process: pid (13537) (ibtoold)
+2026-11-27T04:55:52.4941120Z Terminate orphan process: pid (13530) (ibtoold)
+2026-11-27T04:55:53.1699620Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

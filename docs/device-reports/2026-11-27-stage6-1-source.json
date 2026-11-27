@@ -1,0 +1,449 @@
+{
+  "protocol": "stage6-1-source-verification-v1",
+  "date": "2026-11-27",
+  "repository": "diMtiHH/diMti",
+  "branch": "stage6-iphone",
+  "parent": "cc71426392b26348f81e2c4db6d71cf99a52399b",
+  "source_commit": "d5112768169956271a3d18fb4fb71652c76e8f5c",
+  "changed": 62,
+  "unchanged": 239,
+  "total": 301,
+  "sha": "3e3b3450b38aea082620df0317e64172bb0720bf",
+  "files": [
+    {
+      "path": ".github/workflows/stage3-ios.yml",
+      "bytes": 2945,
+      "git_blob": "07bb2ccc451470f076d44a44896e2308139fdfd8",
+      "sha256": "75e65722b6b9025b7de494b197524cb68d2f9699858331732dbe43a7d6dba904",
+      "binary": false
+    },
+    {
+      "path": ".github/workflows/stage3-native.yml",
+      "bytes": 3115,
+      "git_blob": "92ed656881ca0e7531f10a96e8dbe7e98d6a4da6",
+      "sha256": "5358fb3bd0d4009ab403eacd05c8dc622c3707e8904c05ade7ff8d39bc7a757e",
+      "binary": false
+    },
+    {
+      "path": "PROJECT_STATUS.md",
+      "bytes": 62584,
+      "git_blob": "95d79bbbbd5e74f5f7f42f725c381dbe9e48707f",
+      "sha256": "ba1ad92bcd74cc213825f22b3101b9fa5d05df086195c27672dbfb42fa56afad",
+      "binary": false
+    },
+    {
+      "path": "docs/STAGE_6.md",
+      "bytes": 19483,
+      "git_blob": "2569f318f5c67e370ccad10c288092cace23227a",
+      "sha256": "f659a4f3b2487a18aee1d4bd1e01ea58616f692ef76ca8fbedf058428ed49a71",
+      "binary": false
+    },
+    {
+      "path": "docs/STAGE_6_FEEDBACK_FIXES.md",
+      "bytes": 13106,
+      "git_blob": "c4849c7ade707113c56d5f6d67075e8a41d81e1f",
+      "sha256": "4732577375e8d4322ad30c6bd172f78025ff1bdb31530b1c6f20ea154821e5f3",
+      "binary": false
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-user-feedback.json",
+      "bytes": 7149,
+      "git_blob": "1365b716272ee1066846f9a4fc10f25a3ad4b16e",
+      "sha256": "4bf2634fc2248926a4652b909d44ed3d4890826e78fb5ae0a32d892d99bc482b",
+      "binary": false
+    },
+    {
+      "path": "mobile/assets/fonts/CormorantGaramond-Light.ttf",
+      "bytes": 773016,
+      "git_blob": "13466fff8b66db665ef4f03bb49bcf1678fdba7e",
+      "sha256": "9faf7cede1c059bf57fede38533fc18aa19846a171b88743826e7aa94970c25c",
+      "binary": true
+    },
+    {
+      "path": "mobile/assets/fonts/CormorantGaramond-Medium.ttf",
+      "bytes": 774332,
+      "git_blob": "7dd74a9ef9f1e321cb87c380f0aa6affff1f1b43",
+      "sha256": "1e077af6a5bf0c9ab147458e815c9ecc3a080bebd7872d7c018f5f4d340e2a6e",
+      "binary": true
+    },
+    {
+      "path": "mobile/assets/fonts/CormorantGaramond-OFL.txt",
+      "bytes": 4387,
+      "git_blob": "507d70f4565352dbfcf2dfc9b42eb092b57c0be8",
+      "sha256": "60700d351cac4650c51f3f9db318d2a420f8b45052dba2715eb5fec41f0f6956",
+      "binary": false
+    },
+    {
+      "path": "mobile/assets/fonts/CormorantGaramond-Regular.ttf",
+      "bytes": 773992,
+      "git_blob": "bf7576f88a4bd058fcfdf5838b4227d9fdfb2801",
+      "sha256": "67a9da018f4cae694840d9e962215e7e5fca669f6c5de6ab9e675da53ec1e400",
+      "binary": true
+    },
+    {
+      "path": "mobile/assets/fonts/CormorantGaramond-SemiBold.ttf",
+      "bytes": 774040,
+      "git_blob": "29ea5c73fe042b551ee57a62ab5b0c64f9f1b89d",
+      "sha256": "b19592bc76e045bba4278a12028562d4f94855b4e12fd62c0dbd325bd1b63666",
+      "binary": true
+    },
+    {
+      "path": "mobile/assets/fonts/CormorantGaramond-Variable.source.ttf",
+      "bytes": 1195560,
+      "git_blob": "d992a83ce525c330fad3a19087746bcb2dc038ee",
+      "sha256": "b20b7d9626dd956b2c5e558692ad328b1f19e3275e2782db4fa07670d83f35e0",
+      "binary": true
+    },
+    {
+      "path": "mobile/assets/fonts/CormorantGaramond-upstream-METADATA.pb",
+      "bytes": 1426,
+      "git_blob": "f013f7293318fe0b84fd8f72c2ec7a1c3e402966",
+      "sha256": "faa16a5e79613ca7cadd599ada1f4cf6891f3cb6731631fbed2a0b18a342e556",
+      "binary": false
+    },
+    {
+      "path": "mobile/assets/fonts/Literata-Medium.ttf",
+      "bytes": 270984,
+      "git_blob": "fddf5f1f7e0b29adf8ea02f414e30b072d8f8f70",
+      "sha256": "48a52bbd303b258aba7f3e14ec1571d37cdfa9260712e1a4cf34c30b9236f9b7",
+      "binary": true
+    },
+    {
+      "path": "mobile/assets/fonts/Literata-OFL.txt",
+      "bytes": 4389,
+      "git_blob": "9d3b4e3b1e9068fbda799f57833ff831d05cc271",
+      "sha256": "8742963604cd89dc81437811a850018fc03b2bfad686d7422c8235967c87614e",
+      "binary": false
+    },
+    {
+      "path": "mobile/assets/fonts/Literata-Regular.ttf",
+      "bytes": 270780,
+      "git_blob": "b2fd130b9758c980909f47871e3f74a351cbbe6c",
+      "sha256": "c944f14b1be128d5136a7434546155856a9590417f276ef6f6bd03aa33c45222",
+      "binary": true
+    },
+    {
+      "path": "mobile/assets/fonts/Literata-SemiBold.ttf",
+      "bytes": 271132,
+      "git_blob": "97ddfc6969e1b5cf41e00199b5ffd4d33e5150e2",
+      "sha256": "f78c3124f410f9628f61769bf736c65dc1e3d1569c2fa6d1e6be95c0b07f4fc4",
+      "binary": true
+    },
+    {
+      "path": "mobile/assets/fonts/Literata-Variable.source.ttf",
+      "bytes": 955132,
+      "git_blob": "0a81b4984a4a4eb101e0ddc28babc85bb137efef",
+      "sha256": "b41138c9373112f32abb589cc22e8674b06ed4048b0c513be922bdd26f274440",
+      "binary": true
+    },
+    {
+      "path": "mobile/assets/fonts/Literata-upstream-METADATA.pb",
+      "bytes": 1408,
+      "git_blob": "66ac59e0dc32de37c917cbd0bfb085f8349da472",
+      "sha256": "8dbc5c48f254be32c879f006391cb5f6781941beb1a643c13acf66fa989b6a83",
+      "binary": false
+    },
+    {
+      "path": "mobile/assets/fonts/README.md",
+      "bytes": 1560,
+      "git_blob": "24ccb5278f1b5f1f7be19d908ae2c9ef7ba45853",
+      "sha256": "5ae6e0b2ce02b6beb2af0bdd1fc3acddd62218730bcf805e91e4d64aa3cf38de",
+      "binary": false
+    },
+    {
+      "path": "mobile/assets/fonts/sources.json",
+      "bytes": 4403,
+      "git_blob": "671e2af7b5400b5d7ff11a61a292bb30fd41163a",
+      "sha256": "ae648f1177299dbf7f0c301869ee313ae136fbe2f568a9dcf6d07618e253870d",
+      "binary": false
+    },
+    {
+      "path": "mobile/integration_test/ios_aura_test.dart",
+      "bytes": 6218,
+      "git_blob": "c00c5ee8b234b106f370abd3895b74288d40bcac",
+      "sha256": "73fef8a9e18fb60b31322f86e381799cdfa9b2e182dcae47f1d9d44e92d25786",
+      "binary": false
+    },
+    {
+      "path": "mobile/ios/Runner.xcodeproj/project.pbxproj",
+      "bytes": 33957,
+      "git_blob": "7d9f91a066924dc280826d7c9f4ac4ccbc5aef75",
+      "sha256": "436bfbc13eacbd809ea40de5a2efa11cdde3e811e5496f4b3df68ba4a80e974e",
+      "binary": false
+    },
+    {
+      "path": "mobile/ios/Runner/AppDelegate.swift",
+      "bytes": 1536,
+      "git_blob": "75a96a66ece3493d1331794a4a0d33abde2d3f72",
+      "sha256": "ed53d845f4ce1f10fbebfb3a0ece1f7ebeb9df78c17d225337a548178f8a7a48",
+      "binary": false
+    },
+    {
+      "path": "mobile/ios/Runner/Info.plist",
+      "bytes": 2824,
+      "git_blob": "703232a1d7bbf33f6f546070ab00e7b3d71a103c",
+      "sha256": "96dc8feb7d8d82ed128efcd9a8dfc85e3fe191b2456d8958b0485236a175d53d",
+      "binary": false
+    },
+    {
+      "path": "mobile/ios/Runner/InteractionBridge.swift",
+      "bytes": 7343,
+      "git_blob": "9cf25138ba4403f60318c9498e491360c43ee8c6",
+      "sha256": "04ea5d060265083520dc401d92a861d7277a198dcc184721a10d49759a86d0bb",
+      "binary": false
+    },
+    {
+      "path": "mobile/ios/Runner/InteractionPolicy.swift",
+      "bytes": 1631,
+      "git_blob": "0681a97248958325eb333d9ce4948b1ebc7d5d30",
+      "sha256": "fc35cb2c212cf98f58fd4056c4cb02648ae633b1a7cbe29c9d4c97c33a0f679b",
+      "binary": false
+    },
+    {
+      "path": "mobile/ios/Runner/VoiceBridge.swift",
+      "bytes": 14594,
+      "git_blob": "bbdcd1c444832e65d7473d5cf9464d9fc2b418f9",
+      "sha256": "12bfa0d3e75fa2018d03062fce9471c4253a27bb81282c752f7b3589ee21f8d4",
+      "binary": false
+    },
+    {
+      "path": "mobile/ios/Runner/VoicePolicy.swift",
+      "bytes": 5100,
+      "git_blob": "1af764ea981dc1e28bcb0f1d55475685e9d14358",
+      "sha256": "d63dba866a099ba77935a145f4973ebd3a1da657102aed3776059d3e79408f0b",
+      "binary": false
+    },
+    {
+      "path": "mobile/ios/Runner/en.lproj/InfoPlist.strings",
+      "bytes": 378,
+      "git_blob": "56cdb4d296759f5dd7c801d045f62340757249c3",
+      "sha256": "b65c9b99affded5cb8799a6d76b566412c8597b72be012246de521ba598b12d1",
+      "binary": false
+    },
+    {
+      "path": "mobile/ios/Runner/ru.lproj/InfoPlist.strings",
+      "bytes": 622,
+      "git_blob": "d708903ad97f1a8c636c9aad6c46ae6206888fe3",
+      "sha256": "ee5df27f2a2116ccbc123f80bb968b3cd466feddbbd9d0555eb67cb7a66df206",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/ambient_audio.dart",
+      "bytes": 7151,
+      "git_blob": "f064d8cece13812ced3c5e6814295f09713df64b",
+      "sha256": "53ded4bf3f743acdaf7030af88f1cc09e202550082c71522203f7c28b6a9bf4d",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/app_shell.dart",
+      "bytes": 41327,
+      "git_blob": "60d828f3b47710cdaff569fde4a636fb62367555",
+      "sha256": "731f467a8137807af103e1879c669b2e4b99c486fed106bf59e9347f8a995940",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/aura_answer_page.dart",
+      "bytes": 14473,
+      "git_blob": "dd9c717b10cf9a6f3b0ae5e105a005addace3815",
+      "sha256": "80c92dda8853ab97e473067ee7e01bac363f978f1fa2d6f40623492ef94141fa",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/aura_haptics.dart",
+      "bytes": 2573,
+      "git_blob": "7e57b5f8afbe957974efa74e2cf4734736de06ef",
+      "sha256": "69d719f244deffed02e588b9c02832168e583b55d27e53c3d2f7ebe4c23f96d1",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/aura_motion.dart",
+      "bytes": 2341,
+      "git_blob": "7fbb06f05769386016b326445290412357968034",
+      "sha256": "55ed91623a5cd7f5c9de2a4ce0aa44ef55de4f6b35962b1a2ed6cce1f0c57d17",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/aura_renderer.dart",
+      "bytes": 32897,
+      "git_blob": "fa96f60e7461fd6ce020a89439a987e88050dd51",
+      "sha256": "3eb7c66b90043c5bedf29d84de756809a3ce53891d6c78d5702eda7452d795a7",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/cosmic_theme.dart",
+      "bytes": 6618,
+      "git_blob": "8ef49eeeeb7c113f943b99d1b2a4eb5af82f5db0",
+      "sha256": "aac661bdf4ec2691b6a782890975aa0483aed097c323e149133ad118dcb1f91d",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/personalization.dart",
+      "bytes": 15064,
+      "git_blob": "d038ab99031b852df49bd0ce8ca0b667f54b3c20",
+      "sha256": "7ade953832e6790d34d087c775b08786449a4a4647e689767a09849f02ecbf26",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/session_page.dart",
+      "bytes": 57249,
+      "git_blob": "3c05e773eb7767afb456fbded1ce9c0ac482712e",
+      "sha256": "1afc8e86264fb95bee4a9eb109fa8b6e6a884647399793e6d3bc289e6d1f3e2d",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/universe_startup.dart",
+      "bytes": 5783,
+      "git_blob": "35d1044c2767bb59580dfc8b61ccb060eb53b078",
+      "sha256": "3c353df440fbd9ebed1d0254c4b7cf2b5cd0b2a1def4ab88c9edc40515e553cc",
+      "binary": false
+    },
+    {
+      "path": "mobile/lib/voice_input.dart",
+      "bytes": 12032,
+      "git_blob": "7ff3502e1cf2f98779b5ce87dd503fb7cb0ea6d4",
+      "sha256": "3d57b42495269faffa477ab7e541c6f28dce55724be493de7027aa9c098b9254",
+      "binary": false
+    },
+    {
+      "path": "mobile/pubspec.yaml",
+      "bytes": 1534,
+      "git_blob": "0a10729975506f2ada7598a783aaf9a7ea807ae6",
+      "sha256": "3387e3e8ef8bef88753b1d70e070e70a9ddec395c7cbbbe62cf03bf23991a01b",
+      "binary": false
+    },
+    {
+      "path": "mobile/shaders/aura_environment.frag",
+      "bytes": 4964,
+      "git_blob": "21b35f39ec29437697b43b0b16ede748deee96c0",
+      "sha256": "5b2dfccd6b2caa287e3732630fa2cfb0a2077f340a5e26fe967b058c92c7f86c",
+      "binary": false
+    },
+    {
+      "path": "mobile/shaders/aura_matter.frag",
+      "bytes": 2258,
+      "git_blob": "4d343c05aa7508627e304561fd6be7df292961a8",
+      "sha256": "c8f7374738445c4b7f68e68503dd47b9de7fabaaddaa528ae765f44d8e0364ca",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/aura_answer_visual_test.dart",
+      "bytes": 12950,
+      "git_blob": "669513c0b0a53f824ec1f32dbe4acd8ee8801794",
+      "sha256": "4e43cb7047139442adb0a3c52962054f63f8af9d790a0e8b71683a3e0f68502d",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/aura_interaction_services_test.dart",
+      "bytes": 6648,
+      "git_blob": "ebb5d110b9fb741a8e2b9f378c0ed4f9fb072455",
+      "sha256": "acea7989494473f2f3938814c5baf48163d4c13f18a93a0419f506916abf90ac",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/aura_renderer_test.dart",
+      "bytes": 18677,
+      "git_blob": "b99b309eb68d05aa494cb4177738b86d55618664",
+      "sha256": "5aa9063b42dc2c48fc045e8787d69cfd41db1ae6b4adf54ec4c89a44d2393585",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/aura_session_test.dart",
+      "bytes": 23031,
+      "git_blob": "f14ef37e401c706b9ddc7c8f48abf7f2604c2ce1",
+      "sha256": "411a474c01a87946eab65e3e25e02c61dabec560345a2e278d89966a582a8ad8",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/aura_shell_test.dart",
+      "bytes": 13818,
+      "git_blob": "ea339205320c8079a3c951cf6aab7c7ccfb7dc11",
+      "sha256": "26a1923005246bd91932ccd2374cd03f60f25189514ecbdb1e4af869c7197edf",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/aura_ui_test.dart",
+      "bytes": 3697,
+      "git_blob": "7590c3d6938944ff59fbe8d5cd5fdab692bd566c",
+      "sha256": "ec76274272763f19361a16993f644e5165a42f4adf62743f8b8440977ddd3700",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/onboarding_page_test.dart",
+      "bytes": 28751,
+      "git_blob": "cdbf8cac6695992eb4101644eb3431dc1a407209",
+      "sha256": "a560dd8e7659cae6965873cc05e7fba8fee083caca7aa5e191a384e64e2ea1b3",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/personalization_haptics_test.dart",
+      "bytes": 4594,
+      "git_blob": "7e2fe370f0d71869a5ba86e0e96bfcdd786de2cf",
+      "sha256": "08d32797edfef9a160104b76dd8a09cf2319eac86c4b847ce2f216ddd2576adf",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/universe_startup_test.dart",
+      "bytes": 2441,
+      "git_blob": "aad7d49fec8b2b4a3daf170c7dd0fac61151ee5b",
+      "sha256": "c365a89c5509ed07961c0980c769b76f4482af941dd506b549adbf9f1eefa17e",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/voice_input_test.dart",
+      "bytes": 20260,
+      "git_blob": "35844356e9ca8e007db6136f52a1a1fd29f94e57",
+      "sha256": "982e4a36b04551ca263a1040320895ac18c67a54e5a01d9eb81529e3444b1c3c",
+      "binary": false
+    },
+    {
+      "path": "mobile/test/voice_page_test.dart",
+      "bytes": 16908,
+      "git_blob": "a4d222a698e248d010f54d648958dd49f1a05286",
+      "sha256": "35bedf0d70f626e33265667f39b89aecb32f4f998256092e1d183719a864fd4f",
+      "binary": false
+    },
+    {
+      "path": "mobile/tool/NativeInteractionTests.swift",
+      "bytes": 3119,
+      "git_blob": "d0ac06279ba31415ce8425113cf9b64f93aa9b41",
+      "sha256": "35dc44eddc1ed576d7c01522e8beb7022679628c1c74f5857b4be102e938be15",
+      "binary": false
+    },
+    {
+      "path": "mobile/tool/NativeVoiceTests.swift",
+      "bytes": 9433,
+      "git_blob": "3a4ce51532ea7608f704758ac84304d34fe60407",
+      "sha256": "5ac7cda7b1c550f616661e9766eec300da10fb1fc293bb1030ccc8c2d8689366",
+      "binary": false
+    },
+    {
+      "path": "mobile/tool/check_app.py",
+      "bytes": 7993,
+      "git_blob": "cc13c65c1f6b9dba3796ae175cab088b363f1a6e",
+      "sha256": "e8d928fe240d2ace90711b875e7e5258c42299997b57f3589cad751c73515cc2",
+      "binary": false
+    },
+    {
+      "path": "mobile/tool/prepare_cosmic_fonts.py",
+      "bytes": 4847,
+      "git_blob": "a2a6d76ab7cad66c04adb22d3c3e28246475d6fa",
+      "sha256": "04363bb2fe232e83775939923909c1cf89df175952f45da7afd43e2c77250bf2",
+      "binary": false
+    },
+    {
+      "path": "mobile/tool/run_native_interaction.sh",
+      "bytes": 276,
+      "git_blob": "fcb4d108345561f1878dcc6b0bc1f781ada532d7",
+      "sha256": "8700c14e8b522ea39591c428cc3b50cc76d6b41270a2b4811c4098a3a2f6c189",
+      "binary": false
+    },
+    {
+      "path": "mobile/tool/test_aura_assets.py",
+      "bytes": 7124,
+      "git_blob": "6b8fc9e32b24abb4cca60de5fc2fec153fdaafd1",
+      "sha256": "f1e72694f1435fb07d76e1b1e3cc43bfd99cce3bfad52ca6605faf2b80f033bf",
+      "binary": false
+    }
+  ],
+  "verification": "Every changed file matched the Git blob SHA; all remaining parent blobs preserved. No app source mutations after submission."
+}
