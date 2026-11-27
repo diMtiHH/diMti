@@ -1,0 +1,138 @@
+2026-11-27T02:30:52.2770320Z Complete job name: iOS XCTest and native checks
+2026-11-27T02:31:24.5783160Z PASS 1: commit token before creating kernel marker
+2026-11-27T02:31:24.5786320Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-27T02:31:24.5794880Z PASS 3: simulated reboot rotates token
+2026-11-27T02:31:24.5798580Z PASS 4: failed write recovery
+2026-11-27T02:31:24.5799320Z PASS 5: ambiguous committed write recovery
+2026-11-27T02:31:24.5801240Z PASS 6: crash between persisted token and kernel creation
+2026-11-27T02:31:24.5803440Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-27T02:31:24.5815770Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-27T02:31:24.5819140Z PASS 9: strict private marker validation
+2026-11-27T02:31:24.5824490Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-27T02:31:24.5827290Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-27T02:31:24.5832020Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-27T02:31:24.5834820Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-27T02:31:24.5837140Z PASS 14: notification callback success/error and duplicate completion
+2026-11-27T02:31:24.5839650Z PASS 15: missing OS callback releases the serial queue
+2026-11-27T02:31:24.5866940Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-27T02:31:24.5877020Z Native safety checks: 16/16 passed
+2026-11-27T02:31:30.4080590Z PASS storage 1: fresh preferences use the first supported system language with RU fallback and no write
+2026-11-27T02:31:30.4258150Z PASS storage 2: saved language and opt-in take precedence while corrupt preferences remain blocked
+2026-11-27T02:31:30.7317230Z PASS storage 3: shared Dart/Swift state contract: 74 cases; rejected input preserves bytes
+2026-11-27T02:31:30.7320400Z PASS storage 4: notification preference and channel switch require actual booleans
+2026-11-27T02:31:30.7346460Z PASS storage 5: invalid preferences cannot overwrite saved opt-in
+2026-11-27T02:31:35.7409370Z PASS storage 6: 40 process exits across 5 write checkpoints and both scopes
+2026-11-27T02:31:35.7453650Z PASS storage 7: first uncommitted reservation is never loaded from staging
+2026-11-27T02:31:35.7504230Z PASS storage 8: error after rename propagates; reload recovers the committed timer
+2026-11-27T02:31:35.7618370Z PASS storage 9: corrupt, invalid UTF-8 and oversized committed files never use pending data
+2026-11-27T02:31:35.7685990Z PASS storage 10: diagnostic reset isolation and answer removal in committed cooldown
+2026-11-27T02:31:35.7714000Z PASS storage 11: ambiguous preferences rejected; canonical state committed without leftover staging
+2026-11-27T02:31:35.7727040Z PASS storage 12: both private scope directories excluded from backup
+2026-11-27T02:31:35.7828560Z Native storage checks: 12/12 passed; 74 contract cases; 40 process interruptions
+2026-11-27T02:31:40.2907310Z PASS only explicit RU and EN voice locales are accepted
+2026-11-27T02:31:40.2911560Z PASS request identity rejects booleans strings fractions and overflow
+2026-11-27T02:31:40.2913530Z PASS cancel invalidates delayed permission completion
+2026-11-27T02:31:40.2918050Z PASS supersession rejects callbacks even when caller reuses an ID
+2026-11-27T02:31:40.2920700Z PASS duplicate and stale callbacks cannot start or stop another capture
+2026-11-27T02:31:40.2922940Z PASS graceful stop keeps final results but forbids automatic restart
+2026-11-27T02:31:40.2925360Z PASS terminal delivery retires once and rejects later transcript or level
+2026-11-27T02:31:40.2928860Z PASS silence and low room noise do not produce synthetic animation
+2026-11-27T02:31:40.2930620Z PASS level follows actual RMS with smooth attack and slower release
+2026-11-27T02:31:40.2932430Z PASS invalid audio measurements cannot leak NaN or unbounded levels
+2026-11-27T02:31:40.2938860Z PASS transcript size matches Dart UTF16 limit without silent truncation
+2026-11-27T02:31:40.2942350Z PASS capture permission and finalization waits have explicit limits
+2026-11-27T02:31:40.2943750Z Native voice checks: 12/12 passed
+2026-11-27T02:31:49.0634340Z PASS all fixed background and answer style combinations are valid
+2026-11-27T02:31:49.0636400Z PASS all 16 legacy choices migrate in memory without changing the original bytes or consent
+2026-11-27T02:31:49.0637760Z PASS legacy migration rejects mixed schemas and preserves incomplete onboarding and narration choice
+2026-11-27T02:31:49.0639110Z PASS exact profile keys strict booleans integers and enums are enforced
+2026-11-27T02:31:49.0640220Z PASS duplicate escaped keys decimal syntax malformed and oversized JSON are rejected
+2026-11-27T02:31:49.0641690Z PASS names use 40 Unicode scalars and reject every C0 and C1 control
+2026-11-27T02:31:49.0642630Z PASS completion requires slide two and nonzero accepted terms version
+2026-11-27T02:31:49.0643820Z PASS validation happens before writes and valid profile roundtrips canonically
+2026-11-27T02:31:49.0644890Z PASS private no-backup profile storage remains separate from session state
+2026-11-27T02:31:49.0646090Z PASS corruption invalid UTF8 oversized files and symlinks never become defaults
+2026-11-27T02:31:49.0647360Z PASS ten process interruptions preserve only the old or committed profile
+2026-11-27T02:31:49.0648630Z PASS five migration process interruptions preserve exact v1 bytes until atomic v2 commit
+2026-11-27T02:31:49.0649840Z PASS ambiguous post-rename error propagates while committed profile remains readable
+2026-11-27T02:31:49.0651140Z PASS migration write errors before and after rename require readback without silently resetting data
+2026-11-27T02:31:49.0652410Z PASS narration accepts only fixed bundled languages and positive integer identities
+2026-11-27T02:31:49.0653370Z PASS narration durations are finite positive and bounded
+2026-11-27T02:31:49.0654200Z Native presentation checks: 16/16 passed; 15 process interruptions
+2026-11-27T02:31:52.0754630Z PASS four fixed environment resources
+2026-11-27T02:31:52.0755890Z PASS no paths URLs or malformed resource types
+2026-11-27T02:31:52.0757110Z PASS bounded finite audio duration
+2026-11-27T02:31:52.0758930Z PASS explicit ambient audio ownership
+2026-11-27T02:31:52.0760140Z PASS recording ownership cannot be deactivated by ambient
+2026-11-27T02:31:52.0762310Z PASS three neutral cues with no answer-dependent resources
+2026-11-27T02:31:52.0765440Z PASS finite short cue duration
+2026-11-27T02:31:52.0766520Z Native ambient groups passed: 7
+2026-11-27T02:31:55.8980610Z test_empty_report_cannot_pass (test_xctest_result.XCTestResultContract.test_empty_report_cannot_pass) ... ok
+2026-11-27T02:31:55.8982770Z test_failed_case_cannot_pass (test_xctest_result.XCTestResultContract.test_failed_case_cannot_pass) ... ok
+2026-11-27T02:31:55.8985240Z test_missing_case_cannot_pass (test_xctest_result.XCTestResultContract.test_missing_case_cannot_pass) ... ok
+2026-11-27T02:31:55.8990390Z test_same_name_from_wrong_suite_cannot_pass (test_xctest_result.XCTestResultContract.test_same_name_from_wrong_suite_cannot_pass) ... ok
+2026-11-27T02:31:55.8992470Z test_skipped_case_cannot_pass (test_xctest_result.XCTestResultContract.test_skipped_case_cannot_pass) ... ok
+2026-11-27T02:31:55.8995640Z Ran 20 tests in 2.929s
+2026-11-27T02:32:28.9664460Z model.onnx: verified (470268510 bytes)
+2026-11-27T02:32:28.9694850Z tokenizer.json: verified (17082730 bytes)
+2026-11-27T02:32:29.2170050Z Xcode 16.4
+2026-11-27T02:32:29.2241280Z x86_64
+2026-11-27T02:34:32.4529150Z CI STEP configure: starting (limit 600s)
+2026-11-27T02:35:21.6916260Z CI STEP configure: exit 0
+2026-11-27T02:35:21.6921370Z CI STEP build: starting (limit 1200s)
+2026-11-27T02:38:07.9582700Z 2026-11-27 02:38:07.836 appintentsmetadataprocessor[62665:161464] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-11-27T02:38:08.1599200Z Ignoring --strip-bitcode because --sign was not passed
+2026-11-27T02:38:14.7743450Z Ignoring --strip-bitcode because --sign was not passed
+2026-11-27T02:38:14.7817670Z 2026-11-27 02:38:14.652 appintentsmetadataprocessor[62870:162084] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-11-27T02:38:14.9935630Z CI STEP build: exit 0
+2026-11-27T02:38:18.9757740Z CI STEP boot-1: starting (limit 300s)
+2026-11-27T02:42:34.7598090Z CI STEP boot-1: exit 0
+2026-11-27T02:42:35.3421570Z CI STEP test: starting (limit 600s)
+2026-11-27T02:46:30.9150800Z 2026-11-27 02:46:30.638498+0000 Runner[69348:182007] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=69348
+2026-11-27T02:46:31.1586410Z 2026-11-27 02:46:30.678747+0000 Runner[69348:182007] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=69348
+2026-11-27T02:46:31.3602870Z 2026-11-27 02:46:30.679997+0000 Runner[69348:182007] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=69348
+2026-11-27T02:46:31.6095270Z 2026-11-27 02:46:30.697209+0000 Runner[69348:182007] Warning: Unable to create restoration in progress marker file
+2026-11-27T02:46:32.1852250Z 2026-11-27 02:46:30.928454+0000 Runner[69348:182007] fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-27T02:46:32.5818400Z 2026-11-27 02:46:30.983295+0000 Runner[69348:182007] fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-27T02:46:32.7951520Z 2026-11-27 02:46:31.013184+0000 Runner[69348:182811] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=69348
+2026-11-27T02:46:34.3649000Z 2026-11-27 02:46:34.301391+0000 Runner[69348:182007] flutter: 00:00 +0: native iOS storage, clock and notification cancellation preserve recovery
+2026-11-27T02:46:36.7579110Z 2026-11-27 02:46:36.459723+0000 Runner[69348:182007] flutter: 00:02 +1: native invalid records and malformed settings preserve saved state
+2026-11-27T02:46:37.0000910Z 2026-11-27 02:46:36.708448+0000 Runner[69348:182007] flutter: 00:02 +2: native voice capability and cancellation never request capture
+2026-11-27T02:46:40.0689560Z 2026-11-27 02:46:39.653348+0000 Runner[69348:182007] flutter: 00:05 +3: native presentation profile and bundled narration reject unsafe mutation
+2026-11-27T02:46:40.4129030Z 2026-11-27 02:46:39.899799+0000 Runner[69348:182007] flutter: 00:05 +4: native AURA shaders render all sixteen environments and living forms
+2026-11-27T02:48:46.7276250Z 2026-11-27 02:48:46.414291+0000 Runner[69348:182007] flutter: 02:12 +7: All tests passed!
+2026-11-27T02:48:47.7360110Z Test Suite 'All tests' started at 2026-11-27 02:48:47.491.
+2026-11-27T02:48:47.8362450Z Test Suite 'RunnerTests.xctest' started at 2026-11-27 02:48:47.494.
+2026-11-27T02:48:47.9366200Z Test Suite 'UniverseIntegrationTests' started at 2026-11-27 02:48:47.494.
+2026-11-27T02:48:48.0388000Z Test Case '-[UniverseIntegrationTests testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState]' started.
+2026-11-27T02:48:48.1417040Z Test Case '-[UniverseIntegrationTests testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState]' passed (0.010 seconds).
+2026-11-27T02:48:48.2422340Z Test Case '-[UniverseIntegrationTests testIosRunnerLoadsTheBundledModelAndChecksRuAndEn]' started.
+2026-11-27T02:48:48.3435390Z Test Case '-[UniverseIntegrationTests testIosRunnerLoadsTheBundledModelAndChecksRuAndEn]' passed (0.003 seconds).
+2026-11-27T02:48:48.4451950Z Test Case '-[UniverseIntegrationTests testNativeIosStorageClockAndNotificationCancellationPreserveRecovery]' started.
+2026-11-27T02:48:48.5537810Z Test Case '-[UniverseIntegrationTests testNativeIosStorageClockAndNotificationCancellationPreserveRecovery]' passed (0.003 seconds).
+2026-11-27T02:48:48.6543380Z Test Case '-[UniverseIntegrationTests testNativeVoiceCapabilityAndCancellationNeverRequestCapture]' started.
+2026-11-27T02:48:48.7586480Z Test Case '-[UniverseIntegrationTests testNativeVoiceCapabilityAndCancellationNeverRequestCapture]' passed (0.002 seconds).
+2026-11-27T02:48:48.8592950Z Test Case '-[UniverseIntegrationTests testNativeAuraShadersRenderAllSixteenEnvironmentsAndLivingForms]' started.
+2026-11-27T02:48:48.9715970Z Test Case '-[UniverseIntegrationTests testNativeAuraShadersRenderAllSixteenEnvironmentsAndLivingForms]' passed (0.074 seconds).
+2026-11-27T02:48:49.0854710Z Test Case '-[UniverseIntegrationTests testNativePresentationProfileAndBundledNarrationRejectUnsafeMutation]' started.
+2026-11-27T02:48:49.1872250Z Test Case '-[UniverseIntegrationTests testNativePresentationProfileAndBundledNarrationRejectUnsafeMutation]' passed (0.002 seconds).
+2026-11-27T02:48:49.2880700Z Test Suite 'UniverseIntegrationTests' passed at 2026-11-27 02:48:47.594.
+2026-11-27T02:48:49.4949410Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 0.095 (0.100) seconds
+2026-11-27T02:48:49.5953250Z Test Suite 'RunnerTests.xctest' passed at 2026-11-27 02:48:47.595.
+2026-11-27T02:48:49.6962810Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 0.095 (0.101) seconds
+2026-11-27T02:48:49.7994250Z Test Suite 'All tests' passed at 2026-11-27 02:48:47.596.
+2026-11-27T02:48:49.8979030Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 0.095 (0.105) seconds
+2026-11-27T02:48:50.5053860Z ✔ Test bundledModelIsAccessibleToTheFlutterWorker() passed after 0.001 seconds.
+2026-11-27T02:48:50.6058450Z ✔ Suite RunnerTests passed after 0.003 seconds.
+2026-11-27T02:48:50.7062580Z ✔ Test run with 1 test passed after 0.023 seconds.
+2026-11-27T02:48:51.8230770Z CI STEP test: exit 0
+2026-11-27T02:48:58.1297760Z VERIFIED: all 6 Flutter integration tests and 1 native resource test passed in one XCTest run.
+2026-11-27T02:48:58.2307520Z PASS RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()
+2026-11-27T02:48:58.3092420Z PASS UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn
+2026-11-27T02:48:58.3398520Z PASS UniverseIntegrationTests/testNativeAuraShadersRenderAllSixteenEnvironmentsAndLivingForms
+2026-11-27T02:48:58.3685980Z PASS UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState
+2026-11-27T02:48:58.3784470Z PASS UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery
+2026-11-27T02:48:58.4898840Z PASS UniverseIntegrationTests/testNativePresentationProfileAndBundledNarrationRejectUnsafeMutation
+2026-11-27T02:48:58.5969770Z PASS UniverseIntegrationTests/testNativeVoiceCapabilityAndCancellationNeverRequestCapture
+2026-11-27T02:49:08.8224840Z (node:74223) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-27T02:49:09.5182230Z (node:74223) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.

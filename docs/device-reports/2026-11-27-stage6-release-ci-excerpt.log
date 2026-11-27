@@ -1,0 +1,114 @@
+2026-11-27T02:31:23.4490660Z Download action repository 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' (SHA:11bd71901bbe5b1630ceea73d27597364c9af683)
+2026-11-27T02:31:23.9958810Z ##[group]Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+2026-11-27T02:31:23.9964710Z   sparse-checkout-cone-mode: true
+2026-11-27T02:31:24.6308940Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-11-27T02:31:26.2644890Z ##[group]Determining the checkout info
+2026-11-27T02:31:26.2649100Z [command]/opt/homebrew/bin/git sparse-checkout disable
+2026-11-27T02:31:26.2802430Z ##[group]Checking out the ref
+2026-11-27T02:31:26.2806760Z [command]/opt/homebrew/bin/git checkout --progress --force -B stage6-iphone refs/remotes/origin/stage6-iphone
+2026-11-27T02:31:35.5715750Z PASS 1: commit token before creating kernel marker
+2026-11-27T02:31:35.5731010Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-27T02:31:35.5733280Z PASS 3: simulated reboot rotates token
+2026-11-27T02:31:35.5745360Z PASS 4: failed write recovery
+2026-11-27T02:31:35.5746030Z PASS 5: ambiguous committed write recovery
+2026-11-27T02:31:35.5746900Z PASS 6: crash between persisted token and kernel creation
+2026-11-27T02:31:35.5747470Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-27T02:31:35.5748250Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-27T02:31:35.5748920Z PASS 9: strict private marker validation
+2026-11-27T02:31:35.5749990Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-27T02:31:35.5750710Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-27T02:31:35.5751650Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-27T02:31:35.5752490Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-27T02:31:35.5753420Z PASS 14: notification callback success/error and duplicate completion
+2026-11-27T02:31:35.5754390Z PASS 15: missing OS callback releases the serial queue
+2026-11-27T02:31:35.5755370Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-27T02:31:35.5756000Z Native safety checks: 16/16 passed
+2026-11-27T02:31:37.0265440Z PASS storage 1: fresh preferences use the first supported system language with RU fallback and no write
+2026-11-27T02:31:37.0361820Z PASS storage 2: saved language and opt-in take precedence while corrupt preferences remain blocked
+2026-11-27T02:31:37.1902920Z PASS storage 3: shared Dart/Swift state contract: 74 cases; rejected input preserves bytes
+2026-11-27T02:31:37.1918120Z PASS storage 4: notification preference and channel switch require actual booleans
+2026-11-27T02:31:37.1918850Z PASS storage 5: invalid preferences cannot overwrite saved opt-in
+2026-11-27T02:31:41.7935700Z PASS storage 6: 40 process exits across 5 write checkpoints and both scopes
+2026-11-27T02:31:41.8004850Z PASS storage 7: first uncommitted reservation is never loaded from staging
+2026-11-27T02:31:41.8298700Z PASS storage 8: error after rename propagates; reload recovers the committed timer
+2026-11-27T02:31:41.8330040Z PASS storage 9: corrupt, invalid UTF-8 and oversized committed files never use pending data
+2026-11-27T02:31:41.8350400Z PASS storage 10: diagnostic reset isolation and answer removal in committed cooldown
+2026-11-27T02:31:41.8358910Z PASS storage 11: ambiguous preferences rejected; canonical state committed without leftover staging
+2026-11-27T02:31:41.8365740Z PASS storage 12: both private scope directories excluded from backup
+2026-11-27T02:31:41.8390980Z Native storage checks: 12/12 passed; 74 contract cases; 40 process interruptions
+2026-11-27T02:31:42.6386570Z PASS only explicit RU and EN voice locales are accepted
+2026-11-27T02:31:42.6388200Z PASS request identity rejects booleans strings fractions and overflow
+2026-11-27T02:31:42.6389380Z PASS cancel invalidates delayed permission completion
+2026-11-27T02:31:42.6390440Z PASS supersession rejects callbacks even when caller reuses an ID
+2026-11-27T02:31:42.6391710Z PASS duplicate and stale callbacks cannot start or stop another capture
+2026-11-27T02:31:42.6392820Z PASS graceful stop keeps final results but forbids automatic restart
+2026-11-27T02:31:42.6394130Z PASS terminal delivery retires once and rejects later transcript or level
+2026-11-27T02:31:42.6395480Z PASS silence and low room noise do not produce synthetic animation
+2026-11-27T02:31:42.6398060Z PASS level follows actual RMS with smooth attack and slower release
+2026-11-27T02:31:42.6399410Z PASS invalid audio measurements cannot leak NaN or unbounded levels
+2026-11-27T02:31:42.6400670Z PASS transcript size matches Dart UTF16 limit without silent truncation
+2026-11-27T02:31:42.6401860Z PASS capture permission and finalization waits have explicit limits
+2026-11-27T02:31:42.6402920Z Native voice checks: 12/12 passed
+2026-11-27T02:31:46.0949270Z PASS all fixed background and answer style combinations are valid
+2026-11-27T02:31:46.0953880Z PASS all 16 legacy choices migrate in memory without changing the original bytes or consent
+2026-11-27T02:31:46.0954730Z PASS legacy migration rejects mixed schemas and preserves incomplete onboarding and narration choice
+2026-11-27T02:31:46.0980210Z PASS exact profile keys strict booleans integers and enums are enforced
+2026-11-27T02:31:46.0981340Z PASS duplicate escaped keys decimal syntax malformed and oversized JSON are rejected
+2026-11-27T02:31:46.0982030Z PASS names use 40 Unicode scalars and reject every C0 and C1 control
+2026-11-27T02:31:46.0994420Z PASS completion requires slide two and nonzero accepted terms version
+2026-11-27T02:31:46.0995420Z PASS validation happens before writes and valid profile roundtrips canonically
+2026-11-27T02:31:46.0996170Z PASS private no-backup profile storage remains separate from session state
+2026-11-27T02:31:46.0997350Z PASS corruption invalid UTF8 oversized files and symlinks never become defaults
+2026-11-27T02:31:46.0997900Z PASS ten process interruptions preserve only the old or committed profile
+2026-11-27T02:31:46.0998570Z PASS five migration process interruptions preserve exact v1 bytes until atomic v2 commit
+2026-11-27T02:31:46.0999430Z PASS ambiguous post-rename error propagates while committed profile remains readable
+2026-11-27T02:31:46.1000470Z PASS migration write errors before and after rename require readback without silently resetting data
+2026-11-27T02:31:46.1001410Z PASS narration accepts only fixed bundled languages and positive integer identities
+2026-11-27T02:31:46.1002070Z PASS narration durations are finite positive and bounded
+2026-11-27T02:31:46.1002540Z Native presentation checks: 16/16 passed; 15 process interruptions
+2026-11-27T02:31:46.1707390Z ##[group]Run bash mobile/tool/run_native_ambient.sh
+2026-11-27T02:31:46.1707840Z [36;1mbash mobile/tool/run_native_ambient.sh[0m
+2026-11-27T02:31:47.6079630Z PASS four fixed environment resources
+2026-11-27T02:31:47.6087560Z PASS no paths URLs or malformed resource types
+2026-11-27T02:31:47.6187500Z PASS bounded finite audio duration
+2026-11-27T02:31:47.6289320Z PASS explicit ambient audio ownership
+2026-11-27T02:31:47.6390300Z PASS recording ownership cannot be deactivated by ambient
+2026-11-27T02:31:47.6493210Z PASS three neutral cues with no answer-dependent resources
+2026-11-27T02:31:47.6524790Z PASS finite short cue duration
+2026-11-27T02:31:47.6525770Z Native ambient groups passed: 7
+2026-11-27T02:32:07.6394170Z [36;1mflutter config --no-analytics --no-enable-swift-package-manager[0m
+2026-11-27T02:32:07.6395760Z [36;1mpython3 tool/check_app.py build/ios/iphoneos/Runner.app[0m
+2026-11-27T02:32:20.2184990Z Downloading packages...
+2026-11-27T02:32:23.3643890Z + built_collection 5.1.2 (6.0.0 available)
+2026-11-27T02:32:23.3644140Z + built_value 8.13.0
+2026-11-27T02:32:23.3644420Z + checked_yaml 2.0.4
+2026-11-27T02:32:23.3645400Z + code_assets 2.1.0 (2.2.0 available)
+2026-11-27T02:32:23.3648720Z + data_assets 0.20.0
+2026-11-27T02:32:23.3658660Z + package_config 2.2.0 (3.0.0 available)
+2026-11-27T02:32:23.3661730Z + shelf_packages_handler 3.0.2
+2026-11-27T02:32:23.3671730Z 27 packages have newer versions incompatible with dependency constraints.
+2026-11-27T02:32:45.0958290Z Setting "enable-swift-package-manager" value to "false".
+2026-11-27T02:32:45.0974850Z Enabling Swift Package Manager will be required in a future version of Flutter.
+2026-11-27T02:32:46.4412890Z [1/10] Material Fonts                                              768ms
+2026-11-27T02:32:54.0701650Z [10/10] darwin-arm64/font-subset                                   143ms
+2026-11-27T02:32:54.8091210Z Downloading packages...
+2026-11-27T02:32:57.5110870Z 3 packages have newer versions incompatible with dependency constraints.
+2026-11-27T02:33:08.5355370Z No issues found! (ran in 9.8s)
+2026-11-27T02:33:33.9964520Z Warning: Building for device with codesigning disabled. You will have to manually codesign before deploying to device.
+2026-11-27T02:33:49.9690650Z Swift Package Manager is currently disabled. Enabling Swift Package Manager will be required in a future version of Flutter. To re-enable it, run "flutter config --enable-swift-package-manager"
+2026-11-27T02:33:49.9736150Z The following plugins do not support Swift Package Manager for ios:
+2026-11-27T02:33:49.9740520Z This will become an error in a future version of Flutter. Please contact the plugin maintainers to request Swift Package Manager adoption.
+2026-11-27T02:34:04.7681980Z Running pod install...                                             11.6s
+2026-11-27T02:35:42.4410090Z Running Xcode build...                                          
+2026-11-27T02:35:42.4474410Z Xcode build done.                                           97.6s
+2026-11-27T02:35:49.1121790Z ✓ Built build/ios/iphoneos/Runner.app (545.0MB)
+2026-11-27T02:35:50.0954370Z Four original provisional ambient loops, default off: verified
+2026-11-27T02:35:50.0956590Z Three compiled AURA runtime shaders and version 0.6.0+10: verified
+2026-11-27T02:37:09.6505080Z   if-no-files-found: error
+2026-11-27T02:37:10.1094100Z (node:12712) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-11-27T02:37:10.1098960Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-11-27T02:37:10.3613190Z (node:12712) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-11-27T02:37:12.5774710Z Finished uploading artifact content to blob storage!
+2026-11-27T02:37:12.8736590Z Artifact Ask-the-Universe-stage3-iphone.zip successfully finalized. Artifact ID 15167693532
+2026-11-27T02:37:12.8738760Z Artifact Ask-the-Universe-stage3-iphone has been successfully uploaded! Final size is 302978703 bytes. Artifact ID is 15167693532
+2026-11-27T02:37:15.8364030Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683, actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

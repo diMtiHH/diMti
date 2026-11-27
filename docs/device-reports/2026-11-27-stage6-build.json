@@ -1,0 +1,1482 @@
+{
+  "protocol": "stage6-aura13-build-v1",
+  "date_moscow": "2026-11-27",
+  "version": "0.6.0",
+  "build": "10",
+  "admission": "closed",
+  "english_notifications_approved": false,
+  "stage_6_accepted": false,
+  "physical_tests": "deferred_by_user",
+  "baseline": {
+    "version": "0.5.0",
+    "build": "9",
+    "source_commit": "945c57425aeafe30f509ff0963f46b7071424e91",
+    "branch_preserved": "stage5-iphone",
+    "branch_head": "af23d2783cf99acbffabbddb9ceb8c5869621655"
+  },
+  "requirements": {
+    "path": "docs/source/MASTER_PROMPT_AURA13.txt",
+    "bytes": 61101,
+    "sha256": "b6bcf08d2143f55295f6a6f5a85d550c2c221b35765b8f9e67d06fa4872bc98e"
+  },
+  "source_commit": "cfd9de892b43ba2345d414de10bcca72a6ce84e5",
+  "source_tree": "1eb7e5b80a85e120b5ef565e73f05d69eda4bdf4",
+  "source_files": [
+    {
+      "path": ".github/workflows/stage3-ios.yml",
+      "bytes": 2831,
+      "chars": 2831,
+      "binary": false,
+      "blob": "26a819b9a10250417a789e2533ceac428afb9fc1",
+      "sha256": "4bad2dd825deb80ef13c179249e3f97c6515a4a0bc2d6193bf7330467bb2320c"
+    },
+    {
+      "path": ".github/workflows/stage3-native.yml",
+      "bytes": 2931,
+      "chars": 2931,
+      "binary": false,
+      "blob": "15d1b68fdf5aa2a5857736e84344ced8cb806334",
+      "sha256": "35c01f9f6a3e6b94eea16f7e9ee667ad5ead43be8d43fd9c0e7c62ddcf5b8fbf"
+    },
+    {
+      "path": "PROJECT_STATUS.md",
+      "bytes": 55242,
+      "chars": 35172,
+      "binary": false,
+      "blob": "d5d3e3b05bbf039735a6b017c9af66b21a68a821",
+      "sha256": "caa90d1c0585098701f3ae68b5290037694c26cb232deb5769cc4d0960a1a40e"
+    },
+    {
+      "path": "README.md",
+      "bytes": 10136,
+      "chars": 6338,
+      "binary": false,
+      "blob": "fa597092a7519bd91957f3ae2b32748e2f6b98fb",
+      "sha256": "f11711a00baa18acc2502e317e54f85c1a405caaad349f77c5a7a5bc99c261cf"
+    },
+    {
+      "path": "docs/STAGE_5_BASELINE.md",
+      "bytes": 1974,
+      "chars": 1351,
+      "binary": false,
+      "blob": "6ea5c88a292596a3c52549a7b6c6f1198a067c0b",
+      "sha256": "6285569d2b0d8c09271b8534f57f07030927168e750b264c72b1d40a8f3f269a"
+    },
+    {
+      "path": "docs/STAGE_6.md",
+      "bytes": 17150,
+      "chars": 10462,
+      "binary": false,
+      "blob": "2e401f6165e76138ba7a976cb2631fb45e1efcfb",
+      "sha256": "0c0784e307cc55150390f5c775af0780cb147803b314ef285e6e40e6b7f4aa16"
+    },
+    {
+      "path": "docs/source/MASTER_PROMPT_AURA13.txt",
+      "bytes": 61101,
+      "chars": 34615,
+      "binary": false,
+      "blob": "a8690db437efbbad2b74d2ec11152f14464c27c0",
+      "sha256": "b6bcf08d2143f55295f6a6f5a85d550c2c221b35765b8f9e67d06fa4872bc98e"
+    },
+    {
+      "path": "mobile/assets/audio/ambient/README.md",
+      "bytes": 1800,
+      "chars": 1800,
+      "binary": false,
+      "blob": "427038b755df884a6d378ae6176e832296ceeb38",
+      "sha256": "4de93072b03e9aff0903518f2405b8b342f5bfd7af78d0637ffba5d52de088b1"
+    },
+    {
+      "path": "mobile/assets/audio/ambient/aurora.wav",
+      "bytes": 1764044,
+      "chars": null,
+      "binary": true,
+      "blob": "dffd38a241cdc1604d8be6dac16999aa9630a4c0",
+      "sha256": "f37a5518545c772aa492b5e778c38174e52185cb8c9a9104b9c55e97bebf2fa0"
+    },
+    {
+      "path": "mobile/assets/audio/ambient/cue-reveal.wav",
+      "bytes": 70604,
+      "chars": null,
+      "binary": true,
+      "blob": "70b51180f7b58440ffbcdb3ba6eb60e0c9e54851",
+      "sha256": "6aebb2f70df5933af6c474fb9cda60d17258bd4b4938e3312d1320871bd4d75b"
+    },
+    {
+      "path": "mobile/assets/audio/ambient/cue-touch.wav",
+      "bytes": 21212,
+      "chars": null,
+      "binary": true,
+      "blob": "271fff84aef828589edaf9b2d901bcb755dd918a",
+      "sha256": "a65304e28f5f6f2f0a42b9b8c7c024d662961fc2e7243f8f8624f4c7b5048f57"
+    },
+    {
+      "path": "mobile/assets/audio/ambient/cue-transform.wav",
+      "bytes": 105884,
+      "chars": null,
+      "binary": true,
+      "blob": "5f6ee48af34269171814c879616bc49f24e01e9b",
+      "sha256": "7b66dc5b13b02d61d12808b2d7b983c93dc21848b803f80b03fc781e77edf034"
+    },
+    {
+      "path": "mobile/assets/audio/ambient/cues.json",
+      "bytes": 1236,
+      "chars": 1236,
+      "binary": false,
+      "blob": "9ce03eb1554019c77b400b8acd8ea79de369d413",
+      "sha256": "4b37303488594666f6a7551f3b44c002641ab7f9a18aa101a1e46b616df5803f"
+    },
+    {
+      "path": "mobile/assets/audio/ambient/galaxy.wav",
+      "bytes": 1764044,
+      "chars": null,
+      "binary": true,
+      "blob": "8ea9f0007b322b6bfa555a631b6107dab09baaf8",
+      "sha256": "214425e251481a2dbf3633c2351eaeca93a3988b470b58212833060c9b262926"
+    },
+    {
+      "path": "mobile/assets/audio/ambient/gravity.wav",
+      "bytes": 1764044,
+      "chars": null,
+      "binary": true,
+      "blob": "2afac99b81b7fd54a609531e6caa8e4e98205be3",
+      "sha256": "c4af9a2afceb26bf60421521b31cbca0606299964656362e2bc8ef65f4daaa06"
+    },
+    {
+      "path": "mobile/assets/audio/ambient/metadata.json",
+      "bytes": 1764,
+      "chars": 1764,
+      "binary": false,
+      "blob": "b828f5ac1959a5a844ca950a4297e332b6b37830",
+      "sha256": "9ca4027462e833abda2ca29394011037a83f82aa9493ff9ddcafd212c0e4db8d"
+    },
+    {
+      "path": "mobile/assets/audio/ambient/stars.wav",
+      "bytes": 1764044,
+      "chars": null,
+      "binary": true,
+      "blob": "c9dcc89728a650653a3d8878b93028601230cc21",
+      "sha256": "b1d03e4f5395e2000b4eef6ef1d0c04600a21bfe581b69adaa21dfb73ec2e4f6"
+    },
+    {
+      "path": "mobile/assets/fonts/Manrope-Light.ttf",
+      "bytes": 97352,
+      "chars": null,
+      "binary": true,
+      "blob": "6758517ed847ffa4bff675847f93377b61eae6d7",
+      "sha256": "e1db27bf34999e038df7527206c5f5c87ede20ee7464e148c453b5607280752d"
+    },
+    {
+      "path": "mobile/assets/fonts/Manrope-Medium.ttf",
+      "bytes": 97536,
+      "chars": null,
+      "binary": true,
+      "blob": "c87e3cbdc68bc30e549c1f99d32202dcc6ed142a",
+      "sha256": "729037f5dc28daa949c5ce8e69d945bf14faf2649db737e6eb085c120c778dd0"
+    },
+    {
+      "path": "mobile/assets/fonts/Manrope-Regular.ttf",
+      "bytes": 97436,
+      "chars": null,
+      "binary": true,
+      "blob": "12ba81330a8025614f0bf1d14e3095ac36e00be0",
+      "sha256": "2602c71d1f36c96da0022706f15da7d51102d19d10510b77b5a39bf861122807"
+    },
+    {
+      "path": "mobile/assets/fonts/Manrope-SemiBold.ttf",
+      "bytes": 97584,
+      "chars": null,
+      "binary": true,
+      "blob": "6c57dceb6d2a749020fdd7283693a25d1294e22d",
+      "sha256": "2b2ab8c077256d2849465199657f042e36588a7b88d345acd2ab4e5807ebef99"
+    },
+    {
+      "path": "mobile/assets/fonts/Manrope-Variable.source.ttf",
+      "bytes": 164700,
+      "chars": null,
+      "binary": true,
+      "blob": "75274da58537d6123b14f2cd0c355ad4681fc2b3",
+      "sha256": "3ae11c49db0455a3cc33e37d380f20fdb8c7f8b41dc07625c177e3d87a9d6ae6"
+    },
+    {
+      "path": "mobile/assets/fonts/OFL.txt",
+      "bytes": 4387,
+      "chars": 4387,
+      "binary": false,
+      "blob": "e271172a9ed0cddc895aabb6509f1c7d880b492d",
+      "sha256": "58172e0c0fac2cda8a37b348164bb55e44b0e69051e557e92b1d3f6910141f7b"
+    },
+    {
+      "path": "mobile/assets/fonts/README.md",
+      "bytes": 1167,
+      "chars": 1163,
+      "binary": false,
+      "blob": "f92e520da88a895e472bd1cd6c47cc2ee213e284",
+      "sha256": "f74049a83fb9de573ff238693c4259e465674e95ea64c08e8f5401e4824f75d2"
+    },
+    {
+      "path": "mobile/assets/fonts/sources.json",
+      "bytes": 1994,
+      "chars": 1994,
+      "binary": false,
+      "blob": "3092cb52f1244eda0ffa495f0f20f75982264088",
+      "sha256": "ad7a773a1f38fb8637b0cea33ac03b90d9dd0ff34814a26d05da751b6d7de598"
+    },
+    {
+      "path": "mobile/assets/fonts/upstream-METADATA.pb",
+      "bytes": 732,
+      "chars": 732,
+      "binary": false,
+      "blob": "3e79d88e5324a509c44005bc94449d0a93f34fc7",
+      "sha256": "fb204147a7c16d009d4fa53248b6075bc941d7adfa450a825bc5d4cef2f9ded9"
+    },
+    {
+      "path": "mobile/assets/identity/README.md",
+      "bytes": 1199,
+      "chars": 1198,
+      "binary": false,
+      "blob": "1fb6354fccefd6ff2dba543f607a0b862cac9bd5",
+      "sha256": "6e6be61176e89881c5b619b456f21ad747a4c76b263c7fc0c3dcfc392b2048f5"
+    },
+    {
+      "path": "mobile/assets/identity/app-icon-manifest.json",
+      "bytes": 3190,
+      "chars": 3190,
+      "binary": false,
+      "blob": "366bbc243b3ce6700aa2bbfe8e5295511d913585",
+      "sha256": "031d8fa5cbadd5749a989f7b9538fb2ba8d7a44fd90813b96b33e28ae705d7bf"
+    },
+    {
+      "path": "mobile/integration_test/ios_aura_test.dart",
+      "bytes": 5374,
+      "chars": 5374,
+      "binary": false,
+      "blob": "fe045c9358a7039b0e0bbc43e1c36ea59a12ac6f",
+      "sha256": "ffd664622cc204ed7086b26ee71d62d8c7d235015cdf2b406ba1a9d48c3ab1e9"
+    },
+    {
+      "path": "mobile/integration_test/ios_ci.dart",
+      "bytes": 959,
+      "chars": 959,
+      "binary": false,
+      "blob": "7ffb3c3b85a5d55addd15e730b4a2d403ebb3541",
+      "sha256": "c60965bd22f8aa93b027b5d2f4b600328f53484027b3eb1584889341600a8824"
+    },
+    {
+      "path": "mobile/integration_test/ios_presentation_test.dart",
+      "bytes": 5187,
+      "chars": 5187,
+      "binary": false,
+      "blob": "2c1808cf050a6146c23be0599e2a4ce3e42e3879",
+      "sha256": "c3da7ed84b728970cbf54d7ab0f8bfddf650c14f718b6feccf0ba6b5779399c4"
+    },
+    {
+      "path": "mobile/ios/Runner.xcodeproj/project.pbxproj",
+      "bytes": 32997,
+      "chars": 32997,
+      "binary": false,
+      "blob": "9e2096ffd1d17e5feffa4c124f0874af060e4ff8",
+      "sha256": "d761830ed0a971f2b67e9ba285fcc8f3c130ccf73bfb7e2e47313297c717fe95"
+    },
+    {
+      "path": "mobile/ios/Runner/AmbientBridge.swift",
+      "bytes": 7868,
+      "chars": 7868,
+      "binary": false,
+      "blob": "919ee871fb4b37fb3a5031cac87ab8723cfd0ea2",
+      "sha256": "14b440930e5a1c8ebcf91691555a3646303f23117d94c8a96a2411c28c9c83b4"
+    },
+    {
+      "path": "mobile/ios/Runner/AmbientPolicy.swift",
+      "bytes": 1074,
+      "chars": 1074,
+      "binary": false,
+      "blob": "b3d4010b5c034dbcd4af9a9323c476c0f2632abc",
+      "sha256": "61463c88ad07d8749e1e3c652d7cf54bc43d46197982b4498e9a383cbe89a417"
+    },
+    {
+      "path": "mobile/ios/Runner/AppDelegate.swift",
+      "bytes": 1384,
+      "chars": 1384,
+      "binary": false,
+      "blob": "2fe671d4b44a36a9410b451ca0d53ec2ac57c4ba",
+      "sha256": "4465027c46588f859097ddcf9930a86a16f8d8c2e061414502a289d54c2030db"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png",
+      "bytes": 339621,
+      "chars": null,
+      "binary": true,
+      "blob": "86a143e01411d4bde43e07cb0ea9f1a5b409e031",
+      "sha256": "9f91d29267c568c3116acc4ca551af8faaa617cc28d91936c9f4963fd4882c64"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png",
+      "bytes": 698,
+      "chars": null,
+      "binary": true,
+      "blob": "b6902eb72859778a095c353e4c61a7efad97fb30",
+      "sha256": "dbe14f7930e82018c6a3fd25abe0fc9980da4436a80791fc119a09df216efc51"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png",
+      "bytes": 1824,
+      "chars": null,
+      "binary": true,
+      "blob": "ed1beaae2770bde2d999334f33b88fd18ba7814f",
+      "sha256": "67a065993c15640c28b99ef2036b0374349e9e1bffec5da1cb5fcb39fe6f4db6"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png",
+      "bytes": 3346,
+      "chars": null,
+      "binary": true,
+      "blob": "25871c11f6965f0ef36aae21479b543f87359eb0",
+      "sha256": "d684c9db0f80b257e4ddb82794e52b6b88c6771aa82df4e477e12a48fbd0e12f"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png",
+      "bytes": 1224,
+      "chars": null,
+      "binary": true,
+      "blob": "92abdcfce6c20aaf54da0ed02190ea91fc7536c8",
+      "sha256": "21ff04fb8ec0ca0327fd939d039c61fd5714f19b804813612e005051aa626252"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png",
+      "bytes": 3156,
+      "chars": null,
+      "binary": true,
+      "blob": "b687985554eec5dc0f0b0763bd26480860e1d0b1",
+      "sha256": "fb07007e612e894252a4b9281e736b84c1972869c18495d00f84b73b6a3da05f"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png",
+      "bytes": 6001,
+      "chars": null,
+      "binary": true,
+      "blob": "b9e228847fa76a0398b985f37142f40d1c14faa4",
+      "sha256": "044627cca652705de6822faad6d2733e7e06252518ea9643aeea13bb0bfa29bf"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png",
+      "bytes": 1824,
+      "chars": null,
+      "binary": true,
+      "blob": "ed1beaae2770bde2d999334f33b88fd18ba7814f",
+      "sha256": "67a065993c15640c28b99ef2036b0374349e9e1bffec5da1cb5fcb39fe6f4db6"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png",
+      "bytes": 5192,
+      "chars": null,
+      "binary": true,
+      "blob": "e057dab3b81dc4929c1a2fd213d2349192546956",
+      "sha256": "c6644a3e21941f7b7032c79f01faa9c92a46ea0a501a53b9ae13438b22416cd9"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png",
+      "bytes": 9921,
+      "chars": null,
+      "binary": true,
+      "blob": "738f7254a7d1842a8d33ef2027a9eadd175d2531",
+      "sha256": "706f6b2b2c2f7804bfa159b60e1a8e590922592e234c0c8bb32573f52c98b527"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png",
+      "bytes": 9921,
+      "chars": null,
+      "binary": true,
+      "blob": "738f7254a7d1842a8d33ef2027a9eadd175d2531",
+      "sha256": "706f6b2b2c2f7804bfa159b60e1a8e590922592e234c0c8bb32573f52c98b527"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png",
+      "bytes": 19344,
+      "chars": null,
+      "binary": true,
+      "blob": "d770d2cf0e096ac50bf09bee44444930fba76d02",
+      "sha256": "783c042175dd34654edc59802a420ea32f2f3aecf9115efcb26d6a7e751aaeba"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png",
+      "bytes": 4832,
+      "chars": null,
+      "binary": true,
+      "blob": "2a9aef083fc6912f0b5985053fa8193aaf3c78fc",
+      "sha256": "047d3cccbb984576b7e66a89b49f80bc919b1a991f51e260563645e1f76cdaa9"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png",
+      "bytes": 14741,
+      "chars": null,
+      "binary": true,
+      "blob": "c3140d632635c9e351365c7b34ebc4f4ec8bb40f",
+      "sha256": "e871958dc7e25caa09c92c9e351cb14f6effe16837f76e01a6f108e78c6fd11c"
+    },
+    {
+      "path": "mobile/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png",
+      "bytes": 16684,
+      "chars": null,
+      "binary": true,
+      "blob": "374b214ece894273534ee51e27183dbcfa4642b8",
+      "sha256": "46b1cedad701a664d84f8abc172d8789472db26e679de52f2c5b60c9c8910f62"
+    },
+    {
+      "path": "mobile/ios/Runner/GraphicsBudgetBridge.swift",
+      "bytes": 2245,
+      "chars": 2245,
+      "binary": false,
+      "blob": "cad7836876c75ce449c842e6ee8099a158ca4dcf",
+      "sha256": "fd3779883082a5cf77405ff5fcbfee23fd904bd257993a13b6e7783d9c2323b3"
+    },
+    {
+      "path": "mobile/ios/Runner/PresentationSchema.swift",
+      "bytes": 6766,
+      "chars": 6766,
+      "binary": false,
+      "blob": "98aa97c92b0edede116b12a36fd98c04ffd3aaa7",
+      "sha256": "c4f61bcbd3050b805f954c76f57bf3463415698e2ea1100338b3ce781e622458"
+    },
+    {
+      "path": "mobile/ios/Runner/PresentationStorage.swift",
+      "bytes": 3607,
+      "chars": 3607,
+      "binary": false,
+      "blob": "fad46b89b0a5ed2869bf8a968f06ef85a1504dbe",
+      "sha256": "730eb673fab933d4f1096bcf5091e2ce1d056cae3708f39d1bd682f735033be3"
+    },
+    {
+      "path": "mobile/ios/Runner/SessionStorage.swift",
+      "bytes": 5146,
+      "chars": 5146,
+      "binary": false,
+      "blob": "a5996cf90d04071b516932a13dde436772fa0b29",
+      "sha256": "bbd7cc0e92a70087686540dd136e5a053fc90599ae22327ce3dd45304a243a20"
+    },
+    {
+      "path": "mobile/ios/Runner/VoiceBridge.swift",
+      "bytes": 14244,
+      "chars": 14244,
+      "binary": false,
+      "blob": "67456eae4893429737291307bd35ddeede8ff5eb",
+      "sha256": "2704b565d8901abca166a0991b081fef94b07e99833ce7b7f40b49ce53673cab"
+    },
+    {
+      "path": "mobile/lib/ambient_audio.dart",
+      "bytes": 7063,
+      "chars": 7063,
+      "binary": false,
+      "blob": "f775b9167e01e452ec810441f9a936527a674cf7",
+      "sha256": "aee9999310cb5deba4090c2823c82e6aca83357f5716aced891637476c3260a4"
+    },
+    {
+      "path": "mobile/lib/app_shell.dart",
+      "bytes": 30556,
+      "chars": 29812,
+      "binary": false,
+      "blob": "ee2c6bf1151e8b1b5c84d68cc4bb97baec9acd58",
+      "sha256": "a27cecc91a7cfa22b8165fd679a2b49ed056c4d1ef575deada5ac4d62fdff97d"
+    },
+    {
+      "path": "mobile/lib/aura_answer_page.dart",
+      "bytes": 14410,
+      "chars": 14332,
+      "binary": false,
+      "blob": "7d4aca636ecc648b56c13aac47f28321415106b2",
+      "sha256": "d37aaf92fef2d26c6a45a4ebd0e38bb6a964b60b114333c3b2fc7d45f6880a5b"
+    },
+    {
+      "path": "mobile/lib/aura_power_budget.dart",
+      "bytes": 3884,
+      "chars": 3884,
+      "binary": false,
+      "blob": "a7f8cb1886657a6d085288489bf0e6ed2c71ebae",
+      "sha256": "c9678eec1fa00ad547b58d9c789bcd7ee3bcbaac011000208c5bb68f5bd03b3f"
+    },
+    {
+      "path": "mobile/lib/aura_renderer.dart",
+      "bytes": 30517,
+      "chars": 30517,
+      "binary": false,
+      "blob": "684bb936dfe662120f951d2ae02b897f3e5ce35c",
+      "sha256": "6a2962516e2331a7c23e6bde09d3869ed0276538d99c985e3fdfe07569d2db3b"
+    },
+    {
+      "path": "mobile/lib/aura_ui.dart",
+      "bytes": 6461,
+      "chars": 6461,
+      "binary": false,
+      "blob": "66d1a90f4652cc0c904b62381c961f9d3689153b",
+      "sha256": "fa71556615aecabad489b52b52d719365ea322eaa8311621a247b4a787b5c77f"
+    },
+    {
+      "path": "mobile/lib/cosmic_scene.dart",
+      "bytes": 2220,
+      "chars": 2220,
+      "binary": false,
+      "blob": "2341f3d09505149330a90aba12c5590376e4d16b",
+      "sha256": "ad986cf8d5b5cbcbb60e26af4d27221d59c722cf67379a79b6669d5a162c0766"
+    },
+    {
+      "path": "mobile/lib/cosmic_theme.dart",
+      "bytes": 5092,
+      "chars": 5092,
+      "binary": false,
+      "blob": "7d22e791c47f40206b354de6e0a4c4591a47f844",
+      "sha256": "2fd6dbf9e4ab0efa6b557496513c53e12adb8406e1906ca23307c9b8dac2d33e"
+    },
+    {
+      "path": "mobile/lib/onboarding_page.dart",
+      "bytes": 15611,
+      "chars": 15093,
+      "binary": false,
+      "blob": "264f027d0ace70e8610c08b71f93d7f995876350",
+      "sha256": "f3a59270c86e33306d0de51f84be409018c76866e5d6b61743a22e0ea1f5f6c3"
+    },
+    {
+      "path": "mobile/lib/personalization.dart",
+      "bytes": 14323,
+      "chars": 14098,
+      "binary": false,
+      "blob": "685ee68d48c89d7d83c7265c89a396250e73e234",
+      "sha256": "882b37db6645999d0755ae78c0734e8ee718e5a13387f87430c2a3872ca4157f"
+    },
+    {
+      "path": "mobile/lib/presentation_profile.dart",
+      "bytes": 12068,
+      "chars": 12068,
+      "binary": false,
+      "blob": "ac17882ff16fca850db0fd0458d2b5e6845e9b3b",
+      "sha256": "7a7e37c6a9e0f01d9e6618ce70e6992e1896c6916c66782bf8df07c01f891af9"
+    },
+    {
+      "path": "mobile/lib/session_page.dart",
+      "bytes": 50414,
+      "chars": 48306,
+      "sha256": "6228229a97a97dda8823bd5c0a571f0778754e62491e4724a07896117dcac4c7",
+      "blob": "5cd7a0466193c1a1aab5eec7b85942661adac728",
+      "binary": false
+    },
+    {
+      "path": "mobile/pubspec.yaml",
+      "bytes": 1174,
+      "chars": 1174,
+      "binary": false,
+      "blob": "faeb6ddfa4af833e05f2012ffacfdafbf6605c03",
+      "sha256": "78db2bcd2966328068f90ea4cd9f8650f5549eaf3a296afa779436af12dcaf2f"
+    },
+    {
+      "path": "mobile/shaders/aura_environment.frag",
+      "bytes": 5011,
+      "chars": 5011,
+      "binary": false,
+      "blob": "f038af677f6b63d8d6188be715bd3231f8cf87dc",
+      "sha256": "bed5537b6e26254694033d07b88514c32c8222bbc134f57756a78b780ef7550d"
+    },
+    {
+      "path": "mobile/shaders/aura_matter.frag",
+      "bytes": 2247,
+      "chars": 2247,
+      "binary": false,
+      "blob": "5038b8f60387a437772dcff143654296b7faabc3",
+      "sha256": "5723c34a3ee55570e7b1838ecb971eb181598a83ad2b875686cdd9f30b36e3fa"
+    },
+    {
+      "path": "mobile/shaders/aura_metal.frag",
+      "bytes": 3606,
+      "chars": 3606,
+      "binary": false,
+      "blob": "f1e465d4fcd346ee88d4d26d07d0b45376cb96ba",
+      "sha256": "fd1278c0b10f5467bde53239c3dbb995a85c4d17087bfe0655939be3e93272ba"
+    },
+    {
+      "path": "mobile/test/ambient_audio_test.dart",
+      "bytes": 10316,
+      "chars": 10316,
+      "binary": false,
+      "blob": "f46d87f9e5d4bee255517f511a04e157e3d4c6a0",
+      "sha256": "a33d0019ca6b62453e6a3ccb92ccaacf598d03d03185762756411ecbe66d0642"
+    },
+    {
+      "path": "mobile/test/aura_answer_visual_test.dart",
+      "bytes": 12699,
+      "chars": 12611,
+      "binary": false,
+      "blob": "a3c3a20e0b89b400d1cc7852626d3dc01ee43d8a",
+      "sha256": "50db4cc21e9cf21a8d2d6be4618f3458608feb839d8de469d9dbe3de9dd9e9d1"
+    },
+    {
+      "path": "mobile/test/aura_personalization_test.dart",
+      "bytes": 12738,
+      "chars": 12634,
+      "binary": false,
+      "blob": "50b785f1ab1017b56cdfb36984fd6ffb821c5aa1",
+      "sha256": "1fd1014ae5be3425eb2881a5cbfacb3299d9165c612a46d42642e4c39cb22414"
+    },
+    {
+      "path": "mobile/test/aura_power_budget_test.dart",
+      "bytes": 5746,
+      "chars": 5746,
+      "binary": false,
+      "blob": "921ccee02c48b0bce0e7478cd0adbc898cc62d94",
+      "sha256": "96f1610848d07c32ea6312fba2f06de6ebcf4f362f57bb70464a10b5febbd1f2"
+    },
+    {
+      "path": "mobile/test/aura_renderer_test.dart",
+      "bytes": 15983,
+      "chars": 15983,
+      "binary": false,
+      "blob": "57fd9351e2ee840b6c70069aad976cbb109a164d",
+      "sha256": "3f69e47d2db111fdc7744f8cf02bf00feba35772599dedfa21f166b9befc6f70"
+    },
+    {
+      "path": "mobile/test/aura_session_test.dart",
+      "bytes": 15416,
+      "chars": 15293,
+      "binary": false,
+      "blob": "bd16d879ca5c724a589f6cf6bfae084ece573f55",
+      "sha256": "5f92a7ff695b98d63f45f9726eaa46c600cb8b7b5347a216266d8de7f3055cba"
+    },
+    {
+      "path": "mobile/test/aura_shell_test.dart",
+      "bytes": 10526,
+      "chars": 10410,
+      "binary": false,
+      "blob": "d05c0b856d9ffe8d1b93f533f633fbde349e9b6d",
+      "sha256": "b8a52ee0a62f288d35082a9b0e46f9839f4d8702588c9dec551a010bad041132"
+    },
+    {
+      "path": "mobile/test/aura_ui_test.dart",
+      "bytes": 3579,
+      "chars": 3579,
+      "binary": false,
+      "blob": "dad832b590130be50ddac18487ae30cb7e1c7cef",
+      "sha256": "49f20d77138eb4e209566f2f95ce98a81bfb63f29827c30968be1aa39d0f4aae"
+    },
+    {
+      "path": "mobile/test/cosmic_scene_test.dart",
+      "bytes": 18310,
+      "chars": 18303,
+      "binary": false,
+      "blob": "9050cc78e15bfbee9304dcc7ced386ddc4e636fa",
+      "sha256": "10ae39e61d8af397dbcb5fe5aa827196211ab2a07bd1aba7fe0ad70a57a34f29"
+    },
+    {
+      "path": "mobile/test/onboarding_page_test.dart",
+      "bytes": 27716,
+      "chars": 26950,
+      "binary": false,
+      "blob": "00f953ecd845e0a9bde59943520434b4f4494459",
+      "sha256": "9e1f52b703ee2059d659d0d489cd1e628158d1824184d7c2ebdf71e7c762bc7c"
+    },
+    {
+      "path": "mobile/test/presentation_profile_test.dart",
+      "bytes": 29927,
+      "chars": 29665,
+      "binary": false,
+      "blob": "60c3e149e8b52cb8f0b7d6ad0018505cbd690b08",
+      "sha256": "27cc3b5688a67aaf4afc17fa5f6156ae8979363b755833158b90d76827fad62a"
+    },
+    {
+      "path": "mobile/tool/NativeAmbientTests.swift",
+      "bytes": 2789,
+      "chars": 2789,
+      "binary": false,
+      "blob": "7d898d885b00278d5e9df0312dbe835e43f66813",
+      "sha256": "3cb32d74a4a940184b7ab47950460bf266ae3c53afa569942e93a227a880d6d6"
+    },
+    {
+      "path": "mobile/tool/NativePresentationTests.swift",
+      "bytes": 19279,
+      "chars": 19273,
+      "binary": false,
+      "blob": "698e3daf025f91db05a660c5e2ba009d38af70cc",
+      "sha256": "e4930228869a45259d70342cc9f838aa545ec00224e68dbf370550775ee0cc61"
+    },
+    {
+      "path": "mobile/tool/NativeStorageTests.swift",
+      "bytes": 10858,
+      "chars": 10858,
+      "binary": false,
+      "blob": "acc3ea6c36b957c780d492d0ab1d2174ba41897a",
+      "sha256": "8d00e4b92672bbfe4292d871fa14bd5021b8e4e53409ef305a5c792dfe7fe2b0"
+    },
+    {
+      "path": "mobile/tool/check_app.py",
+      "bytes": 7138,
+      "chars": 7138,
+      "binary": false,
+      "blob": "d554ee4802e5bfc6a49a56b1d994051590bfa2b8",
+      "sha256": "9478a8078efcc14841fb0f0a3f0502da8317117c3e5ed2af04375b5245e1a2b5"
+    },
+    {
+      "path": "mobile/tool/check_xctest_result.py",
+      "bytes": 2352,
+      "chars": 2352,
+      "binary": false,
+      "blob": "686bc1b5e98ff90337f2604d38fc6429497e6e36",
+      "sha256": "e6571128b34097f1e4aaec32251ecf7df6214ed539afd013dda9fb0caaf878f1"
+    },
+    {
+      "path": "mobile/tool/prepare_ambient_audio.py",
+      "bytes": 3485,
+      "chars": 3485,
+      "binary": false,
+      "blob": "47c0c8426ad1a44c28eeb74280a21d0cc41668ee",
+      "sha256": "3ff0c5b6d84eabb514a6cd97f6b8e2d75ff04bdfa9d44d0e7a457c2004166e90"
+    },
+    {
+      "path": "mobile/tool/prepare_ambient_cues.py",
+      "bytes": 2476,
+      "chars": 2476,
+      "binary": false,
+      "blob": "979a1cad47e6b81675239258a9e9d3fa64aeebf2",
+      "sha256": "521dba93bbf46fbf30ee73036ed13b6b3d730bd7c873fa57c4d3f4676d36eeb8"
+    },
+    {
+      "path": "mobile/tool/prepare_aura_app_icon.py",
+      "bytes": 2539,
+      "chars": 2539,
+      "binary": false,
+      "blob": "34aa88d321885a0f8b50391858f06c864a1d2071",
+      "sha256": "9cfb6e0e383e130913b0be196f3ecc62be3a9f6c61bb11474a54476d2e955d95"
+    },
+    {
+      "path": "mobile/tool/prepare_manrope.py",
+      "bytes": 3054,
+      "chars": 2988,
+      "binary": false,
+      "blob": "5eec8d178b2c2aec58a74889be1963a77141ce33",
+      "sha256": "de756800efe0a2bb49a5cfbe62a20aafa53e54e1b5f22657cd23ac51719598f4"
+    },
+    {
+      "path": "mobile/tool/run_ios_test.py",
+      "bytes": 8311,
+      "chars": 8311,
+      "binary": false,
+      "blob": "178cb7f049cc80aaabab4b4396748baf1cf09653",
+      "sha256": "ed09c00527d54c45a989f85da950f7211432603e2d217b22176f2dce2afdfb09"
+    },
+    {
+      "path": "mobile/tool/run_native_ambient.sh",
+      "bytes": 264,
+      "chars": 264,
+      "binary": false,
+      "blob": "6e884589fb697ed60ddc778b96cdb4a9df7054cb",
+      "sha256": "d87f690c2b7c20589b6ca29d251401388544c435f64fc83402a692bffe680476"
+    },
+    {
+      "path": "mobile/tool/test_aura_assets.py",
+      "bytes": 6163,
+      "chars": 6163,
+      "binary": false,
+      "blob": "aceccbe546e31a5b10cf71b45da74ce33c11df81",
+      "sha256": "8713304e6e8d507c7ab60f74416e4ebf153b2b539714bfb31e322f5c3cb24e8a"
+    },
+    {
+      "path": "mobile/tool/test_xctest_result.py",
+      "bytes": 1922,
+      "chars": 1922,
+      "binary": false,
+      "blob": "5d91fbb21ef32115c9a40317deb67f8eded90cdd",
+      "sha256": "1d0e6fea783dd378fda46f971d78b39b63f33cce05f2a878abaa1878c5cd3fc4"
+    },
+    {
+      "path": "setup-windows-stage6-final.log",
+      "bytes": 59154,
+      "chars": 59154,
+      "binary": false,
+      "blob": "c5d46cc0583e7a39047c03964dbe5b7f4807bd53",
+      "sha256": "9bd8e8cad8456a5389ed0771079d3241239a279ddb8bc5252ab13900965ee579"
+    },
+    {
+      "path": ".gitattributes",
+      "bytes": 214,
+      "chars": 214,
+      "binary": false,
+      "blob": "a9366449d4220b56c53c5490340e337179503b15",
+      "sha256": "9b517f2bfc25fa42b37c3436e509c4795067a354541411d5263d8815fbbe9dcd"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-windows-checkout-failure.log",
+      "bytes": 6700,
+      "chars": 6698,
+      "binary": false,
+      "blob": "e125805ded88ccfcf45ad40a747dccd149540203",
+      "sha256": "1308c1d3e4ab28bb961393cfeca9e4bebef771100106015d542e1a2ff2b031b6"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-ios-compile-failure.log",
+      "bytes": 1574,
+      "chars": 1574,
+      "binary": false,
+      "blob": "5a000974f0c23c8489946a2accbd9d739c05168d",
+      "sha256": "543a80ba9b428b6d55d639f91b852fc37b76491dc948981504a689e2f47cb70d"
+    }
+  ],
+  "source_verification": {
+    "changed_and_new_files_byte_verified": 99,
+    "base_blobs_preserved": 168,
+    "all_local_source_hashes_verified": true,
+    "final_ui_change_paths": [
+      "mobile/lib/session_page.dart"
+    ],
+    "final_ui_change_reason": "Complete the master prompt's input heading and primary-action arrow; no kernel or asset change."
+  },
+  "local": {
+    "exit_code": 0,
+    "flutter_passed": 361,
+    "flutter_seconds": 191,
+    "analyze_clean": true,
+    "analyze_seconds": 4.8,
+    "log": "setup-windows-stage6-ui-final.log",
+    "python_passed": 20,
+    "python_seconds": 1.576,
+    "python_note": "Unchanged tooling after checkout byte-preservation fix; full final CI repeats all 20 checks on both platforms.",
+    "log_digest": {
+      "path": "setup-windows-stage6-ui-final.log",
+      "bytes": 58753,
+      "sha256": "67b339ad4186cfef7a5d9d8be64791797261c65ecff115e948d3046930ee784f"
+    }
+  },
+  "windows": {
+    "job_id": 140276427833,
+    "python_passed": 20,
+    "python_seconds": 1.541,
+    "flutter_passed": 361,
+    "flutter_seconds": 278,
+    "analyze_clean": true,
+    "analyze_seconds": 10.6,
+    "log": "docs/device-reports/2026-11-27-stage6-windows-ci.log"
+  },
+  "release": {
+    "artifact": {
+      "id": 15167693532,
+      "name": "Ask-the-Universe-stage3-iphone",
+      "size_in_bytes": 302978703,
+      "url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15167693532",
+      "archive_download_url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15167693532/zip",
+      "expired": false,
+      "created_at": "2026-11-27T02:37:13Z",
+      "expires_at": "2026-11-28T02:37:10Z",
+      "updated_at": "2026-11-27T02:37:13Z",
+      "digest": "sha256:8a41c1b5842def4715fda4ac98849305d6e7e8470cc1596878f7d6f80489afd0",
+      "workflow_run": {
+        "id": 45928822301,
+        "repository_id": 720727602,
+        "head_repository_id": 720727602,
+        "head_branch": "stage6-iphone",
+        "head_sha": "cfd9de892b43ba2345d414de10bcca72a6ce84e5"
+      }
+    },
+    "local_archive": "mobile/build/ci-results/stage6-release-45928822301.zip",
+    "analyze_seconds": 9.8,
+    "xcode_build_seconds": 97.6,
+    "native_groups": {
+      "safety": 16,
+      "storage": 12,
+      "voice": 12,
+      "presentation": 16,
+      "ambient": 7
+    },
+    "storage_contract_cases": 74,
+    "storage_process_interruptions": 40,
+    "presentation_process_interruptions": 15
+  },
+  "ipa": {
+    "protocol": "stage6-ipa-verification-v1",
+    "path": "C:\\Users\\user\\Downloads\\Ask-the-Universe-Stage6-0.6.0\\Ask-the-Universe-0.6.0-build10.ipa",
+    "bytes": 302978162,
+    "sha256": "5d7f3580f0b4e3816b9db9f39f5f9348eda3a5b5e94e216e9438a2b72b98d660",
+    "version": "0.6.0",
+    "build": "10",
+    "platform": "iPhoneOS",
+    "unsigned_for_personal_signing": true,
+    "source_commit": "cfd9de892b43ba2345d414de10bcca72a6ce84e5",
+    "artifact_zip_sha256": "8a41c1b5842def4715fda4ac98849305d6e7e8470cc1596878f7d6f80489afd0",
+    "app_bytes": 544983554,
+    "assets_sha256": {
+      "model.onnx": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665",
+      "tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+      "head.json": "fc3593cfabdc324d4e37b69c4fd49749e957bb582e42367fcbcb7692feab8ea9"
+    },
+    "model_release_enabled": false,
+    "english_notifications_approved": false,
+    "narration": {
+      "ru": {
+        "sha256": "99f4890f1d3f260ff1dbc56faf0e6b9f2028cfd2c505a87ae1f735d91fef7f77",
+        "duration_ms": 34583
+      },
+      "en": {
+        "sha256": "6897a88fb8f54b4ed5fb4fbf6ec83c66db6e7b8c284bd1263bccb6f8df278349",
+        "duration_ms": 30442
+      }
+    },
+    "provisional_narration": true,
+    "english_wording_approved": false,
+    "fonts_sha256": {
+      "Manrope-Light.ttf": "e1db27bf34999e038df7527206c5f5c87ede20ee7464e148c453b5607280752d",
+      "Manrope-Regular.ttf": "2602c71d1f36c96da0022706f15da7d51102d19d10510b77b5a39bf861122807",
+      "Manrope-Medium.ttf": "729037f5dc28daa949c5ce8e69d945bf14faf2649db737e6eb085c120c778dd0",
+      "Manrope-SemiBold.ttf": "2b2ab8c077256d2849465199657f042e36588a7b88d345acd2ab4e5807ebef99",
+      "OFL.txt": "58172e0c0fac2cda8a37b348164bb55e44b0e69051e557e92b1d3f6910141f7b"
+    },
+    "ambient_audio_sha256": {
+      "stars.wav": "b1d03e4f5395e2000b4eef6ef1d0c04600a21bfe581b69adaa21dfb73ec2e4f6",
+      "galaxy.wav": "214425e251481a2dbf3633c2351eaeca93a3988b470b58212833060c9b262926",
+      "aurora.wav": "f37a5518545c772aa492b5e778c38174e52185cb8c9a9104b9c55e97bebf2fa0",
+      "gravity.wav": "c4af9a2afceb26bf60421521b31cbca0606299964656362e2bc8ef65f4daaa06",
+      "cue-touch.wav": "a65304e28f5f6f2f0a42b9b8c7c024d662961fc2e7243f8f8624f4c7b5048f57",
+      "cue-transform.wav": "7b66dc5b13b02d61d12808b2d7b983c93dc21848b803f80b03fc781e77edf034",
+      "cue-reveal.wav": "6aebb2f70df5933af6c474fb9cda60d17258bd4b4938e3312d1320871bd4d75b"
+    },
+    "ambient_default_enabled": false,
+    "provisional_ambient_and_cues": true,
+    "answer_independent_cues": true,
+    "compiled_shaders": {
+      "aura_environment.frag": {
+        "bytes": 31168,
+        "sha256": "e9dc8efc9d7dd3e5aa65170b8eaa0051c32375439284bc0b7bb05b1ff00c77f4",
+        "format": "IPLR"
+      },
+      "aura_matter.frag": {
+        "bytes": 5768,
+        "sha256": "6aee857cde380457bd4c22e119b2cd36c6901d4d4e1739d998ac4fbcbe28f1fb",
+        "format": "IPLR"
+      },
+      "aura_metal.frag": {
+        "bytes": 24648,
+        "sha256": "8c96c6ebc1f1a131143880ce50323e3340f2fb788b550d113accd19fd113d38e",
+        "format": "IPLR"
+      }
+    },
+    "native_channels": [
+      "ask_universe/presentation",
+      "ask_universe/voice",
+      "ask_universe/ambient",
+      "ask_universe/graphicsBudget"
+    ],
+    "verified": [
+      "artifact digest and exact source commit",
+      "artifact and IPA CRC",
+      "unique ZIP entries",
+      "IPA checksum",
+      "version/build and iPhoneOS",
+      "model hashes and closed release flag",
+      "privacy manifest",
+      "English notification flag false",
+      "denied sysctl absent",
+      "permissions RU/EN and no background modes",
+      "on-device speech selector",
+      "presentation voice ambient and graphics channels",
+      "no personal signing profile",
+      "narration hashes PCM timing script and draft flags",
+      "four Manrope faces manifest and OFL",
+      "four loops three neutral cues hashes PCM peaks",
+      "three compiled IPLR shaders"
+    ],
+    "limits": "Static artifact checks; physical behavior, performance and sound acceptance are not inferred."
+  },
+  "attempt_history": [
+    {
+      "id": 45926636522,
+      "source_commit": "6b381a7a9179bb7957955f77b18d9a5a0e00eaa2",
+      "conclusion": "failure",
+      "run_attempt": 1,
+      "url": "https://github.com/diMtiHH/diMti/actions/runs/45926636522"
+    },
+    {
+      "id": 45926636549,
+      "source_commit": "6b381a7a9179bb7957955f77b18d9a5a0e00eaa2",
+      "conclusion": "failure",
+      "run_attempt": 1,
+      "url": "https://github.com/diMtiHH/diMti/actions/runs/45926636549"
+    },
+    {
+      "id": 45927076365,
+      "source_commit": "91603bd1bc176719fdb7575d3567345966dc2f83",
+      "conclusion": "failure",
+      "run_attempt": 1,
+      "url": "https://github.com/diMtiHH/diMti/actions/runs/45927076365"
+    },
+    {
+      "id": 45927076335,
+      "source_commit": "91603bd1bc176719fdb7575d3567345966dc2f83",
+      "conclusion": "failure",
+      "run_attempt": 1,
+      "url": "https://github.com/diMtiHH/diMti/actions/runs/45927076335"
+    },
+    {
+      "id": 45927263187,
+      "source_commit": "708e8b46b835389904c663bccb275c950d4816e4",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "url": "https://github.com/diMtiHH/diMti/actions/runs/45927263187"
+    },
+    {
+      "id": 45927263072,
+      "source_commit": "708e8b46b835389904c663bccb275c950d4816e4",
+      "conclusion": "success",
+      "run_attempt": 1,
+      "url": "https://github.com/diMtiHH/diMti/actions/runs/45927263072"
+    }
+  ],
+  "failure_explanations": [
+    {
+      "source_commit": "6b381a7a9179bb7957955f77b18d9a5a0e00eaa2",
+      "cause": "Git Windows checkout expanded LF bytes in the pinned font license. Native build also hit Swift catch error shadowing.",
+      "fix": "Pin bundled assets and icon source to -text; reproduce real core.autocrlf checkout and strengthen source digest validation."
+    },
+    {
+      "source_commit": "91603bd1bc176719fdb7575d3567345966dc2f83",
+      "cause": "Checkout fixed; two Swift catch scopes still shadowed the error helper.",
+      "fix": "Use self.error in both scopes; full release build and native CI verify compilation."
+    },
+    {
+      "source_commit": "708e8b46b835389904c663bccb275c950d4816e4",
+      "cause": null,
+      "conclusion": "Both workflows passed; superseded by final small input-heading and arrow completion. Prior IPA replaced only after final archive verification."
+    }
+  ],
+  "ci": {
+    "runs": [
+      {
+        "id": 45928822289,
+        "name": "Application complete checks",
+        "head_sha": "cfd9de892b43ba2345d414de10bcca72a6ce84e5",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 1,
+        "created_at": "2026-11-27T02:31:21Z",
+        "updated_at": "2026-11-27T02:49:57Z",
+        "url": "https://github.com/diMtiHH/diMti/actions/runs/45928822289"
+      },
+      {
+        "id": 45928822301,
+        "name": "iPhone release build",
+        "head_sha": "cfd9de892b43ba2345d414de10bcca72a6ce84e5",
+        "status": "completed",
+        "conclusion": "success",
+        "run_attempt": 1,
+        "created_at": "2026-11-27T02:31:21Z",
+        "updated_at": "2026-11-27T02:37:21Z",
+        "url": "https://github.com/diMtiHH/diMti/actions/runs/45928822301"
+      }
+    ],
+    "jobs": [
+      {
+        "id": 140276427516,
+        "name": "iOS XCTest and native checks",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 45928822289,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Test clock crash recovery and notification deadlines",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Test native state validation and interrupted writes",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Test microphone signal and capture lifetime",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Test presentation profile and bundled narration policy",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Test ambient and microphone audio ownership",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Test CI runner and XCTest result validation",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Install pinned Flutter SDK",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Prepare verified assets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Prepare iOS SDK",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Build once and run every iOS test through XCTest",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Preserve XCTest results and launch diagnostics",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 26
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27
+          }
+        ]
+      },
+      {
+        "id": 140276427833,
+        "name": "Windows application tests",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 45928822289,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Test CI runner and rejection of incomplete XCTest reports",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Set up pinned SDK, analyze and run all application tests",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          }
+        ]
+      },
+      {
+        "id": 140276427488,
+        "name": "iphone",
+        "status": "completed",
+        "conclusion": "success",
+        "run_id": 45928822301,
+        "logs_url": null,
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Test clock crash recovery and notification deadlines",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Test native state validation and interrupted writes",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Test microphone signal and capture lifetime",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Test presentation profile and bundled narration policy",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Test ambient and microphone audio ownership",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Install pinned Flutter SDK",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Prepare verified local assets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Build for iPhone without signing",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Package unsigned IPA for local signing",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Checksum installable archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "Save built IPA for physical device testing",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Post Run actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 26
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27
+          }
+        ]
+      }
+    ]
+  },
+  "native": {
+    "job_id": 140276427516,
+    "python_passed": 20,
+    "python_seconds": 2.929,
+    "groups": {
+      "safety": 16,
+      "storage": 12,
+      "voice": 12,
+      "presentation": 16,
+      "ambient": 7
+    },
+    "storage_contract_cases": 74,
+    "storage_process_interruptions": 40,
+    "presentation_process_interruptions": 15,
+    "xctest_flutter": 6,
+    "xctest_resources": 1,
+    "test_retries": 0,
+    "boot_attempts": 1
+  },
+  "xctest": {
+    "cases": [
+      "RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()",
+      "UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn",
+      "UniverseIntegrationTests/testNativeAuraShadersRenderAllSixteenEnvironmentsAndLivingForms",
+      "UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState",
+      "UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery",
+      "UniverseIntegrationTests/testNativePresentationProfileAndBundledNarrationRejectUnsafeMutation",
+      "UniverseIntegrationTests/testNativeVoiceCapabilityAndCancellationNeverRequestCapture"
+    ],
+    "summary": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "x86_64",
+            "deviceId": "E27BB8C2-DF74-45A6-A75D-B64FFC187673",
+            "deviceName": "Universe XCTest 18.5",
+            "modelName": "iPhone 16",
+            "osBuildNumber": "22F77",
+            "osVersion": "18.5",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 7,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "Runner · Built with macOS 15.7.9",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1795747729.545,
+      "passedTests": 7,
+      "result": "Passed",
+      "skippedTests": 0,
+      "startTime": 1795747485.542,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - Runner",
+      "topInsights": [],
+      "totalTestCount": 7
+    },
+    "boot_attempts": [
+      "boot-1.log"
+    ],
+    "raw_reports": [
+      {
+        "path": "docs/device-reports/2026-11-27-stage6-xctest-summary.json",
+        "bytes": 705,
+        "sha256": "6152f8764a351f15a99f2f96fdb469a6c823eaa925313f2a0d8ce46f4a0d51a4"
+      },
+      {
+        "path": "docs/device-reports/2026-11-27-stage6-xctest-tests.json",
+        "bytes": 3780,
+        "sha256": "d2c7e8ba758f794aed3b01e950dd57ef20059ad6adcf0eff62077ad4249e9bb9"
+      },
+      {
+        "path": "docs/device-reports/2026-11-27-stage6-xctest-verified.json",
+        "bytes": 806,
+        "sha256": "d986a6febab6fa48105c872b75130b6861fd94ccb334978f99319d4d52978607"
+      }
+    ],
+    "archive_sha256": "ec4b7cefff74c1fd76a7affc41ba94a09a91db8dc821f26e656ed3b8bc059320",
+    "digest_verified": true,
+    "crc_verified": true,
+    "results_locally_revalidated": true,
+    "artifact": {
+      "id": 15168281778,
+      "name": "stage3-xctest-results",
+      "size_in_bytes": 90476,
+      "url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15168281778",
+      "archive_download_url": "https://api.github.com/repos/diMtiHH/diMti/actions/artifacts/15168281778/zip",
+      "expired": false,
+      "created_at": "2026-11-27T02:49:49Z",
+      "expires_at": "2026-11-28T02:49:08Z",
+      "updated_at": "2026-11-27T02:49:49Z",
+      "digest": "sha256:ec4b7cefff74c1fd76a7affc41ba94a09a91db8dc821f26e656ed3b8bc059320",
+      "workflow_run": {
+        "id": 45928822289,
+        "repository_id": 720727602,
+        "head_repository_id": 720727602,
+        "head_branch": "stage6-iphone",
+        "head_sha": "cfd9de892b43ba2345d414de10bcca72a6ce84e5"
+      }
+    },
+    "local_archive": "mobile/build/ci-results/stage6-xctest-45928822289.zip"
+  },
+  "evidence_files": [
+    {
+      "path": "setup-windows-stage6-ui-final.log",
+      "bytes": 58753,
+      "sha256": "67b339ad4186cfef7a5d9d8be64791797261c65ecff115e948d3046930ee784f"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-windows-ci.log",
+      "bytes": 76459,
+      "sha256": "8a4fc44301dd72d88065694c4eb2eb10394a4827e868c0f7f58701016d45f638"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-release-ci-excerpt.log",
+      "bytes": 11442,
+      "sha256": "758055578b07ded1ff2a6a678c50e75f5512186aa1c8df1bf132854df9faa87a"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-native-ci-excerpt.log",
+      "bytes": 14930,
+      "sha256": "cbb8859f2954344a417e0c6c33ee2cf060d6cb6ace073cdfb1989b84f9dc6bac"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-xctest-summary.json",
+      "bytes": 705,
+      "sha256": "6152f8764a351f15a99f2f96fdb469a6c823eaa925313f2a0d8ce46f4a0d51a4"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-xctest-tests.json",
+      "bytes": 3780,
+      "sha256": "d2c7e8ba758f794aed3b01e950dd57ef20059ad6adcf0eff62077ad4249e9bb9"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-xctest-verified.json",
+      "bytes": 806,
+      "sha256": "d986a6febab6fa48105c872b75130b6861fd94ccb334978f99319d4d52978607"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-windows-checkout-failure.log",
+      "bytes": 6700,
+      "sha256": "1308c1d3e4ab28bb961393cfeca9e4bebef771100106015d542e1a2ff2b031b6"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-ios-compile-failure.log",
+      "bytes": 1574,
+      "sha256": "543a80ba9b428b6d55d639f91b852fc37b76491dc948981504a689e2f47cb70d"
+    }
+  ],
+  "limits": [
+    "No physical acceptance or installation claimed or requested.",
+    "Stable FPS, heat, power draw, acoustics and physical VoiceOver usability remain unmeasured.",
+    "Ambient/cues and onboarding narration are provisional; English wording is not approved.",
+    "World tab is an honest placeholder without collected questions or fabricated statistics.",
+    "Answer replay uses foreground RAM only; privacy and durable kernel schema are unchanged.",
+    "No admission opening; positive paths use isolated automated diagnostic fixtures.",
+    "Inherited R08 limits across owner/process destruction and reboot remain documented."
+  ]
+}
