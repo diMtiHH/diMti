@@ -93,7 +93,7 @@ final class AmbientBridge: NSObject, AVAudioPlayerDelegate {
         result(nil)
       } catch {
         stop(interrupted: false)
-        result(error("unavailable"))
+        result(self.error("unavailable"))
       }
     case "cue":
       guard let args = call.arguments as? [String: Any], Set(args.keys) == ["event"],
@@ -124,7 +124,7 @@ final class AmbientBridge: NSObject, AVAudioPlayerDelegate {
           return result(error("unavailable"))
         }
         result(nil)
-      } catch { result(error("unavailable")) }
+      } catch { result(self.error("unavailable")) }
     case "stop":
       guard call.arguments == nil || (call.arguments as? [String: Any])?.isEmpty == true else {
         return result(error("unavailable"))

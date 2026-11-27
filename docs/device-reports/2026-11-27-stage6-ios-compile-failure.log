@@ -1,0 +1,24 @@
+Stage 6 initial iOS release build failure
+Run: https://github.com/diMtiHH/diMti/actions/runs/45926636549
+Job: 140269364884
+Source: 6b381a7a9179bb7957955f77b18d9a5a0e00eaa2
+
+All native policy groups passed; building the full iOS bridge failed.
+Swift catch implicitly binds `error`, shadowing the error(_:) helper.
+The two affected catch handlers now call self.error("unavailable").
+No IPA or complete iOS test success is claimed for this source.
+
+2026-11-27T02:09:32.6031480Z Native safety checks: 16/16 passed
+2026-11-27T02:09:39.6122110Z Native storage checks: 12/12 passed; 74 contract cases; 40 process interruptions
+2026-11-27T02:09:40.5689520Z Native voice checks: 12/12 passed
+2026-11-27T02:09:44.6001520Z Native presentation checks: 16/16 passed; 15 process interruptions
+2026-11-27T02:09:45.2278030Z Native ambient groups passed: 7
+2026-11-27T02:11:02.6326300Z No issues found! (ran in 12.4s)
+2026-11-27T02:13:39.3734530Z Xcode build done.                                           97.2s
+2026-11-27T02:13:41.0693000Z Swift Compiler Error (Xcode): Cannot call value of non-function type 'any Error'
+2026-11-27T02:13:41.0694390Z /Users/runner/work/diMti/diMti/mobile/ios/Runner/AmbientBridge.swift:95:15
+2026-11-27T02:13:41.0695610Z Swift Compiler Error (Xcode): Cannot call value of non-function type 'any Error'
+2026-11-27T02:13:41.0697280Z /Users/runner/work/diMti/diMti/mobile/ios/Runner/AmbientBridge.swift:126:23
+2026-11-27T02:13:41.0752310Z Encountered error while building for device.
+2026-11-27T02:13:41.0909260Z ##[error]Process completed with exit code 1.
+
