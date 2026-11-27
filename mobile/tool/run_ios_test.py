@@ -120,11 +120,11 @@ def main():
             (output / f'{kind}.json').write_text(result.stdout, encoding='utf-8')
         passed = validate(json.loads((output / 'tests.json').read_text(encoding='utf-8')))
         (output / 'verified.json').write_text(json.dumps({
-            'protocol': 'stage4-xctest-v1', 'flutter_integration_tests_passed': 4,
+            'protocol': 'stage5-xctest-v1', 'flutter_integration_tests_passed': 5,
             'native_resource_tests_passed': 1, 'cases': passed,
             'runner': platform.machine(), 'test_retries': 0,
         }, indent=2) + '\n', encoding='utf-8')
-        print('VERIFIED: all 4 Flutter integration tests and 1 native resource test passed in one XCTest run.', flush=True)
+        print('VERIFIED: all 5 Flutter integration tests and 1 native resource test passed in one XCTest run.', flush=True)
         for name in passed:
             print(f'PASS {name}', flush=True)
         return 0

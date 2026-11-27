@@ -1,0 +1,81 @@
+{
+  "termsVersion": 1,
+  "provisionalNarration": true,
+  "englishWordingApproved": false,
+  "languages": {
+    "ru": {
+      "voice": "Microsoft Pavel",
+      "durationMs": 34583,
+      "sha256": "99f4890f1d3f260ff1dbc56faf0e6b9f2028cfd2c505a87ae1f735d91fef7f77",
+      "segments": [
+        {
+          "text": "Среди миллиардов звёзд есть вопросы, на которые никто не может ответить за тебя.",
+          "startMs": 0,
+          "endMs": 6755
+        },
+        {
+          "text": "Иногда случайность помогает услышать собственные мысли.",
+          "startMs": 6955,
+          "endMs": 11904
+        },
+        {
+          "text": "Ответы Вселенной в этом приложении случайны. Это не предсказания, не советы и не указания к действию.",
+          "startMs": 12104,
+          "endMs": 21342
+        },
+        {
+          "text": "Только ты выбираешь свой шаг и принимаешь его последствия.",
+          "startMs": 21542,
+          "endMs": 26535
+        },
+        {
+          "text": "После каждого ответа — тридцать минут тишины.",
+          "startMs": 26735,
+          "endMs": 31135
+        },
+        {
+          "text": "Время, чтобы услышать себя.",
+          "startMs": 31335,
+          "endMs": 34583
+        }
+      ]
+    },
+    "en": {
+      "voice": "Microsoft Zira",
+      "durationMs": 30442,
+      "sha256": "6897a88fb8f54b4ed5fb4fbf6ec83c66db6e7b8c284bd1263bccb6f8df278349",
+      "segments": [
+        {
+          "text": "Among billions of stars, there are questions that no one can answer for you.",
+          "startMs": 0,
+          "endMs": 5633
+        },
+        {
+          "text": "Sometimes chance helps you hear your own thoughts.",
+          "startMs": 5833,
+          "endMs": 9692
+        },
+        {
+          "text": "The Universe's answers in this app are random. They are not predictions, advice, or instructions to act.",
+          "startMs": 9892,
+          "endMs": 18046
+        },
+        {
+          "text": "Only you choose your path and take responsibility for its consequences.",
+          "startMs": 18246,
+          "endMs": 23524
+        },
+        {
+          "text": "After each answer, thirty minutes of quiet.",
+          "startMs": 23724,
+          "endMs": 27598
+        },
+        {
+          "text": "Time to listen to yourself.",
+          "startMs": 27798,
+          "endMs": 30442
+        }
+      ]
+    }
+  }
+}

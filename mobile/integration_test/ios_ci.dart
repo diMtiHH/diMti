@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
 import 'ios_model_test.dart' as model;
+import 'ios_presentation_test.dart' as presentation;
 import 'ios_session_test.dart' as session;
 import 'ios_voice_test.dart' as voice;
 
@@ -18,5 +19,6 @@ void main() {
 
   session.main();
   voice.main();
+  presentation.main();
   model.main();
 }

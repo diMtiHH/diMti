@@ -4,6 +4,7 @@ import json
 import plistlib
 from pathlib import Path
 import sys
+import wave
 
 app = Path(sys.argv[1])
 repo = Path(__file__).resolve().parents[2]
@@ -35,3 +36,20 @@ for language in ('ru', 'en'):
         assert localized.get(key, '').strip(), (language, key)
 assert not info.get('UIBackgroundModes'), 'Background recording is not authorized'
 print('Local speech permission descriptions RU/EN and closed notification flag: verified')
+onboarding = app / 'Frameworks/App.framework/flutter_assets/assets/onboarding'
+metadata = json.loads((onboarding / 'narration.json').read_text(encoding='utf-8'))
+script = json.loads((onboarding / 'script.json').read_text(encoding='utf-8'))
+assert metadata['termsVersion'] == script['termsVersion'] == 1
+assert metadata['provisionalNarration'] is True
+assert metadata['englishWordingApproved'] is False
+for language in ('ru', 'en'):
+    track = metadata['languages'][language]
+    path = onboarding / f'{language}.wav'
+    assert hashlib.sha256(path.read_bytes()).hexdigest() == track['sha256']
+    assert [s['text'] for s in track['segments']] == script[language]
+    with wave.open(str(path), 'rb') as wav:
+        assert (wav.getnchannels(), wav.getsampwidth(), wav.getframerate()) == (1, 2, 22050)
+        assert abs(wav.getnframes() / wav.getframerate() * 1000 - track['durationMs']) < 1
+    for segment in track['segments']:
+        assert 0 <= segment['startMs'] < segment['endMs'] <= track['durationMs']
+print('Bundled provisional narration RU/EN, timing and text: verified')

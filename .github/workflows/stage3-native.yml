@@ -1,7 +1,7 @@
 name: Application complete checks
 on:
   push:
-    branches: [stage3-native-check, stage3-iphone, stage4-iphone]
+    branches: [stage3-native-check, stage3-iphone, stage4-iphone, stage5-iphone]
   workflow_dispatch:
 permissions:
   contents: read
@@ -31,6 +31,8 @@ jobs:
         run: bash mobile/tool/run_native_storage.sh
       - name: Test microphone signal and capture lifetime
         run: bash mobile/tool/run_native_voice.sh
+      - name: Test presentation profile and bundled narration policy
+        run: bash mobile/tool/run_native_presentation.sh
       - name: Test XCTest result validation
         run: python3 -m unittest discover -s mobile/tool -p test_xctest_result.py -v
       - name: Install pinned Flutter SDK

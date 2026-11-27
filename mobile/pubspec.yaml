@@ -1,7 +1,7 @@
 name: universe_lab
 description: Local bilingual iPhone validation bench for Ask the Universe.
 publish_to: none
-version: 0.4.0+8
+version: 0.5.0+9
 environment:
   sdk: '>=3.14.0 <4.0.0'
 dependencies:
@@ -19,6 +19,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/onboarding/script.json
+    - assets/onboarding/narration.json
+    - assets/onboarding/ru.wav
+    - assets/onboarding/en.wav
     - assets/stage2/model.onnx
     - assets/stage2/tokenizer.json
     - assets/stage2/head.json

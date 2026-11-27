@@ -15,26 +15,10 @@ import 'voice_star.dart';
 
 enum _LoadStage { preferences, clock, model, state }
 
-class UniverseApp extends StatelessWidget {
-  const UniverseApp({super.key});
-  @override
-  Widget build(BuildContext context) => SessionClockScope(
-    child: MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Спроси Вселенную',
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xff050507),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xff86a7df),
-          brightness: Brightness.dark,
-        ),
-      ),
-      home: const SessionPage(),
-    ),
-  );
-}
-
 class SessionPage extends StatefulWidget {
+  final bool embedded, active;
+  final String nickname;
+  final int languageRevision;
   final bool diagnostic;
   final SessionBackend? backend;
   final Future<Reading> Function(String, String)? inspector;
@@ -47,6 +31,10 @@ class SessionPage extends StatefulWidget {
     this.inspector,
     this.random,
     this.voiceBackend,
+    this.embedded = false,
+    this.active = true,
+    this.nickname = '',
+    this.languageRevision = 0,
   });
   @override
   State<SessionPage> createState() => _SessionPageState();
@@ -68,7 +56,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   SubmitResult? _result;
   String _language = 'ru';
   bool _loading = true, _failed = false, _settingsBusy = false;
-  bool _loadRunning = false;
+  bool _loadRunning = false, _reloadPending = false;
   _LoadStage _loadStage = _LoadStage.preferences;
   bool _notifications = false, _notificationError = false;
   bool _englishNotifications = false;
@@ -112,7 +100,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
     WidgetsBinding.instance.addObserver(this);
     _tick = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (_foreground && !_covered) _session?.refresh();
+      if (_foreground && !_covered && widget.active) _session?.refresh();
     });
   }
 
@@ -125,10 +113,39 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     _load();
   }
 
+  @override
+  void didUpdateWidget(SessionPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.active && !widget.active) _hidePrivateView();
+    if (!oldWidget.active && widget.active && _foreground && !_covered) {
+      _session?.setActive(true);
+      _resume();
+    }
+    if (oldWidget.languageRevision != widget.languageRevision) {
+      _hidePrivateView();
+      _load();
+    }
+  }
+
   Future<void> _load() async {
+    // Shell language changes may arrive while a native read/model startup is
+    // awaiting. Queue the latest reload instead of losing it to the busy guard.
+    _reloadPending = true;
     if (_loadRunning) return;
-    _discardVoice();
     _loadRunning = true;
+    try {
+      while (mounted && _reloadPending) {
+        _reloadPending = false;
+        await _loadOnce();
+      }
+    } finally {
+      _loadRunning = false;
+    }
+    if (mounted) setState(() => _loading = false);
+  }
+
+  Future<void> _loadOnce() async {
+    _discardVoice();
     _session?.onChanged = null;
     _session = null;
     _worker?.close();
@@ -146,11 +163,12 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     try {
       _loadStage = _LoadStage.preferences;
       final prefs = await _backend.preferences();
+      if (!mounted || _reloadPending) return;
       _language = prefs.language;
       _loadStage = _LoadStage.clock;
       // Reloading the worker/session must not forget the last valid clock.
       _clockGuard.accept(await _backend.readClock());
-      if (!mounted) return;
+      if (!mounted || _reloadPending) return;
       _language = prefs.language;
       _notifications = prefs.notifications;
       _englishNotifications = prefs.englishNotifications;
@@ -174,7 +192,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         }
         validator = ClosedModelGate(inspect).call;
       }
-      if (!mounted) {
+      if (!mounted || _reloadPending) {
         _worker?.close();
         return;
       }
@@ -188,18 +206,21 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         notifications: BackendNotifications(_backend),
         initialLanguage: _language,
       );
-      _session = session;
       _loadStage = _LoadStage.state;
-      session.setActive(_foreground && !_covered);
+      session.setActive(_foreground && !_covered && widget.active);
       await session.initialize();
+      if (!mounted || _reloadPending) {
+        _worker?.close();
+        return;
+      }
+      // Activity can also change while initialize awaits the native store.
+      session.setActive(_foreground && !_covered && widget.active);
+      _session = session;
       session.onChanged = _changed;
     } catch (_) {
-      _failed = true;
       _worker?.close();
-    } finally {
-      _loadRunning = false;
+      if (mounted && !_reloadPending) _failed = true;
     }
-    if (mounted) setState(() => _loading = false);
   }
 
   void _changed() {
@@ -235,7 +256,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             state == AppLifecycleState.inactive &&
             _voice?.state == VoiceInputState.starting,
       );
-    } else if (!_covered) {
+    } else if (!_covered && widget.active) {
       _session?.setActive(true);
       _resume();
     }
@@ -253,7 +274,10 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
 
   void _prepare() {
     final session = _session!;
-    if (session.busy ||
+    if (!widget.active ||
+        !_foreground ||
+        _covered ||
+        session.busy ||
         session.phase != SessionPhase.ready ||
         _voice?.busy == true)
       return;
@@ -272,7 +296,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     _input.clear();
     _review = null;
     final result = await _session!.confirm(review);
-    if (mounted && _foreground && !_covered) setState(() => _result = result);
+    if (mounted && _foreground && !_covered && widget.active)
+      setState(() => _result = result);
   }
 
   void _voiceChanged() {
@@ -282,6 +307,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     if (_voiceRevisionActive &&
         _foreground &&
         !_covered &&
+        widget.active &&
         session?.phase == SessionPhase.ready) {
       if (_input.text != voice.text) {
         _input.value = TextEditingValue(
@@ -303,7 +329,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   }
 
   Future<void> _startVoice() async {
-    if (!_foreground ||
+    if (!widget.active ||
+        !_foreground ||
         _covered ||
         _settingsBusy ||
         _voice?.busy == true ||
@@ -408,8 +435,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     );
     if (!mounted) return;
     _covered = false;
-    _session?.setActive(_foreground);
-    if (_foreground) await _resume();
+    _session?.setActive(_foreground && widget.active);
+    if (_foreground && widget.active) await _resume();
   }
 
   Future<void> _resetDiagnostic() async {
@@ -433,6 +460,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
       if (!mounted ||
           !_foreground ||
           _covered ||
+          !widget.active ||
           _session?.phase != SessionPhase.pending ||
           (widget.diagnostic && !_reveal))
         return;
@@ -459,7 +487,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   };
 
   Widget _content(QuestionSession session) {
-    if (!_foreground || _covered) return const SizedBox.shrink();
+    if (!_foreground || _covered || !widget.active)
+      return const SizedBox.shrink();
     switch (session.phase) {
       case SessionPhase.loading:
       case SessionPhase.checking:
@@ -630,7 +659,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
               VoiceStar(
                 level: _voice!.level,
                 listening: _voice!.recording,
-                active: _foreground && !_covered,
+                active: _foreground && !_covered && widget.active,
                 enabled:
                     !_settingsBusy &&
                     !session.busy &&
@@ -693,17 +722,34 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final session = _session;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.diagnostic
-              ? t('Проверка ядра', 'Core check')
-              : t('Спроси Вселенную', 'Ask the Universe'),
-        ),
-      ),
+      backgroundColor: widget.embedded ? Colors.transparent : null,
+      appBar: widget.embedded
+          ? null
+          : AppBar(
+              title: Text(
+                widget.diagnostic
+                    ? t('Проверка ядра', 'Core check')
+                    : t('Спроси Вселенную', 'Ask the Universe'),
+              ),
+            ),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
+            if (widget.embedded &&
+                widget.nickname.isNotEmpty &&
+                _foreground &&
+                widget.active)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Text(
+                  t(
+                    '${widget.nickname}, какой у тебя вопрос?',
+                    '${widget.nickname}, what is your question?',
+                  ),
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
             Text(
               widget.diagnostic
                   ? t(
@@ -716,23 +762,24 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                     ),
             ),
             const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              children: ['ru', 'en']
-                  .map(
-                    (language) => TextButton(
-                      onPressed:
-                          _loading ||
-                              _settingsBusy ||
-                              session?.busy == true ||
-                              language == _language
-                          ? null
-                          : () => _languageTo(language),
-                      child: Text(language == 'ru' ? 'Русский' : 'English'),
-                    ),
-                  )
-                  .toList(),
-            ),
+            if (!widget.embedded)
+              Wrap(
+                spacing: 12,
+                children: ['ru', 'en']
+                    .map(
+                      (language) => TextButton(
+                        onPressed:
+                            _loading ||
+                                _settingsBusy ||
+                                session?.busy == true ||
+                                language == _language
+                            ? null
+                            : () => _languageTo(language),
+                        child: Text(language == 'ru' ? 'Русский' : 'English'),
+                      ),
+                    )
+                    .toList(),
+              ),
             const SizedBox(height: 24),
             if (_loading)
               const Center(child: CircularProgressIndicator())
@@ -749,7 +796,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
             else if (session != null)
               _content(session),
             const SizedBox(height: 32),
-            if (!_loading && !_failed)
+            if (!widget.embedded && !_loading && !_failed)
               SwitchListTile(
                 title: Text(
                   t('Напомнить после паузы', 'Remind me after the pause'),
@@ -770,7 +817,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                     ? null
                     : _toggleNotifications,
               ),
-            if (_language == 'en' && !_englishNotifications)
+            if (!widget.embedded && _language == 'en' && !_englishNotifications)
               const Text('Reminders are currently available in Russian.'),
             if (_notificationError || session?.notificationFailed == true)
               Text(
@@ -780,7 +827,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                 ),
               ),
             const SizedBox(height: 24),
-            if (!widget.diagnostic)
+            if (!widget.embedded && !widget.diagnostic)
               TextButton(
                 onPressed: _loading || _settingsBusy || session?.busy == true
                     ? null
@@ -795,12 +842,13 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
                 child: Text(t('Сбросить только тест', 'Reset test only')),
               ),
             const SizedBox(height: 12),
-            Text(
-              t(
-                'Случайный ответ не предсказывает будущее и не заменяет профессиональную помощь.',
-                'A random answer does not predict the future or replace professional help.',
+            if (!widget.embedded)
+              Text(
+                t(
+                  'Случайный ответ не предсказывает будущее и не заменяет профессиональную помощь.',
+                  'A random answer does not predict the future or replace professional help.',
+                ),
               ),
-            ),
           ],
         ),
       ),

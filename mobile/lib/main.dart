@@ -8,7 +8,7 @@ import 'engine.dart';
 import 'device_run.dart';
 import 'device_report.dart';
 import 'worker.dart';
-import 'session_page.dart';
+import 'app_shell.dart';
 
 void main() => runApp(const UniverseApp());
 
