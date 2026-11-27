@@ -1,0 +1,78 @@
+Stage 6 Windows checkout failure — preserved CI excerpt
+Run: https://github.com/diMtiHH/diMti/actions/runs/45926636522
+Job: https://github.com/diMtiHH/diMti/actions/runs/45926636522/job/140269364651
+Source: 6b381a7a9179bb7957955f77b18d9a5a0e00eaa2
+Attempt: 1
+Result: Python 19 passed / 1 failed; Flutter setup, analyzer and application tests skipped.
+
+2026-11-27T02:09:21.7557927Z ##[group]Run python -m unittest discover -s mobile/tool -p "test_*.py" -v
+2026-11-27T02:09:21.7558494Z [36;1mpython -m unittest discover -s mobile/tool -p "test_*.py" -v[0m
+2026-11-27T02:09:21.9344180Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-11-27T02:09:21.9344807Z ##[endgroup]
+2026-11-27T02:09:25.1102089Z test_ambient_is_provisional_and_off_by_default (test_aura_assets.AuraAssetsTests.test_ambient_is_provisional_and_off_by_default) ... ok
+2026-11-27T02:09:25.1273411Z test_app_icons_match_catalog_and_are_opaque_rgb (test_aura_assets.AuraAssetsTests.test_app_icons_match_catalog_and_are_opaque_rgb) ... ok
+2026-11-27T02:09:25.2267472Z test_audio_format_hash_quiet_peak_and_seam (test_aura_assets.AuraAssetsTests.test_audio_format_hash_quiet_peak_and_seam) ... ok
+2026-11-27T02:09:25.2278302Z test_fonts_match_pinned_sources_and_static_weights (test_aura_assets.AuraAssetsTests.test_fonts_match_pinned_sources_and_static_weights) ... FAIL
+2026-11-27T02:09:25.2321683Z test_neutral_cues_are_short_quiet_and_answer_independent (test_aura_assets.AuraAssetsTests.test_neutral_cues_are_short_quiet_and_answer_independent) ... ok
+2026-11-27T02:09:25.3715383Z test_inherited_stdout_does_not_keep_successful_step_open (test_ios_runner.IOSCommandRunner.test_inherited_stdout_does_not_keep_successful_step_open) ... ok
+2026-11-27T02:09:25.4018912Z test_nonzero_exit_is_not_hidden_by_success_looking_output (test_ios_runner.IOSCommandRunner.test_nonzero_exit_is_not_hidden_by_success_looking_output) ... ok
+2026-11-27T02:09:25.6127909Z test_real_timeout_stops_direct_process_and_returns_124 (test_ios_runner.IOSCommandRunner.test_real_timeout_stops_direct_process_and_returns_124) ... ok
+2026-11-27T02:09:26.6510435Z test_slow_live_console_cannot_turn_success_into_failure (test_ios_runner.IOSCommandRunner.test_slow_live_console_cannot_turn_success_into_failure) ... ok
+2026-11-27T02:09:26.6521302Z test_spawn_failure_is_not_reported_as_success (test_ios_runner.IOSCommandRunner.test_spawn_failure_is_not_reported_as_success) ... ok
+2026-11-27T02:09:26.6817016Z test_stdout_stderr_and_non_utf8_bytes_are_preserved (test_ios_runner.IOSCommandRunner.test_stdout_stderr_and_non_utf8_bytes_are_preserved) ... ok
+2026-11-27T02:09:26.6897762Z test_timeout_escalates_to_kill_for_unresponsive_process_group (test_ios_runner.IOSCommandRunner.test_timeout_escalates_to_kill_for_unresponsive_process_group) ... ok
+2026-11-27T02:09:26.6898969Z test_all_required_cases (test_xctest_result.XCTestResultContract.test_all_required_cases) ... ok
+2026-11-27T02:09:26.6900088Z test_duplicate_cannot_replace_missing_case (test_xctest_result.XCTestResultContract.test_duplicate_cannot_replace_missing_case) ... ok
+2026-11-27T02:09:26.6903252Z test_empty_report_cannot_pass (test_xctest_result.XCTestResultContract.test_empty_report_cannot_pass) ... ok
+2026-11-27T02:09:26.6904170Z test_failed_case_cannot_pass (test_xctest_result.XCTestResultContract.test_failed_case_cannot_pass) ... ok
+2026-11-27T02:09:26.6905419Z test_missing_case_cannot_pass (test_xctest_result.XCTestResultContract.test_missing_case_cannot_pass) ... ok
+2026-11-27T02:09:26.6906679Z test_retry_cannot_disguise_failure (test_xctest_result.XCTestResultContract.test_retry_cannot_disguise_failure) ... ok
+2026-11-27T02:09:26.6907941Z test_same_name_from_wrong_suite_cannot_pass (test_xctest_result.XCTestResultContract.test_same_name_from_wrong_suite_cannot_pass) ... ok
+2026-11-27T02:09:26.6908990Z test_skipped_case_cannot_pass (test_xctest_result.XCTestResultContract.test_skipped_case_cannot_pass) ... ok
+2026-11-27T02:09:26.6909484Z 
+2026-11-27T02:09:26.6909609Z ======================================================================
+2026-11-27T02:09:26.6910372Z FAIL: test_fonts_match_pinned_sources_and_static_weights (test_aura_assets.AuraAssetsTests.test_fonts_match_pinned_sources_and_static_weights)
+2026-11-27T02:09:26.6911216Z ----------------------------------------------------------------------
+2026-11-27T02:09:26.6913580Z Traceback (most recent call last):
+2026-11-27T02:09:26.6914404Z   File "D:\a\diMti\diMti\mobile\tool\test_aura_assets.py", line 44, in test_fonts_match_pinned_sources_and_static_weights
+2026-11-27T02:09:26.6915006Z     self.assertEqual(len(data), entry['bytes'])
+2026-11-27T02:09:26.6915320Z AssertionError: 4480 != 4387
+2026-11-27T02:09:26.6915489Z 
+2026-11-27T02:09:26.6915650Z ----------------------------------------------------------------------
+2026-11-27T02:09:26.6915994Z Ran 20 tests in 1.581s
+2026-11-27T02:09:26.6916140Z 
+2026-11-27T02:09:26.6916221Z FAILED (failures=1)
+2026-11-27T02:09:27.0104275Z ##[error]Process completed with exit code 1.
+
+Diagnosis and local checkout verification
+OFL.txt is pinned to 4387 bytes with 93 LF line endings; core.autocrlf=true
+checked it out as 4480 bytes. Its raw bytes are part of the upstream SHA-256
+contract, so normalizing bytes inside validation would weaken that contract.
+upstream-METADATA.pb also has pinned LF bytes. The icon provenance pins the
+raw bytes of mobile/lib/aura_ui.dart.
+
+Correction (no app source or asset-byte changes):
+  mobile/assets/** -text
+  mobile/lib/aura_ui.dart -text
+Existing icon validation now also checks the recorded raw vector-source SHA-256.
+
+An isolated temporary Git index was exercised with core.autocrlf=true:
+  git -c core.autocrlf=true init --quiet
+  git -c core.autocrlf=true add -- .gitattributes [the three text files]
+  git -c core.autocrlf=true checkout-index --all --prefix=[temporary output]/
+A control with no attributes reproduced the 93 extra bytes in OFL.txt.
+With the corrected attributes, all three checked-out files equalled the
+original bytes exactly. The old attributes failed this assertion; the new
+attributes passed. Temporary verification was not added to CI and introduced
+no new CI dependency.
+
+Preserved raw SHA-256:
+  OFL.txt: 58172e0c0fac2cda8a37b348164bb55e44b0e69051e557e92b1d3f6910141f7b
+  upstream-METADATA.pb: fb204147a7c16d009d4fa53248b6075bc941d7adfa450a825bc5d4cef2f9ded9
+  mobile/lib/aura_ui.dart: fa71556615aecabad489b52b52d719365ea322eaa8311621a247b4a787b5c77f
+
+Temporary checkout verification: 1 passed in 0.312s, exit 0.
+Final existing Python suite after correction:
+  python -m unittest discover -s mobile/tool -p 'test_*.py' -v
+  Ran 20 tests in 1.576s
+  OK (exit 0)

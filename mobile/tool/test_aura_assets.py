@@ -19,6 +19,8 @@ class AuraAssetsTests(unittest.TestCase):
         self.assertFalse(manifest['transparency'])
         self.assertFalse(manifest['final_brand_acceptance'])
         self.assertEqual(manifest['color_mode'], 'RGB')
+        self.assertEqual(hashlib.sha256((ROOT.parent.parent / manifest['vector_source']).read_bytes()).hexdigest(),
+                         manifest['vector_source_sha256'])
         self.assertEqual(set(manifest['exports']), {entry['filename'] for entry in catalog['images']})
         for entry in catalog['images']:
             name = entry['filename']

@@ -1,4 +1,4 @@
-# Verified model resources must retain the exact bytes in their SHA-256 manifest.
-mobile/assets/stage2/head.json -text
-mobile/assets/stage2/tokenizer.json -text
-mobile/assets/stage2/model.onnx -text
+# Bundled resources, including upstream text licenses, retain their pinned bytes.
+mobile/assets/** -text
+# The original icon manifest pins the raw bytes of this vector source as well.
+mobile/lib/aura_ui.dart -text
