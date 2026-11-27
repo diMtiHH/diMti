@@ -883,7 +883,20 @@ class _SessionPageState extends State<SessionPage>
           FilledButton(
             key: const ValueKey('ask-question'),
             onPressed: _openInput,
-            child: Text(t('Задать вопрос', 'Ask a question')),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Flexible(
+                  child: Text(
+                    t('Задать вопрос', 'Ask a question'),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                const AuraIcon(kind: AuraIconKind.arrowRight, size: 20),
+              ],
+            ),
           ),
         ],
       );
@@ -892,6 +905,15 @@ class _SessionPageState extends State<SessionPage>
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         _auraForm(height * .55),
+        if (!widget.diagnostic)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Text(
+              t('Твой вопрос', 'Your question'),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headlineSmall,
+            ),
+          ),
         if (!widget.diagnostic)
           TextField(
             key: const ValueKey('question-input'),
