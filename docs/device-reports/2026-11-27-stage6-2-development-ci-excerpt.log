@@ -1,0 +1,191 @@
+First CI source: b00a1f906dc4d4dff506371d75bc7029d5ab634f
+Complete checks: https://github.com/diMtiHH/diMti/actions/runs/45956790309
+Release succeeded, Windows 410/410 succeeded, iOS shader readiness exceeded the test's 5-second bound during cold Metal compilation. No physical performance result is inferred.
+
+2026-11-27T07:12:19.8659070Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-27T07:12:19.8659870Z Native safety checks: 16/16 passed
+2026-11-27T07:12:19.8789000Z ##[group]Run bash mobile/tool/run_native_storage.sh
+2026-11-27T07:12:19.8790260Z [36;1mbash mobile/tool/run_native_storage.sh[0m
+2026-11-27T07:12:29.7031110Z PASS storage 12: both private scope directories excluded from backup
+2026-11-27T07:12:29.7078650Z Native storage checks: 12/12 passed; 74 contract cases; 40 process interruptions
+2026-11-27T07:12:29.7248260Z ##[group]Run bash mobile/tool/run_native_voice.sh
+2026-11-27T07:12:29.7248960Z [36;1mbash mobile/tool/run_native_voice.sh[0m
+2026-11-27T07:12:31.7937390Z PASS capture permission and finalization waits have explicit limits
+2026-11-27T07:12:31.7938220Z Native voice checks: 19/19 passed
+2026-11-27T07:12:31.8060000Z ##[group]Run bash mobile/tool/run_native_presentation.sh
+2026-11-27T07:12:31.8060790Z [36;1mbash mobile/tool/run_native_presentation.sh[0m
+2026-11-27T07:12:38.8274320Z PASS narration durations are finite positive and bounded
+2026-11-27T07:12:38.8275100Z Native presentation checks: 16/16 passed; 15 process interruptions
+2026-11-27T07:12:38.8389270Z ##[group]Run bash mobile/tool/run_native_ambient.sh
+2026-11-27T07:12:38.8390480Z [36;1mbash mobile/tool/run_native_ambient.sh[0m
+2026-11-27T07:12:40.5965870Z PASS finite short cue duration
+2026-11-27T07:12:40.5966380Z Native ambient groups passed: 7
+2026-11-27T07:12:40.6166420Z ##[group]Run bash mobile/tool/run_native_interaction.sh
+2026-11-27T07:12:40.6167470Z [36;1mbash mobile/tool/run_native_interaction.sh[0m
+2026-11-27T07:12:44.7760570Z PASS interaction 12: release acknowledgement waits for the short impulse
+2026-11-27T07:12:44.7761300Z Native interaction checks: 12/12 passed
+2026-11-27T07:12:44.8061720Z ##[group]Run python3 -m unittest discover -s mobile/tool -p "test_*.py" -v
+2026-11-27T07:12:44.8062990Z [36;1mpython3 -m unittest discover -s mobile/tool -p "test_*.py" -v[0m
+2026-11-27T07:12:50.2435180Z ----------------------------------------------------------------------
+2026-11-27T07:12:50.2435870Z Ran 20 tests in 3.628s
+2026-11-27T07:12:50.2436110Z 
+2026-11-27T07:12:50.2436280Z OK
+2026-11-27T07:22:09.9566390Z 2026-11-27 07:22:09.740510+0000 Runner[26743:77709] flutter: The following TimeoutException was thrown running a test:
+2026-11-27T07:22:10.0727070Z 2026-11-27 07:22:09.740954+0000 Runner[26743:77709] flutter: TimeoutException after 0:00:05.000000: Future not completed
+2026-11-27T07:22:10.1798080Z 2026-11-27 07:22:09.741419+0000 Runner[26743:77709] flutter:
+2026-11-27T07:22:10.2802390Z 2026-11-27 07:22:09.741823+0000 Runner[26743:77709] flutter: When the exception was thrown, this was the stack:
+2026-11-27T07:22:11.9012060Z 2026-11-27 07:22:09.747837+0000 Runner[26743:77709] flutter: ════════════════════════════════════════════════════════════════════════════════════════════════════
+2026-11-27T07:22:12.0046310Z 2026-11-27 07:22:09.751698+0000 Runner[26743:77709] flutter: 00:12 +4: native AURA shaders render all sixteen environments and living forms [E]
+2026-11-27T07:22:12.1051250Z 2026-11-27 07:22:09.752922+0000 Runner[26743:77709] flutter:   Test failed. See exception logs above.
+2026-11-27T07:22:12.2056710Z   The test description was: native AURA shaders render all sixteen environments and living forms
+2026-11-27T07:22:55.6969010Z The following TimeoutException was thrown running a test:
+2026-11-27T07:22:55.8048320Z TimeoutException after 0:00:05.000000: Future not completed
+2026-11-27T07:22:55.9056770Z 
+2026-11-27T07:22:56.0059610Z When the exception was thrown, this was the stack:
+2026-11-27T07:24:56.5170760Z 2026-11-27 07:21:54.612 Df Runner[26743:12f8d] [com.apple.xpc:connection] [0x600003d00d20] activating connection: mach=false listener=false peer=false name=com.apple.MTLCompilerService
+2026-11-27T07:24:56.6176220Z 2026-11-27 07:21:54.652 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:56.7175390Z 2026-11-27 07:21:54.654 E  Runner[26743:12f8d] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-27T07:24:56.8181320Z 2026-11-27 07:21:54.654 E  Runner[26743:12f8d] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-27T07:24:56.9182620Z 2026-11-27 07:21:54.657 Df Runner[26743:12f8d] [com.apple.xpc:connection] [0x600003d00ff0] activating connection: mach=false listener=false peer=false name=com.apple.MTLCompilerService
+2026-11-27T07:24:57.0185830Z 2026-11-27 07:21:54.659 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:24:57.1190840Z 2026-11-27 07:21:54.693 Df Runner[26743:13928] [com.apple.xpc:connection] [0x10c50b690] activating connection: mach=true listener=false peer=false name=com.apple.fontservicesd
+2026-11-27T07:24:57.2221880Z 2026-11-27 07:21:54.697 Df Runner[26743:1391e] (Security) SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=26743
+2026-11-27T07:24:58.4235200Z 2026-11-27 07:21:55.403 A  Runner[26743:1391e] (RunningBoardServices) didChangeInheritances
+2026-11-27T07:24:58.5246250Z 2026-11-27 07:21:55.484 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:58.6249350Z 2026-11-27 07:21:55.484 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:58.7253410Z 2026-11-27 07:21:55.484 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:58.8256590Z 2026-11-27 07:21:55.484 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:58.9260230Z 2026-11-27 07:21:55.484 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:59.0264930Z 2026-11-27 07:21:55.484 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:59.1277530Z 2026-11-27 07:21:55.485 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:59.2279660Z 2026-11-27 07:21:55.485 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:59.3283090Z 2026-11-27 07:21:55.485 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:59.4286550Z 2026-11-27 07:21:55.486 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:59.5288830Z 2026-11-27 07:21:55.505 A  Runner[26743:13928] (RunningBoardServices) didChangeInheritances
+2026-11-27T07:24:59.6293230Z 2026-11-27 07:21:55.527 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:59.7295720Z 2026-11-27 07:21:55.551 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:59.8298850Z 2026-11-27 07:21:55.555 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:24:59.9303990Z 2026-11-27 07:21:55.564 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.3825120Z 2026-11-27 07:21:55.580 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4629560Z 2026-11-27 07:21:55.587 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4705500Z 2026-11-27 07:21:55.590 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4709110Z 2026-11-27 07:21:55.595 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4720060Z 2026-11-27 07:21:55.602 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4722940Z 2026-11-27 07:21:55.606 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4742270Z 2026-11-27 07:21:55.611 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4772120Z 2026-11-27 07:21:55.615 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4784130Z 2026-11-27 07:21:55.635 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4785470Z 2026-11-27 07:21:55.641 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4786640Z 2026-11-27 07:21:55.649 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4787860Z 2026-11-27 07:21:55.651 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4789140Z 2026-11-27 07:21:55.651 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4790300Z 2026-11-27 07:21:55.651 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4791490Z 2026-11-27 07:21:55.651 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4792640Z 2026-11-27 07:21:55.651 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4793830Z 2026-11-27 07:21:55.651 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4795060Z 2026-11-27 07:21:55.651 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4796220Z 2026-11-27 07:21:55.651 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4797400Z 2026-11-27 07:21:55.651 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4798750Z 2026-11-27 07:21:55.652 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4799980Z 2026-11-27 07:21:55.657 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4801120Z 2026-11-27 07:21:55.663 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4802310Z 2026-11-27 07:21:55.671 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4803570Z 2026-11-27 07:21:55.677 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4804980Z 2026-11-27 07:21:55.682 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4806310Z 2026-11-27 07:21:55.690 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4810260Z 2026-11-27 07:21:55.696 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4812120Z 2026-11-27 07:21:55.697 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4816020Z 2026-11-27 07:21:55.706 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4817430Z 2026-11-27 07:21:55.709 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4819350Z 2026-11-27 07:21:55.724 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4821200Z 2026-11-27 07:21:55.726 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4823160Z 2026-11-27 07:21:55.735 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4825280Z 2026-11-27 07:21:55.738 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4826990Z 2026-11-27 07:21:55.742 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4828410Z 2026-11-27 07:21:55.746 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4832140Z 2026-11-27 07:21:55.750 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4833780Z 2026-11-27 07:21:55.754 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4836360Z 2026-11-27 07:21:55.770 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4838260Z 2026-11-27 07:21:55.776 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4839850Z 2026-11-27 07:21:55.786 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4841390Z 2026-11-27 07:21:55.791 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4843450Z 2026-11-27 07:21:55.798 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4845640Z 2026-11-27 07:21:55.804 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4846700Z 2026-11-27 07:21:55.813 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4848100Z 2026-11-27 07:21:55.822 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4849120Z 2026-11-27 07:21:55.829 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4850250Z 2026-11-27 07:21:55.840 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4851360Z 2026-11-27 07:21:55.849 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4852450Z 2026-11-27 07:21:55.859 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4853630Z 2026-11-27 07:21:55.873 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4854750Z 2026-11-27 07:21:55.874 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4855920Z 2026-11-27 07:21:55.883 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4857050Z 2026-11-27 07:21:55.893 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4858570Z 2026-11-27 07:21:55.901 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4859800Z 2026-11-27 07:21:55.906 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4861030Z 2026-11-27 07:21:55.912 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4862200Z 2026-11-27 07:21:55.916 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4863370Z 2026-11-27 07:21:55.921 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4865230Z 2026-11-27 07:21:55.925 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4868280Z 2026-11-27 07:21:55.935 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4869360Z 2026-11-27 07:21:55.941 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4870390Z 2026-11-27 07:21:55.945 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4871790Z 2026-11-27 07:21:55.950 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4872820Z 2026-11-27 07:21:55.954 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4873820Z 2026-11-27 07:21:55.959 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4875240Z 2026-11-27 07:21:55.964 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4876360Z 2026-11-27 07:21:55.977 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4877470Z 2026-11-27 07:21:55.983 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4878460Z 2026-11-27 07:21:55.989 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4879460Z 2026-11-27 07:21:55.994 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4880660Z 2026-11-27 07:21:56.004 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4881830Z 2026-11-27 07:21:56.020 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4883970Z 2026-11-27 07:21:56.035 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4885040Z 2026-11-27 07:21:56.043 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4886200Z 2026-11-27 07:21:56.052 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4888460Z 2026-11-27 07:21:56.060 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4889980Z 2026-11-27 07:21:56.066 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4892110Z 2026-11-27 07:21:56.071 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4893650Z 2026-11-27 07:21:56.075 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4894850Z 2026-11-27 07:21:56.084 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4896120Z 2026-11-27 07:21:56.090 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4897790Z 2026-11-27 07:21:56.098 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4899140Z 2026-11-27 07:21:56.104 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4900590Z 2026-11-27 07:21:56.114 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4902170Z 2026-11-27 07:21:56.119 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4903510Z 2026-11-27 07:21:56.126 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4905070Z 2026-11-27 07:21:56.131 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4906510Z 2026-11-27 07:21:56.137 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4907760Z 2026-11-27 07:21:56.143 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4909060Z 2026-11-27 07:21:56.147 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4910800Z 2026-11-27 07:21:56.155 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4912860Z 2026-11-27 07:21:56.164 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4913840Z 2026-11-27 07:21:56.173 A  Runner[26743:13922] (Metal) compiling shader
+2026-11-27T07:25:04.4914710Z 2026-11-27 07:21:56.252 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4915720Z 2026-11-27 07:21:56.258 A  Runner[26743:13929] (Metal) compiling shader
+2026-11-27T07:25:04.4917570Z 2026-11-27 07:21:56.263 Df Runner[26743:12f8d] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UIApplicationSceneDisplaySettings> on FBSSceneSettings
+2026-11-27T07:25:04.4921700Z 2026-11-27 07:21:56.295 Df Runner[26743:12f8d] [com.apple.UIKit:Orientation] <UIWindowScene: 0x10c00e640> (2FD7A81F-EBBF-4DBC-9A14-F3D0D3B5A7C7) Scene updated orientation preferences: none -> ( Pu Ll Lr )
+2026-11-27T07:25:04.5870280Z 2026-11-27 07:22:01.511 Df Runner[26743:12f8d] (Flutter) flutter: 00:04 +4: native AURA shaders render all sixteen environments and living forms
+2026-11-27T07:25:04.5872040Z 2026-11-27 07:22:01.555 A  Runner[26743:13926] (Metal) compiling shader
+2026-11-27T07:25:04.5873830Z 2026-11-27 07:22:02.912 Df Runner[26743:12f8d] [com.apple.runningboard:connection] Creating side-channel connection to com.apple.runningboard
+2026-11-27T07:25:04.5877670Z 2026-11-27 07:22:02.912 Df Runner[26743:12f8d] [com.apple.xpc:connection] [0x600003d02940] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-27T07:25:04.5884200Z 2026-11-27 07:22:02.914 Df Runner[26743:12f8d] [com.apple.runningboard:process] Hit the server for a process handle 1db5eca300006877 that resolved to: [app<app.asktheuniverse.universeLab((null))>:26743]
+2026-11-27T07:25:04.5886610Z 2026-11-27 07:22:08.626 A  Runner[26743:13926] (Metal) compiling shader
+2026-11-27T07:25:04.5890730Z 2026-11-27 07:22:08.627 A  Runner[26743:13924] (Metal) compiling shader
+2026-11-27T07:25:04.5891790Z 2026-11-27 07:22:08.788 A  Runner[26743:13924] (Metal) compiling shader
+2026-11-27T07:25:04.5892810Z 2026-11-27 07:22:08.894 A  Runner[26743:13924] (Metal) compiling shader
+2026-11-27T07:25:04.5893820Z 2026-11-27 07:22:08.894 A  Runner[26743:13924] (Metal) compiling shader
+2026-11-27T07:25:04.5895400Z 2026-11-27 07:22:09.106 A  Runner[26743:13924] (Metal) compiling shader
+2026-11-27T07:25:04.5899140Z 2026-11-27 07:22:09.740 Df Runner[26743:12f8d] (Flutter) flutter: ══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+2026-11-27T07:25:04.5901690Z 2026-11-27 07:22:09.740 Df Runner[26743:12f8d] (Flutter) flutter: The following TimeoutException was thrown running a test:
+2026-11-27T07:25:04.5904380Z 2026-11-27 07:22:09.740 Df Runner[26743:12f8d] (Flutter) flutter: TimeoutException after 0:00:05.000000: Future not completed
+2026-11-27T07:25:04.5906390Z 2026-11-27 07:22:09.741 Df Runner[26743:12f8d] (Flutter) flutter:
+2026-11-27T07:25:04.5908630Z 2026-11-27 07:22:09.741 Df Runner[26743:12f8d] (Flutter) flutter: When the exception was thrown, this was the stack:
+2026-11-27T07:25:04.5966470Z 2026-11-27 07:22:09.747 Df Runner[26743:12f8d] (Flutter) flutter: ════════════════════════════════════════════════════════════════════════════════════════════════════
+2026-11-27T07:25:04.5968100Z 2026-11-27 07:22:09.751 Df Runner[26743:12f8d] (Flutter) flutter: 00:12 +4: native AURA shaders render all sixteen environments and living forms [E]
+2026-11-27T07:25:04.5969580Z 2026-11-27 07:22:09.752 Df Runner[26743:12f8d] (Flutter) flutter:   Test failed. See exception logs above.
+2026-11-27T07:25:04.5970860Z   The test description was: native AURA shaders render all sixteen environments and living forms
+2026-11-27T07:25:04.5983520Z 2026-11-27 07:22:55.454 Df Runner[26743:12f8d] [com.apple.CoreAnalytics:client] Exiting exit handler.
+2026-11-27T07:25:05.2801030Z ##[error]Process completed with exit code 65.
+2026-11-27T07:25:05.4081800Z ##[group]Run actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+2026-11-27T07:25:05.4083140Z with:

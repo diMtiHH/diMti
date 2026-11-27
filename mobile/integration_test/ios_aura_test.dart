@@ -122,11 +122,26 @@ void main() {
         if (form == 'livingMatter') expect(painter.matterShader, isNotNull);
         if (form == 'liquidMetal') expect(painter.metalShader, isNotNull);
         final cache = painter.raster!;
+        final rasterClock = Stopwatch()..start();
+        // A fresh simulator also compiles Metal pipelines for its first raster.
+        // Keep servicing frames while it does so. This is a CI readiness bound,
+        // not an application frame-time or physical-device performance target.
         await (() async {
           while (cache.inFlight > 0) {
-            await cache.settled;
+            await tester.pump(const Duration(milliseconds: 20));
           }
-        })().timeout(const Duration(seconds: 5));
+        })().timeout(
+          const Duration(seconds: 30),
+          onTimeout: () => throw TestFailure(
+            'Raster did not complete: $environment/$form/$progress; '
+            'started=${cache.startedFrames}, completed=${cache.completedFrames}, '
+            'discarded=${cache.discardedFrames}',
+          ),
+        );
+        debugPrint(
+          'AURA raster ready $environment/$form/$progress: '
+          '${rasterClock.elapsedMilliseconds} ms',
+        );
         expect(cache.inFlight, 0);
         expect(cache.image, isNotNull);
         expect(cache.pixelSize.width, lessThanOrEqualTo(512));
