@@ -1,0 +1,39 @@
+{
+  "setup_windows": {
+    "exit_code": 0,
+    "flutter_tests_passed": 410,
+    "flutter_elapsed_seconds": 276,
+    "analyzer": "No issues found",
+    "log": "setup-windows-stage6-2-final.log"
+  },
+  "python": {
+    "passed": 20,
+    "log": "docs/device-reports/2026-11-27-stage6-2-python-local.log"
+  },
+  "focused": {
+    "lifecycle": {
+      "passed": 10,
+      "elapsed_seconds": 6,
+      "log": "docs/device-reports/2026-11-27-stage6-2-lifecycle-local.log"
+    }
+  },
+  "prior_full_run": {
+    "passed": 409,
+    "failed": 1,
+    "log": "docs/device-reports/2026-11-27-stage6-2-development-checks.log",
+    "resolution": "Suppress redundant inactive-to-hidden-to-paused layout updates; keep strict callback assertions."
+  },
+  "runtime_and_unit_tests_identical_to": "b00a1f906dc4d4dff506371d75bc7029d5ab634f",
+  "integration_harness_analyzer": {
+    "result": "No issues found",
+    "seconds": 1.3,
+    "log": "docs/device-reports/2026-11-27-stage6-2-integration-analyze.log"
+  },
+  "date": "2026-11-27",
+  "source_commit": "379ca74bae70ecdadfd15896e66b66dcf26c0fca",
+  "version": "0.6.2",
+  "build": 12,
+  "protocol": "stage6-2-local-checks-v1",
+  "admission": "closed",
+  "physical_062_tested": false
+}

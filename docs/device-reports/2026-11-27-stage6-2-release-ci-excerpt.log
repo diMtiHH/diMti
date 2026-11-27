@@ -1,0 +1,33 @@
+Release 0.6.2 (12), source 379ca74bae70ecdadfd15896e66b66dcf26c0fca
+https://github.com/diMtiHH/diMti/actions/runs/45958837802
+
+2026-11-27T07:30:05.7811010Z Native safety checks: 16/16 passed
+2026-11-27T07:30:11.9381430Z Native storage checks: 12/12 passed; 74 contract cases; 40 process interruptions
+2026-11-27T07:30:12.7278370Z Native voice checks: 19/19 passed
+2026-11-27T07:30:15.5075160Z Native presentation checks: 16/16 passed; 15 process interruptions
+2026-11-27T07:30:15.9765910Z Native ambient groups passed: 7
+2026-11-27T07:30:16.5726310Z Native interaction checks: 12/12 passed
+2026-11-27T07:30:28.2861240Z model.onnx: verified (470268510 bytes)
+2026-11-27T07:30:28.2862640Z tokenizer.json: verified (17082730 bytes)
+2026-11-27T07:30:28.5215080Z Xcode 26.6
+2026-11-27T07:31:20.4141760Z No issues found! (ran in 8.5s)
+2026-11-27T07:33:25.1677660Z Running Xcode build...                                          
+2026-11-27T07:33:25.1778300Z Xcode build done.                                           83.6s
+2026-11-27T07:33:31.3111180Z ✓ Built build/ios/iphoneos/Runner.app (548.9MB)
+2026-11-27T07:33:32.6563070Z model.onnx: verified in Runner.app
+2026-11-27T07:33:32.6667290Z tokenizer.json: verified in Runner.app
+2026-11-27T07:33:32.6769960Z head.json: verified in Runner.app
+2026-11-27T07:33:32.6973040Z Local speech/motion permission descriptions RU/EN and closed notification flag: verified
+2026-11-27T07:33:32.7074160Z Six native bridge channels: verified
+2026-11-27T07:33:32.7175610Z Bundled provisional narration RU/EN, timing and text: verified
+2026-11-27T07:33:32.7278560Z Nine static Cormorant Garamond/Literata/Manrope faces and three SIL OFL licenses: verified
+2026-11-27T07:33:32.7285540Z Four original provisional ambient loops, default off: verified
+2026-11-27T07:33:32.7298610Z Three short neutral touch/transform/reveal cues: verified
+2026-11-27T07:33:32.7329030Z Three compiled AURA runtime shaders and version 0.6.2+12: verified
+2026-11-27T07:34:54.0928760Z ##[group]Run shasum -a 256 Ask-the-Universe-stage3.ipa > SHA256SUMS
+2026-11-27T07:34:54.0929540Z [36;1mshasum -a 256 Ask-the-Universe-stage3.ipa > SHA256SUMS[0m
+/Users/runner/work/_temp/ipa/SHA256SUMS
+2026-11-27T07:34:59.3926520Z SHA256 digest of uploaded artifact zip is 825b5dfe58a2229a7565a0766e8a8232ec7d821ce04b796786237f0a590c98e7
+2026-11-27T07:34:59.7441990Z Artifact Ask-the-Universe-stage3-iphone.zip successfully finalized. Artifact ID 15179897294
+2026-11-27T07:34:59.7444030Z Artifact Ask-the-Universe-stage3-iphone has been successfully uploaded! Final size is 304188184 bytes. Artifact ID is 15179897294
+2026-11-27T07:34:59.7453550Z Artifact download URL: https://github.com/diMtiHH/diMti/actions/runs/45958837802/artifacts/15179897294

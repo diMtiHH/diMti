@@ -1,0 +1,12 @@
+Windows complete checks 0.6.2 (12), source 379ca74bae70ecdadfd15896e66b66dcf26c0fca
+https://github.com/diMtiHH/diMti/actions/runs/45958837866
+
+2026-11-27T07:30:04.4496712Z Ran 20 tests in 1.565s
+2026-11-27T07:30:04.4496866Z OK
+2026-11-27T07:30:06.5152366Z Downloading Flutter 3.50.1 for Windows x64.
+2026-11-27T07:31:08.4068190Z model.onnx: verified (470268510 bytes)
+2026-11-27T07:31:08.4068481Z tokenizer.json: verified (17082730 bytes)
+2026-11-27T07:32:03.0000435Z No issues found! (ran in 10.3s)
+2026-11-27T07:36:19.9320775Z 04:06 +109: D:/a/diMti/diMti/mobile/test/device_report_test.dart: report preserves units, UTC time, build mode and verified asset identity
+2026-11-27T07:36:33.3181435Z 04:20 +114: D:/a/diMti/diMti/mobile/test/engine_test.dart: FP32 Dart path agrees with the frozen Python implementation, one full question per run
+2026-11-27T07:38:24.1340134Z 06:11 +410: All tests passed!
