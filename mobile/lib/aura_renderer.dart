@@ -360,8 +360,35 @@ class _PaintSignal extends ChangeNotifier {
   void repaint() => notifyListeners();
 }
 
-/// Physical texture dimensions, deliberately independent of display DPR.
-/// Fonts and controls are never drawn into this decoration-only texture.
+/// Carries the fractional deadline instead of restarting it after each frame.
+/// Long scheduler pauses skip work rather than scheduling a catch-up burst.
+class AuraFrameCadence {
+  double? _next;
+  int? _fps;
+  int acceptedFrames = 0;
+  void reset() {
+    _next = null;
+    _fps = null;
+  }
+
+  bool accept(Duration timestamp, int fps) {
+    final now = timestamp.inMicroseconds.toDouble();
+    final period = 1000000 / fps;
+    if (_fps != fps || _next == null) {
+      _fps = fps;
+      _next = now;
+    }
+    if (now + 500 < _next!) return false;
+    final skipped = math.max(1, ((now + 500 - _next!) / period).floor() + 1);
+    _next = _next! + skipped * period;
+    ++acceptedFrames;
+    return true;
+  }
+}
+
+/// Only the soft atmosphere is cached. Fine stars, edges and forms are drawn
+/// at the display resolution. This texture is created on a scene change, never
+/// at animation frequency, and stays below 4.5 MiB even on large displays.
 Size auraRasterSize(
   Size logical, {
   required bool form,
@@ -372,10 +399,10 @@ Size auraRasterSize(
     return Size.zero;
   final cap = quality.isFinite ? quality.clamp(.3, 1.0) : 1.0;
   final longEdge =
-      (form ? (preview ? 320.0 : 512.0) : 720.0) * (.65 + cap * .35);
-  final widthCap = form ? longEdge : 420.0 * (.65 + cap * .35);
+      (form ? (preview ? 320.0 : 512.0) : 1536.0) * (.65 + cap * .35);
+  final widthCap = form ? longEdge : 768.0 * (.65 + cap * .35);
   final scale = math.min(
-    form ? 1.25 : 1.0,
+    form ? 1.25 : 2.0,
     math.min(widthCap / logical.width, longEdge / logical.longestSide),
   );
   return Size(
@@ -395,6 +422,7 @@ typedef AuraRasterizer = Future<ui.Image> Function(
 class AuraRasterCache extends ChangeNotifier {
   final AuraRasterizer _rasterize;
   ui.Image? _image;
+  ui.ImageShader? _imageShader;
   bool _busy = false, _disposed = false;
   int _generation = 0;
   int startedFrames = 0,
@@ -406,11 +434,14 @@ class AuraRasterCache extends ChangeNotifier {
   AuraRasterCache({AuraRasterizer? rasterize})
     : _rasterize = rasterize ?? ((picture, w, h) => picture.toImage(w, h));
   ui.Image? get image => _image;
+  ui.ImageShader? get imageShader => _imageShader;
   int get inFlight => _busy ? 1 : 0;
   Future<void> get settled => _settled;
   void invalidate({bool clear = true}) {
     ++_generation;
     if (clear) {
+      _imageShader?.dispose();
+      _imageShader = null;
       _image?.dispose();
       _image = null;
     }
@@ -452,7 +483,32 @@ class AuraRasterCache extends ChangeNotifier {
                 return;
               }
               final old = _image;
+              _imageShader?.dispose();
               _image = next;
+              _imageShader = ui.ImageShader(
+                next,
+                TileMode.clamp,
+                TileMode.clamp,
+                Float64List.fromList([
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                ]),
+                filterQuality: FilterQuality.medium,
+              );
               ++completedFrames;
               old?.dispose();
             })
@@ -490,8 +546,7 @@ class _AuraSceneState extends State<AuraScene>
   bool _foreground = true, _motion = false;
   bool _tickerEnabled = true, _forceRaster = true;
   Size _logicalSize = Size.zero;
-  Duration? _paintedAt, _rasteredAt;
-  Duration _frameStamp = Duration.zero;
+  final _cadence = AuraFrameCadence();
   @override
   void initState() {
     super.initState();
@@ -548,9 +603,7 @@ class _AuraSceneState extends State<AuraScene>
 
   void _changed() {
     if (!mounted || !widget.active || !_foreground || !_tickerEnabled) return;
-    if (!_motion) _forceRaster = true;
-    // Affine drift/recoil responds immediately on the cached texture. Expensive
-    // shader work waits for the next bounded raster interval.
+    // Input changes live geometry, never the atmosphere texture.
     _signal.repaint();
     _renderFrame();
   }
@@ -561,45 +614,22 @@ class _AuraSceneState extends State<AuraScene>
     if (_forceRaster) _renderFrame();
   }
 
-  bool get _responsive =>
-      _interaction.pressed ||
-      widget.energy > .05 ||
-      widget.phase == AuraPhase.answerAnimation;
-  int get _rasterFps => math.min(
-    _power.maxFps,
-    !widget.showForm
-        ? 8
-        : widget.preview
-        ? 12
-        : _responsive
-        ? 30
-        : 24,
-  );
   void _renderFrame() {
     if (!mounted || !_foreground || !_tickerEnabled || _logicalSize.isEmpty)
       return;
-    if (!_motion && !_forceRaster) return;
-    // Pointer input and raster completion can arrive between scheduler frames.
-    // Keep the last frame's clock instead of reading currentFrameTimeStamp there.
-    final now = _frameStamp;
-    final interval = Duration(
-      microseconds: (1000000 / _rasterFps - 500).round(),
-    );
-    if (!_forceRaster && _rasteredAt != null && now - _rasteredAt! < interval)
-      return;
+    if (!widget.showBackground || !_forceRaster) return;
     final painter = _painter(raw: true);
     if (_raster.render(
       _logicalSize,
       auraRasterSize(
         _logicalSize,
-        form: widget.showForm,
+        form: false,
         preview: widget.preview,
         quality: _power.qualityCap,
       ),
       painter.paint,
     )) {
       _forceRaster = false;
-      _rasteredAt = now;
     }
   }
 
@@ -617,25 +647,20 @@ class _AuraSceneState extends State<AuraScene>
 
   void _tick(Duration elapsed) {
     final stamp = SchedulerBinding.instance.currentFrameTimeStamp;
-    _frameStamp = stamp;
-    final fps = math.min(
-      _power.maxFps,
-      !widget.showForm
-          ? 8
-          : widget.preview
-          ? 30
-          : 60,
-    );
-    final interval = Duration(microseconds: (1000000 / fps - 500).round());
-    if (_paintedAt != null && stamp - _paintedAt! < interval) return;
-    _paintedAt = stamp;
+    // Common divisors of 60/120 Hz avoid alternating 16/33 ms intervals.
+    final cap = _power.maxFps;
+    final fps = cap >= 60 && !widget.preview
+        ? 60
+        : cap >= 30
+        ? 30
+        : 20;
+    if (!_cadence.accept(stamp, fps)) return;
     _interaction._advance(stamp);
     _renderFrame();
     _signal.repaint();
   }
 
   void _sync() {
-    final wasMoving = _motion;
     _tickerEnabled = TickerMode.valuesOf(context).enabled;
     _motion =
         widget.active &&
@@ -643,7 +668,6 @@ class _AuraSceneState extends State<AuraScene>
         _tickerEnabled &&
         !MediaQuery.disableAnimationsOf(context) &&
         !MediaQuery.accessibleNavigationOf(context);
-    if (wasMoving != _motion) _forceRaster = true;
     final needsTilt = _motion && widget.showForm && !widget.preview;
     final needsTimings = _motion && widget.showBackground && !widget.preview;
     if (needsTimings != _timingsAttached) {
@@ -663,8 +687,7 @@ class _AuraSceneState extends State<AuraScene>
       _deviceMotion.release();
     }
     if (_motion && !_ticker.isActive) {
-      _paintedAt = null;
-      _rasteredAt = null;
+      _cadence.reset();
       _interaction._clockStarted();
       _ticker.start();
     } else if (!_motion && _ticker.isActive) {
@@ -683,9 +706,7 @@ class _AuraSceneState extends State<AuraScene>
   void didUpdateWidget(AuraScene oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.background != widget.background ||
-        oldWidget.form != widget.form ||
-        oldWidget.showBackground != widget.showBackground ||
-        oldWidget.showForm != widget.showForm) {
+        oldWidget.showBackground != widget.showBackground) {
       _raster.invalidate();
       _forceRaster = true;
     }
@@ -697,8 +718,6 @@ class _AuraSceneState extends State<AuraScene>
       _power.addListener(_powerChanged);
     }
     if (oldWidget.interaction != widget.interaction) {
-      _raster.invalidate();
-      _forceRaster = true;
       _interaction.removeListener(_changed);
       if (_ticker.isActive) _interaction._clockStopped();
       if (oldWidget.interaction == null) _interaction.dispose();
@@ -707,14 +726,6 @@ class _AuraSceneState extends State<AuraScene>
       _interaction.addListener(_changed);
     }
     _sync();
-    if (!_motion &&
-        (oldWidget.phase != widget.phase ||
-            oldWidget.progress != widget.progress ||
-            oldWidget.energy != widget.energy ||
-            oldWidget.formScale != widget.formScale ||
-            oldWidget.formAlignment != widget.formAlignment ||
-            oldWidget.preview != widget.preview))
-      _forceRaster = true;
   }
 
   @override
@@ -746,6 +757,7 @@ class _AuraSceneState extends State<AuraScene>
     formScale: widget.formScale,
     preview: widget.preview,
     qualityCap: _power.qualityCap,
+    pixelRatio: MediaQuery.devicePixelRatioOf(context),
     motion: _motion,
     deviceMotion: raw
         ? null
@@ -755,7 +767,7 @@ class _AuraSceneState extends State<AuraScene>
     environmentShader: _environment,
     matterShader: _matter,
     metalShader: _metal,
-    raster: raw ? null : _raster,
+    raster: raw || !widget.showBackground ? null : _raster,
     rasterPass: raw,
     repaint: raw ? null : _signal,
   );
@@ -763,7 +775,6 @@ class _AuraSceneState extends State<AuraScene>
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, bounds) {
-      _frameStamp = SchedulerBinding.instance.currentFrameTimeStamp;
       final size = Size(bounds.maxWidth, bounds.maxHeight);
       if (size != _logicalSize && size.width.isFinite && size.height.isFinite) {
         _logicalSize = size;
@@ -819,6 +830,7 @@ class AuraPainter extends CustomPainter {
   final AuraPhase phase;
   final AuraInteractionController interaction;
   final double energy, progress, formScale, qualityCap;
+  final double pixelRatio;
   final bool showBackground, showForm, preview, motion;
   final Alignment formAlignment;
   final ui.FragmentShader? environmentShader, matterShader, metalShader;
@@ -834,6 +846,7 @@ class AuraPainter extends CustomPainter {
     this.progress = 0,
     this.formScale = 1,
     this.qualityCap = 1,
+    this.pixelRatio = 1,
     this.showBackground = true,
     this.showForm = true,
     this.preview = false,
@@ -869,33 +882,22 @@ class AuraPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (size.isEmpty || !size.width.isFinite || !size.height.isFinite) return;
     final cached = raster?.image;
-    if (cached != null) {
-      canvas.save();
-      if (showForm && !showBackground) _formMotion(canvas, size);
-      canvas.drawImageRect(
-        cached,
-        Rect.fromLTWH(0, 0, cached.width.toDouble(), cached.height.toDouble()),
-        Offset.zero & size,
-        Paint()..filterQuality = FilterQuality.medium,
-      );
-      canvas.restore();
-      return;
-    }
     if (showBackground) {
-      // While a texture is pending, never run a costly full-DPR shader.
-      final shader = raster == null ? environmentShader : null;
-      if (shader != null) {
+      final shader = rasterPass ? environmentShader : null;
+      if (cached != null && raster!.imageShader != null) {
+        paintAuraAtmosphere(canvas, size, raster!, _time);
+      } else if (shader != null) {
         final values = [
           size.width,
           size.height,
-          _time,
+          7.3,
           math.max(0, auraEnvironments.indexOf(background)).toDouble(),
-          interaction.point.dx,
-          interaction.point.dy,
-          interaction.pressure,
-          _energy,
-          _progress,
-          _activity,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
           _quality,
         ];
         for (var i = 0; i < values.length; ++i) {
@@ -903,16 +905,19 @@ class AuraPainter extends CustomPainter {
         }
         canvas.drawRect(Offset.zero & size, Paint()..shader = shader);
       } else {
-        paintAuraEnvironment(
+        paintAuraEnvironment(canvas, size, background, 7.3, stars: false);
+      }
+      if (!rasterPass)
+        paintAuraStars(
           canvas,
           size,
           background,
           _time,
-          interaction: interaction,
           progress: _progress,
+          energy: _energy,
         );
-      }
     }
+    if (rasterPass) return;
     if (!showForm) return;
     final scale = formScale.isFinite ? formScale.clamp(.15, 2.5) : 1.0;
     final rebound = motion
@@ -932,9 +937,7 @@ class AuraPainter extends CustomPainter {
       origin.dx + tilt.dx * diameter * .035,
       origin.dy + tilt.dy * diameter * .035,
     );
-    final shader = raster != null
-        ? null
-        : form == 'liquidMetal'
+    final shader = form == 'liquidMetal'
         ? metalShader
         : form == 'livingMatter'
         ? matterShader
@@ -957,6 +960,7 @@ class AuraPainter extends CustomPainter {
         _activity,
         _quality,
         motion ? 1.0 : 0.0,
+        pixelRatio,
       ];
       for (var i = 0; i < values.length; ++i) {
         shader.setFloat(i, values[i]);
@@ -1028,15 +1032,131 @@ void paintAuraEnvironment(
   double time, {
   AuraInteractionController? interaction,
   double progress = 0,
+  bool stars = true,
 }) {
   final color = auraAccent(environment);
   canvas.drawRect(Offset.zero & size, Paint()..color = const Color(0xff03070d));
+  final flow = time * .025;
+  if (stars)
+    paintAuraStars(canvas, size, environment, time, progress: progress);
+  if (environment == 'aurora') {
+    for (var ribbon = 0; ribbon < 40; ++ribbon) {
+      final path = Path();
+      for (var j = 0; j <= 40; ++j) {
+        final f = j / 40;
+        final x =
+            size.width *
+            (.05 + f * .88 + .17 * math.sin(f * 5 + flow + ribbon * .035));
+        final y =
+            size.height *
+            (.07 +
+                f * .85 +
+                .09 * math.sin(f * 9 + ribbon * .045 - flow * 1.3));
+        if (j == 0) {
+          path.moveTo(x, y);
+        } else {
+          path.lineTo(x, y);
+        }
+      }
+      canvas.drawPath(
+        path,
+        Paint()
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1.4
+          ..color = Color.lerp(
+            const Color(0xff154d8b),
+            color,
+            ribbon / 40,
+          )!.withValues(alpha: .025 + .06 * math.sin(ribbon / 40 * math.pi)),
+      );
+    }
+  } else if (environment == 'galaxy') {
+    canvas.drawCircle(
+      Offset(size.width * .78, size.height * .24),
+      size.width * .7,
+      Paint()
+        ..shader = ui.Gradient.radial(
+          Offset(size.width * .78, size.height * .24),
+          size.width * .7,
+          [color.withValues(alpha: .04), color.withValues(alpha: 0)],
+        ),
+    );
+  }
+}
+
+// A small textured mesh moves the cached atmosphere continuously. The image
+// shader lives with the cache; only 187 vertices change, with no image readback.
+final _atmosphereIndices = Uint16List.fromList([
+  for (var y = 0; y < 16; ++y)
+    for (var x = 0; x < 10; ++x) ...[
+      y * 11 + x,
+      y * 11 + x + 1,
+      (y + 1) * 11 + x,
+      y * 11 + x + 1,
+      (y + 1) * 11 + x + 1,
+      (y + 1) * 11 + x,
+    ],
+]);
+void paintAuraAtmosphere(
+  Canvas canvas,
+  Size size,
+  AuraRasterCache cache,
+  double time,
+) {
+  final positions = Float32List(187 * 2), tex = Float32List(187 * 2);
+  for (var y = 0; y <= 16; ++y) {
+    final v = y / 16;
+    for (var x = 0; x <= 10; ++x) {
+      final u = x / 10, i = (y * 11 + x) * 2;
+      positions[i] = u * size.width;
+      positions[i + 1] = v * size.height;
+      // Overscan absorbs motion at the edges; no dark gaps or image stretching.
+      tex[i] =
+          (.04 +
+              u * .92 +
+              .018 * math.sin(v * 7 + time * .075) +
+              .008 * math.sin(u * 9 - time * .043)) *
+          cache.pixelSize.width;
+      tex[i + 1] =
+          (.04 +
+              v * .92 +
+              .018 * math.sin(u * 5 - time * .061) +
+              .008 * math.cos(v * 8 + time * .051)) *
+          cache.pixelSize.height;
+    }
+  }
+  final mesh = ui.Vertices.raw(
+    ui.VertexMode.triangles,
+    positions,
+    textureCoordinates: tex,
+    indices: _atmosphereIndices,
+  );
+  canvas.drawVertices(mesh, BlendMode.src, Paint()..shader = cache.imageShader);
+  mesh.dispose();
+}
+
+final _starSeeds = List.generate(
+  3,
+  (layer) => List.generate(
+    layer == 0 ? 150 : 80,
+    (i) => Offset(_hash(i + layer * 183 + 1), _hash(i + layer * 183 + 1237)),
+  ),
+);
+void paintAuraStars(
+  Canvas canvas,
+  Size size,
+  String environment,
+  double time, {
+  double progress = 0,
+  double energy = 0,
+}) {
+  final color = auraAccent(environment);
   final p = _unit(progress), flow = time * .025;
   for (var layer = 0; layer < 3; ++layer) {
     final points = Float32List((layer == 0 ? 150 : 80) * 2);
     for (var i = 0; i < points.length ~/ 2; ++i) {
       final seed = i + layer * 183;
-      var x = _hash(seed + 1), y = _hash(seed + 1237);
+      var x = _starSeeds[layer][i].dx, y = _starSeeds[layer][i].dy;
       x = (x + math.sin(flow + seed) * .006 * (layer + 1)) % 1;
       y = (y + flow * .006 * (layer + 1)) % 1;
       if (environment == 'gravity') {
@@ -1053,80 +1173,10 @@ void paintAuraEnvironment(
       ui.PointMode.points,
       points,
       Paint()
-        ..color = color.withValues(alpha: .18 + layer * .14)
+        ..color = color.withValues(alpha: .18 + layer * .14 + energy * .04)
         ..strokeWidth = .65 + layer * .45
         ..strokeCap = StrokeCap.round,
     );
-  }
-  if (environment == 'aurora') {
-    for (var ribbon = 0; ribbon < 40; ++ribbon) {
-      final path = Path();
-      for (var j = 0; j <= 40; ++j) {
-        final f = j / 40;
-        final x =
-            size.width *
-            (.05 + f * .88 + .17 * math.sin(f * 5 + flow + ribbon * .035));
-        final y =
-            size.height *
-            (.07 +
-                f * .85 +
-                .09 * math.sin(f * 9 + ribbon * .045 - flow * 1.3));
-        if (j == 0)
-          path.moveTo(x, y);
-        else
-          path.lineTo(x, y);
-      }
-      canvas.drawPath(
-        path,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 1.4
-          ..color = Color.lerp(
-            const Color(0xff154d8b),
-            color,
-            ribbon / 40,
-          )!.withValues(alpha: .025 + .06 * math.sin(ribbon / 40 * math.pi)),
-      );
-    }
-  } else if (environment == 'galaxy') {
-    for (var arm = 0; arm < 4; ++arm) {
-      final points = Float32List(260 * 2);
-      for (var j = 0; j < 260; ++j) {
-        final f = j / 260, angle = arm * math.pi / 2 + f * 8 + flow;
-        final radius = size.width * (.035 + f * .85);
-        points[j * 2] = size.width * .78 + math.cos(angle) * radius;
-        points[j * 2 + 1] =
-            size.height * .24 +
-            math.sin(angle) * radius * .44 +
-            math.cos(angle) * radius * .32;
-      }
-      canvas.drawRawPoints(
-        ui.PointMode.points,
-        points,
-        Paint()
-          ..color = color.withValues(alpha: .22)
-          ..strokeWidth = 1.0
-          ..strokeCap = StrokeCap.round,
-      );
-    }
-  } else if (environment == 'gravity') {
-    for (var i = 0; i < 10; ++i) {
-      final rect = Rect.fromCenter(
-        center: Offset(size.width * .70, size.height * .4),
-        width: size.width * (.5 + i * .11),
-        height: size.height * (.28 + i * .05),
-      );
-      canvas.drawArc(
-        rect,
-        -.9 + flow * .2,
-        math.pi * 1.2,
-        false,
-        Paint()
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = .6
-          ..color = color.withValues(alpha: .045),
-      );
-    }
   }
 }
 
@@ -1143,6 +1193,33 @@ _P3 _rotate(_P3 p, double yaw, double roll) {
     x * math.sin(roll) + p.y * math.cos(roll),
     z,
   );
+}
+
+class _Rotation {
+  final double cy, sy, cr, sr;
+  _Rotation(double yaw, double roll)
+    : cy = math.cos(yaw),
+      sy = math.sin(yaw),
+      cr = math.cos(roll),
+      sr = math.sin(roll);
+  _P3 apply(_P3 p) {
+    final x = p.x * cy + p.z * sy;
+    return _P3(x * cr - p.y * sr, x * sr + p.y * cr, p.z * cy - p.x * sy);
+  }
+}
+
+final _constellationSeeds = List.generate(44, (i) {
+  final y = 1 - i / 43 * 2, a = i * 2.39996323, r = math.sqrt(1 - y * y);
+  return _P3(math.cos(a) * r, y, math.sin(a) * r);
+});
+final _constellationEdges = <(int, int)>[
+  for (var i = 0; i < 44; ++i)
+    for (var j = i + 1; j < 44; ++j)
+      if (_nearbyStars(_constellationSeeds[i], _constellationSeeds[j])) (i, j),
+];
+bool _nearbyStars(_P3 a, _P3 b) {
+  final x = a.x - b.x, y = a.y - b.y, z = a.z - b.z;
+  return x * x + y * y + z * z < 1.44;
 }
 
 Offset _project(_P3 point, double radius, Offset center) {
@@ -1170,23 +1247,12 @@ void paintAuraForm(
   final radius = size.shortestSide * (.42 - hold * .030 - burst * .045);
   final clock = time * .17;
   if (form == 'constellation') {
-    final nodes = <_P3>[];
-    for (var i = 0; i < 44; ++i) {
-      final y = 1 - i / 43 * 2, a = i * 2.39996323 + clock * .5;
-      final r = math.sqrt(1 - y * y);
-      var point = _rotate(
-        _P3(math.cos(a) * r, y, math.sin(a) * r),
-        clock * .43,
-        .2 * math.sin(clock),
-      );
-      final influence =
-          math.exp(
-            -((point.x - pointer.dx) * (point.x - pointer.dx) +
-                    (point.y - pointer.dy) * (point.y - pointer.dy)) *
-                3,
-          ) *
-          pressure *
-          .2;
+    final rotation = _Rotation(-clock * .07, .2 * math.sin(clock));
+    final nodes = <_P3>[], projected = <Offset>[];
+    for (var i = 0; i < _constellationSeeds.length; ++i) {
+      var point = rotation.apply(_constellationSeeds[i]);
+      final dx = point.x - pointer.dx, dy = point.y - pointer.dy;
+      final influence = math.exp(-(dx * dx + dy * dy) * 3) * pressure * .2;
       point = _P3(
         point.x +
             pointer.dx * influence +
@@ -1201,46 +1267,48 @@ void paintAuraForm(
         point.z + math.sin(clock * .71 + i * 2.3) * .025,
       );
       nodes.add(point);
+      projected.add(_project(point, radius, center));
     }
     final lines = Paint()
       ..strokeWidth = .65
       ..style = PaintingStyle.stroke;
-    for (var i = 0; i < nodes.length; ++i) {
-      for (var j = i + 1; j < nodes.length; ++j) {
-        final a = nodes[i], b = nodes[j];
-        final d = math.sqrt(
-          math.pow(a.x - b.x, 2) +
-              math.pow(a.y - b.y, 2) +
-              math.pow(a.z - b.z, 2),
-        );
-        if (d > .65 + .07 * math.sin(clock + i)) continue;
-        lines.color = accent.withValues(
-          alpha: (.04 + .20 * (a.z + b.z + 2) / 4) * (1 - burst * .45),
-        );
-        canvas.drawLine(
-          _project(a, radius, center),
-          _project(b, radius, center),
-          lines,
-        );
-      }
+    for (final edge in _constellationEdges) {
+      final a = nodes[edge.$1], b = nodes[edge.$2];
+      final dx = a.x - b.x, dy = a.y - b.y, dz = a.z - b.z;
+      final distance = math.sqrt(dx * dx + dy * dy + dz * dz);
+      final reach = .65 + .07 * math.sin(clock + edge.$1);
+      // Fade through the connection boundary instead of popping whole lines.
+      final fade = ((reach + .05 - distance) / .10).clamp(0.0, 1.0);
+      if (fade == 0) continue;
+      lines.color = accent.withValues(
+        alpha:
+            (.04 + .20 * (a.z + b.z + 2) / 4) *
+            (1 - burst * .45) *
+            fade *
+            fade *
+            (3 - 2 * fade),
+      );
+      canvas.drawLine(projected[edge.$1], projected[edge.$2], lines);
     }
-    nodes.sort((a, b) => a.z.compareTo(b.z));
-    for (final point in nodes) {
-      final at = _project(point, radius, center),
-          brightness = (point.z + 1) / 2;
+    final paint = Paint();
+    for (var i = 0; i < nodes.length; ++i) {
+      final at = projected[i],
+          brightness = ((nodes[i].z + 1) / 2).clamp(0.0, 1.0);
+      // Three cheap translucent discs replace 44 new gradient shaders/frame.
       canvas.drawCircle(
         at,
         4 + brightness * 5,
-        Paint()
-          ..shader = ui.Gradient.radial(at, 4 + brightness * 5, [
-            accent.withValues(alpha: .12 + energy * .1),
-            accent.withValues(alpha: 0),
-          ]),
+        paint..color = accent.withValues(alpha: .018 + energy * .01),
+      );
+      canvas.drawCircle(
+        at,
+        2 + brightness * 2.8,
+        paint..color = accent.withValues(alpha: .045 + energy * .025),
       );
       canvas.drawCircle(
         at,
         .7 + brightness * 1.6,
-        Paint()
+        paint
           ..color = Color.lerp(
             accent,
             Colors.white,
@@ -1255,6 +1323,10 @@ void paintAuraForm(
     final bins = List.generate(10, (_) => <double>[]);
     final strands = (7 + quality * 7).round();
     const steps = 96;
+    final rotation = _Rotation(
+      .76 * math.sin(clock * .21) + burst * 1.1,
+      -.38 + .36 * math.sin(clock * .16),
+    );
     for (var strand = 0; strand < strands; ++strand) {
       _P3? previous;
       for (var i = 0; i <= steps; ++i) {
@@ -1263,7 +1335,7 @@ void paintAuraForm(
         final k = .6 + .14 * math.sin(clock * .3);
         final fold = .5 + .5 * math.sin(clock * .19);
         final width = .055 * math.sin(twist + a * 3);
-        final point = _rotate(
+        final point = rotation.apply(
           _P3(
             math.sin(a) * (1 + width) +
                 .12 * fold * math.sin(a * 3 + clock * .13),
@@ -1274,8 +1346,6 @@ void paintAuraForm(
                 .15 * math.sin(a * 3 + clock) +
                 .06 * math.cos(twist),
           ),
-          .76 * math.sin(clock * .21) + burst * 1.1,
-          -.38 + .36 * math.sin(clock * .16),
         );
         final touched = _P3(
           point.x +
@@ -1323,7 +1393,7 @@ void paintAuraForm(
     return;
   }
   // Fine depth-projected filaments: visible and interactive even during shader
-  // warm-up. Liquid metal normally uses its ray-marched physical material.
+  // warm-up. Liquid metal normally uses its analytic reflective material.
   final strands = (60 + quality * 100).round();
   const steps = 48;
   final segments = Float32List(strands * steps * 4);

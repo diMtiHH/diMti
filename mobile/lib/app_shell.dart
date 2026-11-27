@@ -468,6 +468,9 @@ class _UniverseShellState extends State<UniverseShell>
         child: InkWell(
           key: ValueKey('tab-$index'),
           borderRadius: BorderRadius.circular(20),
+          splashFactory: NoSplash.splashFactory,
+          highlightColor: Colors.transparent,
+          splashColor: Colors.transparent,
           onTap: () {
             if (profile.hapticsEnabled)
               unawaited(HapticFeedback.selectionClick());
@@ -809,6 +812,14 @@ class _PresentationSettingsState extends State<PresentationSettings> {
                       duration: reduced
                           ? Duration.zero
                           : const Duration(milliseconds: 220),
+                      transitionBuilder: (child, animation) => FadeTransition(
+                        opacity: animation.drive(
+                          CurveTween(
+                            curve: const Interval(.5, 1, curve: Curves.easeOut),
+                          ),
+                        ),
+                        child: child,
+                      ),
                       layoutBuilder: (current, previous) => Stack(
                         alignment: Alignment.topCenter,
                         children: [

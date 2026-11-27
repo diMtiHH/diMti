@@ -405,19 +405,22 @@ void main() {
       expect(initial.environmentShader, isNull);
       expect(initial.matterShader, isNotNull);
       expect(initial.metalShader, isNull);
-      final cache = initial.raster!;
+      expect(
+        initial.raster,
+        isNull,
+        reason: 'Live forms must never allocate snapshot textures.',
+      );
       // Exercise a 120 Hz burst, then five virtual minutes with scheduler stalls.
       // This verifies resource lifetime, not device GPU performance or temperature.
-      final burstStart = cache.startedFrames;
+      final burstStart = controller.elapsed;
       for (var frame = 0; frame < 240; frame++) {
         await tester.pump(
           const Duration(microseconds: 8334),
           EnginePhase.build,
         );
       }
-      expect(cache.startedFrames - burstStart, lessThanOrEqualTo(49));
+      expect(controller.elapsed - burstStart, closeTo(2, .04));
       for (var minute = 0; minute < 5; minute++) {
-        final before = cache.startedFrames;
         for (var frame = 0; frame < 600; frame++) {
           // Scheduler soak; real output pixels are checked in separate tests.
           // Do not ask the software test renderer to composite 36k full images.
@@ -426,10 +429,7 @@ void main() {
             EnginePhase.build,
           );
         }
-        expect(cache.startedFrames - before, lessThanOrEqualTo(600));
-        expect(cache.inFlight, lessThanOrEqualTo(1));
-        expect(cache.pixelSize.width, lessThanOrEqualTo(512));
-        expect(cache.pixelSize.height, lessThanOrEqualTo(512));
+        expect(painter().raster, isNull);
         expect(identical(painter().matterShader, initial.matterShader), isTrue);
         expect(controller.quality, lessThanOrEqualTo(.65));
       }

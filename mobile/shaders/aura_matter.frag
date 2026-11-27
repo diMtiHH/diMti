@@ -11,50 +11,49 @@ uniform float uProgress;
 uniform float uActivity;
 uniform float uQuality;
 uniform float uMotion;
+uniform float uPixelRatio;
 out vec4 fragColor;
-mat2 rot(float a) { float c=cos(a),s=sin(a);return mat2(c,-s,s,c); }
-float hash31(vec3 p) { p=fract(p*.1031);p+=dot(p,p.yzx+33.33);return fract((p.x+p.y)*p.z); }
 
+// Analytic front/back surfaces replace the depth-sampling loop. Filter fine
+// fibers at the destination pixel footprint, not in a stretched small image.
+float thread(float phase, float width, float footprint) {
+  float aa=max(footprint, .02);
+  float distance=abs(fract(phase/3.14159265+.5)-.5)*3.14159265;
+  float line=min(2.*width/aa,clamp((width+.5*aa-distance)/aa,0.,1.));
+  return mix(line, width*.63662, smoothstep(1.5,3.2,aa));
+}
+float fibers(vec2 uv, float a, float radius, float side, float t) {
+  float r=length(uv)/radius;
+  float z=sqrt(max(.001,1.-r*r))*side;
+  vec3 p=vec3(uv/radius,z);
+  float c=cos(t*.19),s=sin(t*.19);
+  p.xz=mat2(c,-s,s,c)*p.xz;
+  float longitudinal=atan(p.y,p.x);
+  float latitude=atan(p.z,length(p.xy))+.075*sin(longitudinal*3.+t*.7);
+  float pixel=2.3/(min(uSize.x,uSize.y)*max(1.,uPixelRatio));
+  float latWidth=pixel/(radius*max(.06,abs(z)));
+  float angleWidth=pixel/max(length(uv),.03);
+  float fine=thread(latitude*85.+longitudinal*6.5+sin(a*8.+t)*.85+t*.35,.12,latWidth*85.+angleWidth*14.);
+  float braid=thread(longitudinal*48.-latitude*10.5+sin(latitude*9.+t*.5),.08,angleWidth*48.+latWidth*20.);
+  float structure=thread(latitude*26.+a*9.5-t*.22,.16,latWidth*26.+angleWidth*9.5);
+  return fine*.58+braid*.18+structure*.13;
+}
 void main() {
   vec2 uv=(FlutterFragCoord().xy/uSize-.5)*2.3;
-  float t=uTime*.35;
-  float sequence=sin(clamp(uProgress,0.,1.)*3.14159265);
-  float squeeze=1.+uHold*.12+sequence*.18;
-  vec3 sum=vec3(0.); float coverage=0.;
-  float broad=0.;
-  vec2 touch=uTouch*1.05;
-  float local=exp(-dot(uv-touch,uv-touch)*3.5)*uPressure;
+  float t=uTime*.35, sequence=sin(clamp(uProgress,0.,1.)*3.14159265);
+  float local=exp(-dot(uv-uTouch,uv-uTouch)*3.5)*uPressure;
   uv-=uTouch*local*.16*uMotion;
-  uv*=squeeze;
-  float layers=6.+floor(uQuality*5.);
-  for(int i=0;i<17;i++) {
-    if(float(i)>=layers) break;
-    float z=-1.06+2.12*float(i)/(layers-1.);
-    vec3 p=vec3(uv,z);
-    p.xz=rot(t*.19)*p.xz;
-    p.xy=rot(-.28+.16*sin(t*.23))*p.xy;
-    float a=atan(p.y,p.x), latitude=atan(p.z,length(p.xy));
-    float radius=length(p);
-    float shape=.83+.115*sin(a*3.+latitude*4.+t*.7)
-      +.055*cos(a*5.-latitude*3.-t*.43)+.045*sin(latitude*7.+t*.31);
-    shape+=local*.04;
-    float shell=exp(-abs(radius-shape)*45.);
-    float fine=.5+.5*cos(latitude*171.+a*13.+sin(a*8.+t)*1.7+t*.7);
-    float braided=.5+.5*cos(a*97.-latitude*21.+sin(latitude*9.+t*.5)*2.);
-    float fibers=pow(fine,19.)*.76+pow(braided,27.)*.24;
-    float striation=pow(.5+.5*cos(latitude*53.+a*19.-t*.44),8.);
-    float front=.36+.64*(z+1.06)/2.12;
-    float density=shell*(fibers*.53+striation*.09);
-    float sparks=step(.997,hash31(floor(p*95.)))*shell*.24;
-    vec3 tint=mix(uColor,vec3(.92,.97,1.),front*.65);
-    sum+=tint*(density+sparks)*front*(1.+uEnergy*.25+sequence*.45);
-    broad+=shell*.012;
-    coverage+=density*.35;
-  }
-  float halo=exp(-abs(length(uv)-.81)*13.)*.015;
-  sum+=uColor*(broad*.11+halo)*(1.+local*.6);
-  sum=vec3(1.)-exp(-sum*1.9*12./layers);
-  float alpha=clamp(max(max(sum.r,sum.g),sum.b)*1.4+coverage*.13,0.,1.);
-  float edge=1.-smoothstep(1.34,1.48,length(uv));
-  fragColor=vec4(sum*edge,alpha*edge);
+  uv*=1.+uHold*.12+sequence*.18;
+  float a=atan(uv.y,uv.x), r=length(uv);
+  float shape=.86+.09*sin(a*3.+t*.7)+.045*cos(a*5.-t*.43)+local*.04;
+  float aa=2.8/(min(uSize.x,uSize.y)*max(1.,uPixelRatio));
+  float edge=1.-smoothstep(shape-aa,shape+aa,r);
+  float front=fibers(uv,a,shape,1.,t);
+  float back=fibers(uv,a+.12,shape*.94,-1.,t)*.35;
+  float rim=exp(-abs(r-shape)*40.)*.17;
+  vec3 tint=mix(uColor,vec3(.92,.97,1.),.42+.16*sin(a+t*.1));
+  vec3 light=tint*(front+back+rim)*(1.05+uEnergy*.2+sequence*.35);
+  light=vec3(1.)-exp(-light*1.65);
+  float alpha=clamp(max(max(light.r,light.g),light.b)*1.35,0.,1.)*edge;
+  fragColor=vec4(light*edge,alpha);
 }

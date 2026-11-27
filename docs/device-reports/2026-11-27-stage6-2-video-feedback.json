@@ -1,0 +1,30 @@
+{
+  "protocol": "stage6-3-video-feedback-v1",
+  "date": "2026-11-27",
+  "tested_version": "0.6.2+12",
+  "device": "iPhone Air",
+  "user_reports": [
+    "Нагрев так же происходит, но сейчас нужно больше времени",
+    "Анимации и фон подфризивают, мало FPS, видны пиксели"
+  ],
+  "observed": [
+    "В обоих видео виден значок зарядки; запись экрана включена",
+    "Тонкие детали формы заметно мягче текста и элементов интерфейса",
+    "Первое видео, 174.6–174.7 секунды: одновременно видны тексты двух разделов настроек"
+  ],
+  "videos": [
+    {
+      "filename": "ScreenRecording_11-27-2026 11-07-51_1.mp4",
+      "sha256": "30905794695f73329147685c371b0f31be0f0d132ef1bf8714d1ff4da5fcf227"
+    },
+    {
+      "filename": "ScreenRecording_11-27-2026 11-12-16_1.mp4",
+      "sha256": "3c0a8bd1e799cc6720ce702ed5aed71be54ea29d50478d0cd72e6c53b87dbf53"
+    }
+  ],
+  "physical_heat_resolved": false,
+  "physical_fps_measured": false,
+  "admission": "closed",
+  "english_notifications_enabled": false,
+  "recording_limitations": "Частота файла и сжатые покадровые разности не являются измерением FPS/энергопотребления приложения. Исходные видео и кадры не публикуются."
+}

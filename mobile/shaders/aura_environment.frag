@@ -24,22 +24,6 @@ float noise(vec2 p) {
 }
 mat2 rotate(float a) { float c=cos(a), s=sin(a); return mat2(c,-s,s,c); }
 
-vec3 stars(vec2 p, float scale, float time, float brightness) {
-  vec2 q = p*scale + vec2(time*.08,time*.025);
-  vec2 cell=floor(q), f=fract(q);
-  float seed=hash21(cell), present=step(.68,seed);
-  vec2 at=vec2(.17+.66*hash21(cell+17.),.17+.66*hash21(cell+53.));
-  vec2 d=f-at; float r=length(d);
-  float radius=mix(.010,.032,hash21(cell+111.));
-  float core=1.-smoothstep(radius*.25,radius,r);
-  float glow=exp(-r*r/(radius*radius*9.))*.15;
-  float ray=(exp(-abs(d.x)*210.)*exp(-abs(d.y)*19.)+
-    exp(-abs(d.y)*210.)*exp(-abs(d.x)*19.))*.12*step(.94,seed);
-  float pulse=.82+.18*sin(time*.45+seed*40.);
-  return mix(vec3(.55,.66,.84),vec3(.96,.98,1.),seed)*
-    (core+glow+ray)*present*pulse*brightness;
-}
-
 void main() {
   vec2 uv=FlutterFragCoord().xy/uSize;
   float aspect=uSize.x/uSize.y;
@@ -103,14 +87,10 @@ void main() {
     color+=mix(vec3(.12,.13,.28),accent,arm)*disc*(.035+arm*.10)*(.35+dust*.65);
     color*=1.-lanes*disc*.22;
     color+=vec3(.78,.83,.96)*exp(-r*36.)*.12;
-    color+=stars(q,95.,t*.2,.45)*disc*arm;
   } else {
     color+=vec3(.012,.019,.035)*noise(p*3.+vec2(t*.003,0.));
     color+=vec3(.009,.014,.024)*exp(-length(p-vec2(.12,-.22))*2.);
   }
-  color+=stars(p,29.,t, .39);
-  color+=stars(p+vec2(19.,7.),51.,t*.65,.28);
-  if(uQuality>.4) color+=stars(p+vec2(5.,29.),83.,t*.35,.15);
   color+=accent*exp(-dot(p,p)*13.)*(uEnergy*.012+activation*.023+uActivity*.004);
   // A single continuous exposure across the display; no opaque bottom panel.
   color*=.92+.08*pow(max(0.,1.-length(p)*.6),2.);

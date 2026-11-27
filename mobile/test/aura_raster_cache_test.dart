@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/rendering.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:universe_lab/aura_renderer.dart';
 
@@ -11,16 +12,16 @@ void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(warmUpAuraShaders);
   test(
-    'physical shader budget is bounded independently of a 3x iPhone display',
+    'soft atmosphere texture is bounded; fine details use native pixels',
     () {
       const logical = ui.Size(390, 844);
       final background = auraRasterSize(logical, form: false);
-      expect(background.width, lessThanOrEqualTo(420));
-      expect(background.height, lessThanOrEqualTo(720));
+      expect(background.width, lessThanOrEqualTo(768));
+      expect(background.height, lessThanOrEqualTo(1536));
       final previousPixels = logical.width * logical.height * 9;
       expect(
         background.width * background.height / previousPixels,
-        lessThan(.09),
+        lessThan(.4),
       );
       final form = auraRasterSize(const ui.Size(430, 430), form: true);
       expect(form, const ui.Size(512, 512));
@@ -131,7 +132,7 @@ void main() {
   );
 
   testWidgets(
-    'static previews render once and refresh only changed visual parameters',
+    'static native previews stop scheduling and refresh changed parameters',
     (tester) async {
       final interaction = AuraInteractionController();
       Widget app({
@@ -142,47 +143,52 @@ void main() {
         home: Center(
           child: SizedBox.square(
             dimension: 260,
-            child: AuraScene(
-              background: environment,
-              form: form,
-              phase: AuraPhase.answerAnimation,
-              progress: progress,
-              interaction: interaction,
-              active: false,
-              preview: true,
-              showBackground: false,
-              formAlignment: Alignment.center,
-              child: const SizedBox.expand(),
+            child: RepaintBoundary(
+              key: const ValueKey('static-preview'),
+              child: AuraScene(
+                background: environment,
+                form: form,
+                phase: AuraPhase.answerAnimation,
+                progress: progress,
+                interaction: interaction,
+                active: false,
+                preview: true,
+                showBackground: false,
+                formAlignment: Alignment.center,
+                child: const SizedBox.expand(),
+              ),
             ),
           ),
         ),
       );
-      AuraRasterCache cache() => tester
+      AuraPainter painter() => tester
           .widgetList<CustomPaint>(find.byType(CustomPaint))
           .map((widget) => widget.painter)
           .whereType<AuraPainter>()
-          .single
-          .raster!;
+          .single;
       Future<List<int>> pixels() async {
-        final c = cache();
         await settleAuraRaster(tester);
-        final data = await tester.runAsync(() async {
-          expect(c.image, isNotNull);
-          return (await c.image!.toByteData())!.buffer.asUint8List().toList();
-        });
-        await tester.pump();
-        return data!;
+        final boundary = tester.renderObject<RenderRepaintBoundary>(
+          find.byKey(const ValueKey('static-preview')),
+        );
+        return (await tester.runAsync(() async {
+          final image = await boundary.toImage(pixelRatio: 2);
+          try {
+            return (await image.toByteData())!.buffer.asUint8List().toList();
+          } finally {
+            image.dispose();
+          }
+        }))!;
       }
 
       await tester.pumpWidget(app());
       final first = await pixels();
-      final c = cache(), n = c.startedFrames;
+      expect(painter().raster, isNull);
       for (var i = 0; i < 20; i++) {
         await tester.pump(const Duration(seconds: 30));
         await tester.pumpWidget(app());
       }
-      expect(identical(cache(), c), isTrue);
-      expect(c.startedFrames, n);
+      expect(painter().raster, isNull);
       expect(tester.binding.hasScheduledFrame, isFalse);
       await tester.pumpWidget(app(form: 'liquidMetal'));
       final metal = await pixels();

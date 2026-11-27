@@ -82,7 +82,10 @@ void main() {
         await tester.pumpWidget(
           MaterialApp(
             home: MediaQuery(
-              data: const MediaQueryData(disableAnimations: true),
+              data: const MediaQueryData(
+                disableAnimations: true,
+                devicePixelRatio: 3,
+              ),
               child: Center(
                 child: RepaintBoundary(
                   key: boundaryKey,
@@ -144,21 +147,21 @@ void main() {
         );
         expect(cache.inFlight, 0);
         expect(cache.image, isNotNull);
-        expect(cache.pixelSize.width, lessThanOrEqualTo(512));
-        expect(cache.pixelSize.height, lessThanOrEqualTo(720));
+        expect(cache.pixelSize.width, lessThanOrEqualTo(768));
+        expect(cache.pixelSize.height, lessThanOrEqualTo(1536));
         await tester.pump();
         expect(tester.takeException(), isNull);
         final boundary = tester.renderObject<RenderRepaintBoundary>(
           find.byKey(boundaryKey),
         );
-        final image = await boundary.toImage(pixelRatio: 1);
+        final image = await boundary.toImage(pixelRatio: 3);
         try {
           final data = await image.toByteData(
             format: ui.ImageByteFormat.rawRgba,
           );
           expect(data, isNotNull);
           final bytes = data!.buffer.asUint8List();
-          expect(bytes.length, 192 * 256 * 4);
+          expect(bytes.length, 192 * 256 * 9 * 4);
           var lit = 0;
           for (var i = 0; i < bytes.length; i += 4) {
             if (bytes[i] + bytes[i + 1] + bytes[i + 2] > 80) ++lit;
@@ -192,6 +195,50 @@ void main() {
           }
         }
         expect(combinations, hasLength(16));
+        // Exercise the live Metal/mesh path too: static screenshots alone
+        // cannot detect an accidental return to snapshot-per-frame rendering.
+        await tester.pumpWidget(
+          MaterialApp(
+            home: Center(
+              child: SizedBox(
+                width: 192,
+                height: 256,
+                child: AuraScene(
+                  background: 'aurora',
+                  form: 'constellation',
+                  interaction: controller,
+                  child: const SizedBox.expand(),
+                ),
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+        final live = tester
+            .widgetList<CustomPaint>(find.byType(CustomPaint))
+            .map((widget) => widget.painter)
+            .whereType<AuraPainter>()
+            .single;
+        final cache = live.raster!;
+        await (() async {
+          while (cache.inFlight > 0) {
+            await tester.pump(const Duration(milliseconds: 20));
+          }
+        })().timeout(const Duration(seconds: 30));
+        expect(cache.image, isNotNull);
+        final image = cache.image, allocations = cache.startedFrames;
+        final time = controller.elapsed;
+        for (var frame = 0; frame < 120; ++frame) {
+          await tester.pump(const Duration(microseconds: 16667));
+        }
+        expect(controller.elapsed, greaterThan(time));
+        expect(cache.startedFrames, allocations);
+        expect(identical(cache.image, image), isTrue);
+        expect(cache.inFlight, 0);
+        expect(tester.takeException(), isNull);
+        debugPrint(
+          'AURA live 120 frames: no new atmosphere images; native vectors active',
+        );
       } finally {
         await tester.pumpWidget(const SizedBox());
         controller.dispose();

@@ -27,8 +27,8 @@ for name, expected in {
     print(f'{name}: verified in Runner.app')
 print('App bytes:', sum(p.stat().st_size for p in app.rglob('*') if p.is_file()))
 info = plistlib.loads((app / 'Info.plist').read_bytes())
-assert info.get('CFBundleShortVersionString') == '0.6.2', 'Wrong app version'
-assert str(info.get('CFBundleVersion')) == '12', 'Wrong app build number'
+assert info.get('CFBundleShortVersionString') == '0.6.3', 'Wrong app version'
+assert str(info.get('CFBundleVersion')) == '13', 'Wrong app build number'
 assert info.get('UniverseEnglishNoticeApproved') is False
 for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription', 'NSMotionUsageDescription'):
     assert isinstance(info.get(key), str) and info[key].strip(), key
@@ -132,4 +132,4 @@ for name in ('aura_environment.frag', 'aura_matter.frag', 'aura_metal.frag'):
     # copied GLSL file cannot satisfy this check or work in the shipped renderer.
     assert len(data) > 128 and data[4:8] == b'IPLR', f'Uncompiled/missing shader: {name}'
     assert data != (repo / 'mobile/shaders' / name).read_bytes(), name
-print('Three compiled AURA runtime shaders and version 0.6.2+12: verified')
+print('Three compiled AURA runtime shaders and version 0.6.3+13: verified')
