@@ -53,6 +53,38 @@ struct NativeStorageTests {
       try SessionSchema.encode(SessionSchema.state(records[index], scope: scope))
     }
 
+    let languageCases: [([String], String)] = [
+      (["ru"], "ru"), (["ru-RU"], "ru"), (["en-US"], "en"), (["en_GB"], "en"),
+      (["de-DE", "en-US", "ru-RU"], "en"), (["RU-ru", "en"], "ru"),
+      (["de-DE", "fr-FR"], "ru"), ([], "ru"), (["english", "russian"], "ru"),
+    ]
+    for (index, item) in languageCases.enumerated() {
+      let (preferred, expected) = item
+      let fresh = root.appendingPathComponent("language-\(index)")
+      let localeStore = SessionStorage(root: fresh, preferredLanguages: preferred)
+      for scope in [SessionScope.real, .diagnostic] {
+        let preferences = try localeStore.preferences(scope)
+        try check(preferences["language"] as? String == expected, "incorrect first supported language")
+        try check(preferences["notifications"] as? Bool == false, "fresh language enabled notifications")
+        try check(!FileManager.default.fileExists(atPath: fresh.appendingPathComponent(scope.rawValue).appendingPathComponent("preferences.json").path), "language lookup wrote defaults")
+      }
+    }
+    pass("fresh preferences use the first supported system language with RU fallback and no write")
+
+    let savedLocaleRoot = root.appendingPathComponent("saved-language")
+    let savedLocale = SessionStorage(root: savedLocaleRoot, preferredLanguages: ["en-US"])
+    try savedLocale.savePreferences(.real, ["language": "ru", "notifications": true])
+    let localePath = savedLocaleRoot.appendingPathComponent("real/preferences.json")
+    let localeBytes = try Data(contentsOf: localePath)
+    let restoredLocale = try savedLocale.preferences(.real)
+    try check(restoredLocale["language"] as? String == "ru" && restoredLocale["notifications"] as? Bool == true, "system language replaced saved choice")
+    try check(try Data(contentsOf: localePath) == localeBytes, "locale read rewrote preferences")
+    let corruptLocale = Data("{broken".utf8)
+    try corruptLocale.write(to: localePath)
+    try mustReject("corrupt preferences defaulted to system language") { _ = try savedLocale.preferences(.real) }
+    try check(try Data(contentsOf: localePath) == corruptLocale, "corrupt preference bytes changed")
+    pass("saved language and opt-in take precedence while corrupt preferences remain blocked")
+
     let fixtures = try JSONDecoder().decode([RecordFixture].self,
       from: Data(contentsOf: URL(fileURLWithPath: "test/fixtures/session_records.json")))
     for fixture in fixtures {

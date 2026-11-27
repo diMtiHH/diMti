@@ -46,6 +46,20 @@ void main() {
     jsonDecode(const PresentationProfile.defaults().toJson()) as Map,
   );
 
+  Map<String, Object?> legacyMap({
+    String background = 'nebula',
+    String style = 'coin',
+  }) => {
+    'version': 1,
+    'name': '  Старое имя 🌟  ',
+    'background': background,
+    'answerStyle': style,
+    'onboardingStep': 2,
+    'completed': true,
+    'termsVersion': currentTermsVersion,
+    'audioEnabled': false,
+  };
+
   Future<void> flush() async {
     // Let queued persistence enter its fake backend without completing gates.
     await Future<void>.delayed(Duration.zero);
@@ -63,9 +77,16 @@ void main() {
       expect(await loading, isTrue);
       expect(controller.profile, const PresentationProfile.defaults());
       expect(controller.profile!.name, isEmpty);
-      expect(controller.profile!.background, PresentationBackground.stars);
-      expect(controller.profile!.answerStyle, PresentationAnswerStyle.sphere);
+      expect(controller.profileWasMissing, isTrue);
+      expect(controller.profile!.version, 2);
+      expect(controller.profile!.background, PresentationBackground.aurora);
+      expect(
+        controller.profile!.answerStyle,
+        PresentationAnswerStyle.livingMatter,
+      );
       expect(controller.profile!.audioEnabled, isTrue);
+      expect(controller.profile!.ambientEnabled, isFalse);
+      expect(controller.profile!.hapticsEnabled, isTrue);
       expect(controller.profile!.onboardingStep, 0);
       expect(controller.needsOnboarding, isTrue);
       expect(controller.needsConsent, isTrue);
@@ -89,8 +110,11 @@ void main() {
             answerStyle: answerStyle,
             onboardingStep: 2,
             audioEnabled: false,
+            ambientEnabled: true,
+            hapticsEnabled: false,
           );
           expect(await first.save(selected), isTrue);
+          expect(first.profileWasMissing, isFalse);
           first.dispose();
           final restarted = PresentationController(backend);
           addTearDown(restarted.dispose);
@@ -98,6 +122,7 @@ void main() {
           expect(restarted.profile, selected);
           expect(restarted.profile!.background, background);
           expect(restarted.profile!.answerStyle, answerStyle);
+          expect(restarted.profileWasMissing, isFalse);
           expect(restarted.needsOnboarding, isTrue);
           expect(restarted.needsConsent, isTrue);
           expect(backend.writes, hasLength(1));
@@ -106,17 +131,198 @@ void main() {
     }
   }
 
+  const legacyBackgrounds = {
+    'stars': PresentationBackground.stars,
+    'galaxy': PresentationBackground.galaxy,
+    'nebula': PresentationBackground.aurora,
+    'blackHole': PresentationBackground.gravity,
+  };
+  const legacyStyles = {
+    'coin': PresentationAnswerStyle.livingMatter,
+    'sphere': PresentationAnswerStyle.liquidMetal,
+    'blackHole': PresentationAnswerStyle.infinity,
+    'constellation': PresentationAnswerStyle.constellation,
+  };
+  for (final background in legacyBackgrounds.entries) {
+    for (final style in legacyStyles.entries) {
+      test(
+        'v1 ${background.key}/${style.key} migrates without rewriting storage',
+        () async {
+          final original = jsonEncode(
+            legacyMap(background: background.key, style: style.key),
+          );
+          final backend = MemoryPresentationBackend()..value = original;
+          final controller = PresentationController(backend);
+          addTearDown(controller.dispose);
+          expect(await controller.load(), isTrue);
+          final profile = controller.profile!;
+          expect(controller.profileWasMissing, isFalse);
+          expect(profile.version, 2);
+          expect(profile.background, background.value);
+          expect(profile.answerStyle, style.value);
+          expect(profile.name, '  Старое имя 🌟  ');
+          expect(profile.completed, isTrue);
+          expect(profile.onboardingStep, 2);
+          expect(profile.termsVersion, currentTermsVersion);
+          expect(profile.audioEnabled, isFalse);
+          expect(profile.ambientEnabled, isFalse);
+          expect(profile.hapticsEnabled, isTrue);
+          expect(controller.needsConsent, isFalse);
+          expect(backend.value, original);
+          expect(backend.writes, isEmpty);
+          expect(await controller.load(), isTrue);
+          expect(backend.value, original);
+          expect(backend.writes, isEmpty);
+          expect(
+            await controller.save(profile.copyWith(ambientEnabled: true)),
+            isTrue,
+          );
+          final committed = jsonDecode(backend.value!) as Map;
+          expect(committed['version'], 2);
+          expect(
+            committed.keys,
+            unorderedEquals([
+              'version',
+              'name',
+              'background',
+              'answerStyle',
+              'onboardingStep',
+              'completed',
+              'termsVersion',
+              'audioEnabled',
+              'ambientEnabled',
+              'hapticsEnabled',
+            ]),
+          );
+          expect(await controller.load(), isTrue);
+          expect(controller.profile, profile.copyWith(ambientEnabled: true));
+        },
+      );
+    }
+  }
+
+  test('v1 narration and incomplete onboarding survive migration independently of ambience', () {
+    for (final enabled in [false, true]) {
+      for (final step in [0, 1, 2]) {
+        final migrated = PresentationProfile.fromJson(
+          jsonEncode({
+            ...legacyMap(),
+            'completed': false,
+            'termsVersion': 0,
+            'onboardingStep': step,
+            'audioEnabled': enabled,
+          }),
+        );
+        expect(migrated.audioEnabled, enabled);
+        expect(migrated.ambientEnabled, isFalse);
+        expect(migrated.hapticsEnabled, isTrue);
+        expect(migrated.onboardingStep, step);
+        expect(migrated.needsOnboarding, isTrue);
+        expect(migrated.termsVersion, 0);
+      }
+    }
+  });
+
+  test('v1 migration rejects mixed schemas corruption and unknown options without a write', () async {
+    final valid = jsonEncode(legacyMap());
+    final invalid = [
+      jsonEncode({...legacyMap()}..remove('name')),
+      jsonEncode({...legacyMap(), 'ambientEnabled': false}),
+      jsonEncode({...legacyMap(), 'hapticsEnabled': true}),
+      jsonEncode({...legacyMap(), 'version': 2}),
+      jsonEncode({...legacyMap(), 'version': 3}),
+      jsonEncode({...legacyMap(), 'background': 'aurora'}),
+      jsonEncode({...legacyMap(), 'answerStyle': 'livingMatter'}),
+      jsonEncode({...legacyMap(), 'background': 'unknown'}),
+      jsonEncode({...legacyMap(), 'audioEnabled': 1}),
+      jsonEncode({...legacyMap(), 'name': 'line\ncontrol'}),
+      jsonEncode({...legacyMap(), 'completed': false}),
+      valid.replaceFirst('"version":1', r'"version":1,"\u0076ersion":1'),
+      valid.replaceFirst('"version":1', '"version":1.0'),
+    ];
+    for (final raw in invalid) {
+      final backend = MemoryPresentationBackend()..value = raw;
+      final controller = PresentationController(backend);
+      expect(await controller.load(), isFalse);
+      expect(controller.profile, isNull);
+      expect(controller.profileWasMissing, isFalse);
+      expect(
+        await controller.save(const PresentationProfile.defaults()),
+        isFalse,
+      );
+      expect(backend.value, raw);
+      expect(backend.writes, isEmpty);
+      controller.dispose();
+    }
+  });
+
+  for (final committed in [false, true]) {
+    test(
+      'first v2 write after migration committed=$committed needs explicit readback on error',
+      () async {
+        final legacy = jsonEncode(legacyMap());
+        final backend = MemoryPresentationBackend()..value = legacy;
+        final controller = PresentationController(backend);
+        addTearDown(controller.dispose);
+        await controller.load();
+        final old = controller.profile!;
+        final next = old.copyWith(hapticsEnabled: false, ambientEnabled: true);
+        backend.writeError = PlatformException(code: 'storage_unavailable');
+        backend.commitBeforeWriteError = committed;
+        expect(await controller.save(next), isFalse);
+        expect(controller.profile, old);
+        expect(controller.failed, isTrue);
+        expect(await controller.acceptTerms(), isFalse);
+        expect(backend.writes, hasLength(1));
+        expect(backend.value, committed ? next.toJson() : legacy);
+        backend.writeError = null;
+        expect(await controller.load(), isTrue);
+        expect(controller.profile, committed ? next : old);
+        expect(backend.writes, hasLength(1));
+        expect(await controller.save(next), isTrue);
+        expect(jsonDecode(backend.value!)['version'], 2);
+      },
+    );
+  }
+
+  test(
+    'missing profile flag requires a successful read or acknowledged write',
+    () async {
+      final backend = MemoryPresentationBackend()
+        ..readError = StateError('read unavailable');
+      final controller = PresentationController(backend);
+      addTearDown(controller.dispose);
+      expect(controller.profileWasMissing, isFalse);
+      expect(await controller.load(), isFalse);
+      expect(controller.profileWasMissing, isFalse);
+      backend.readError = null;
+      expect(await controller.load(), isTrue);
+      expect(controller.profileWasMissing, isTrue);
+      backend.writeGate = Completer<void>();
+      final saving = controller.save(
+        controller.profile!.copyWith(name: 'Saved'),
+      );
+      await flush();
+      expect(controller.profileWasMissing, isTrue);
+      backend.writeGate!.complete();
+      expect(await saving, isTrue);
+      expect(controller.profileWasMissing, isFalse);
+    },
+  );
+
   test(
     'name clearing preserves independent presentation choices and consent',
     () async {
       final original = PresentationProfile(
         name: 'Имя',
-        background: PresentationBackground.nebula,
-        answerStyle: PresentationAnswerStyle.coin,
+        background: PresentationBackground.aurora,
+        answerStyle: PresentationAnswerStyle.livingMatter,
         onboardingStep: 2,
         completed: true,
         termsVersion: currentTermsVersion,
         audioEnabled: false,
+        ambientEnabled: true,
+        hapticsEnabled: false,
       );
       final backend = MemoryPresentationBackend()..value = original.toJson();
       final controller = PresentationController(backend);
@@ -133,6 +339,8 @@ void main() {
       expect(renamed.background, original.background);
       expect(renamed.answerStyle, original.answerStyle);
       expect(renamed.audioEnabled, isFalse);
+      expect(renamed.ambientEnabled, isTrue);
+      expect(renamed.hapticsEnabled, isFalse);
     },
   );
 
@@ -188,7 +396,7 @@ void main() {
     () async {
       final existing = PresentationProfile(
         name: 'Звезда',
-        background: PresentationBackground.blackHole,
+        background: PresentationBackground.gravity,
         answerStyle: PresentationAnswerStyle.constellation,
         onboardingStep: 2,
         completed: true,
@@ -450,7 +658,8 @@ void main() {
     final invalid = <Map<String, Object?>>[
       {...defaultsMap()}..remove('name'),
       {...defaultsMap(), 'question': 'must not be stored'},
-      {...defaultsMap(), 'version': 2},
+      {...defaultsMap(), 'version': 3},
+      {...defaultsMap(), 'version': 1},
       {...defaultsMap(), 'version': 1.0},
       {...defaultsMap(), 'version': true},
       {...defaultsMap(), 'name': null},
@@ -458,6 +667,11 @@ void main() {
       {...defaultsMap(), 'name': 'line\nbreak'},
       {...defaultsMap(), 'background': 'unknown'},
       {...defaultsMap(), 'answerStyle': 'unknown'},
+      {...defaultsMap(), 'background': 'nebula'},
+      {...defaultsMap(), 'background': 'blackHole'},
+      {...defaultsMap(), 'answerStyle': 'sphere'},
+      {...defaultsMap(), 'answerStyle': 'coin'},
+      {...defaultsMap(), 'answerStyle': 'blackHole'},
       {...defaultsMap(), 'onboardingStep': -1},
       {...defaultsMap(), 'onboardingStep': 3},
       {...defaultsMap(), 'onboardingStep': 0.0},
@@ -466,6 +680,10 @@ void main() {
       {...defaultsMap(), 'termsVersion': 100001},
       {...defaultsMap(), 'termsVersion': 0.0},
       {...defaultsMap(), 'audioEnabled': 'true'},
+      {...defaultsMap()}..remove('ambientEnabled'),
+      {...defaultsMap()}..remove('hapticsEnabled'),
+      {...defaultsMap(), 'ambientEnabled': 1},
+      {...defaultsMap(), 'hapticsEnabled': 'false'},
       {...defaultsMap(), 'termsVersion': 1},
       {...defaultsMap(), 'completed': true, 'onboardingStep': 2},
       {...defaultsMap(), 'completed': true, 'termsVersion': 1},
@@ -483,8 +701,8 @@ void main() {
       '"profile"',
       '{',
       const PresentationProfile.defaults().toJson().replaceFirst(
-        '"version":1',
-        '"version":1e0',
+        '"version":2',
+        '"version":2e0',
       ),
       '${List.filled(maxPresentationProfileBytes, ' ').join()}${const PresentationProfile.defaults().toJson()}',
     ]) {

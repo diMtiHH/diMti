@@ -12,10 +12,20 @@ import 'session_clock_scope.dart';
 import 'worker.dart';
 import 'voice_input.dart';
 import 'voice_star.dart';
+import 'aura_answer_page.dart';
+import 'aura_renderer.dart';
+import 'aura_ui.dart';
+import 'presentation_profile.dart';
 
 enum _LoadStage { preferences, clock, model, state }
 
 class SessionPage extends StatefulWidget {
+  final bool aura;
+  final PresentationProfile? appearance;
+  final AuraInteractionController? interaction;
+  final ValueChanged<AuraVisualState>? onVisuals;
+  final ValueChanged<bool>? onVoiceCapture, onAnswerScreen;
+  final ValueChanged<String>? onFeedback;
   final bool embedded, active;
   final String nickname;
   final int languageRevision;
@@ -35,12 +45,83 @@ class SessionPage extends StatefulWidget {
     this.active = true,
     this.nickname = '',
     this.languageRevision = 0,
+    this.aura = false,
+    this.appearance,
+    this.interaction,
+    this.onVisuals,
+    this.onVoiceCapture,
+    this.onAnswerScreen,
+    this.onFeedback,
   });
   @override
   State<SessionPage> createState() => _SessionPageState();
 }
 
-class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
+class _SessionPageState extends State<SessionPage>
+    with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+  late final AnimationController _sequence;
+  late final AuraInteractionController _interaction;
+  bool _ownsInteraction = false, _inputMode = false, _answerOpen = false;
+  bool _sequenceQueued = false;
+  int _auraGeneration = 0;
+  int _sequenceFeedbackMask = 0;
+  bool _quietSequence = false;
+  String _shownQuestion = '';
+  Route<void>? _answerRoute;
+  QuestionSession? _animatingSession;
+  PresentationProfile get _appearance =>
+      widget.appearance ?? const PresentationProfile.defaults();
+  AuraPhase get _auraPhase {
+    if (_answerOpen) return AuraPhase.answerReveal;
+    if (_sequence.isAnimating) return AuraPhase.answerAnimation;
+    return switch (_session?.phase) {
+      SessionPhase.review => AuraPhase.questionConfirmation,
+      SessionPhase.checking ||
+      SessionPhase.loading => AuraPhase.safetyValidation,
+      SessionPhase.pending => AuraPhase.answerAnimation,
+      SessionPhase.cooldown => AuraPhase.cooldown,
+      _ => _inputMode ? AuraPhase.questionInput : AuraPhase.idle,
+    };
+  }
+
+  void _visuals() {
+    if (!widget.aura) return;
+    widget.onVisuals?.call(
+      AuraVisualState(
+        phase: _auraPhase,
+        progress: _sequence.value,
+        energy: _voice?.recording == true ? _voice!.level : 0,
+      ),
+    );
+  }
+
+  void _haptic([String event = 'touch']) {
+    if (!_foreground || !widget.active || _covered) return;
+    if (!widget.aura || _appearance.hapticsEnabled)
+      unawaited(HapticFeedback.selectionClick());
+    if (widget.aura) widget.onFeedback?.call(event);
+  }
+
+  void _sequenceFeedback() {
+    if (_quietSequence ||
+        !_sequence.isAnimating ||
+        !_foreground ||
+        !widget.active ||
+        _covered)
+      return;
+    var crossed = false;
+    for (var i = 0; i < 2; ++i) {
+      final threshold = i == 0 ? 2.2 / 4.5 : 3.8 / 4.5;
+      if (_sequence.value >= threshold &&
+          _sequenceFeedbackMask & (1 << i) == 0) {
+        _sequenceFeedbackMask |= 1 << i;
+        crossed = true;
+      }
+    }
+    if (crossed && _appearance.hapticsEnabled)
+      unawaited(HapticFeedback.lightImpact());
+  }
+
   final _input = TextEditingController();
   VoiceInputController? _voice;
   bool _voiceRevisionActive = false;
@@ -88,6 +169,19 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _ownsInteraction = widget.interaction == null;
+    _interaction = widget.interaction ?? AuraInteractionController();
+    _sequence =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 4500),
+        )..addListener(() {
+          if (mounted) {
+            _sequenceFeedback();
+            _visuals();
+            setState(() {});
+          }
+        });
     _backend =
         widget.backend ?? IosSessionBackend(diagnostic: widget.diagnostic);
     if (!widget.diagnostic) {
@@ -141,10 +235,15 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     } finally {
       _loadRunning = false;
     }
-    if (mounted) setState(() => _loading = false);
+    if (mounted) {
+      setState(() => _loading = false);
+      _queueAuraAnswer();
+      _visuals();
+    }
   }
 
   Future<void> _loadOnce() async {
+    _cancelAura();
     _discardVoice();
     _session?.onChanged = null;
     _session = null;
@@ -233,11 +332,16 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         _session?.phase != SessionPhase.cooldown) {
       _visibleAnswer = null;
       _reveal = false;
+      _shownQuestion = '';
+      if (_answerOpen) _closeAuraRoute();
     }
     setState(() {});
+    _queueAuraAnswer();
+    _visuals();
   }
 
   void _hidePrivateView({bool keepPermissionRequest = false}) {
+    _cancelAura();
     if (!keepPermissionRequest) _discardVoice();
     _input.clear();
     _review = null;
@@ -293,11 +397,35 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   Future<void> _confirm() async {
     final review = _review;
     if (review == null) return;
+    final generation = _auraGeneration;
+    final session = _session!;
+    final question = widget.diagnostic ? '' : review.text;
+    if (widget.aura) _haptic();
+    FocusScope.of(context).unfocus();
     _input.clear();
     _review = null;
-    final result = await _session!.confirm(review);
-    if (mounted && _foreground && !_covered && widget.active)
-      setState(() => _result = result);
+    final result = await session.confirm(review);
+    if (mounted &&
+        _foreground &&
+        !_covered &&
+        widget.active &&
+        (!widget.aura || generation == _auraGeneration) &&
+        identical(session, _session)) {
+      setState(() {
+        _result = result;
+        if (widget.aura) {
+          if (result == SubmitResult.pending)
+            _shownQuestion = question;
+          else if (session.phase == SessionPhase.ready) {
+            _input.text = question;
+            session.edit(question, language: _language);
+            _inputMode = true;
+          }
+        }
+      });
+      _queueAuraAnswer();
+      _visuals();
+    }
   }
 
   void _voiceChanged() {
@@ -320,6 +448,8 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     }
     if (!voice.busy) _voiceRevisionActive = false;
     setState(() {});
+    widget.onVoiceCapture?.call(voice.busy);
+    _visuals();
   }
 
   void _discardVoice() {
@@ -338,7 +468,7 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
         _session?.busy == true)
       return;
     FocusScope.of(context).unfocus();
-    unawaited(HapticFeedback.selectionClick());
+    _haptic();
     _beforeVoice = _input.text;
     _voiceRevisionActive = true;
     await _voice!.start(_language, initialText: _beforeVoice);
@@ -485,6 +615,433 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
     ),
     _ => '',
   };
+
+  void _closeAuraRoute() {
+    final route = _answerRoute;
+    if (route == null) return;
+    _answerRoute = null;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (route.isActive) route.navigator?.removeRoute(route);
+    });
+  }
+
+  void _cancelAura() {
+    ++_auraGeneration;
+    _sequenceQueued = false;
+    _sequence.stop();
+    _animatingSession = null;
+    _inputMode = false;
+    _shownQuestion = '';
+    if (_answerOpen) _closeAuraRoute();
+    _interaction.cancel();
+  }
+
+  bool _currentAura(QuestionSession session, int generation) =>
+      mounted &&
+      _foreground &&
+      !_covered &&
+      widget.active &&
+      generation == _auraGeneration &&
+      identical(_session, session);
+
+  void _queueAuraAnswer() {
+    final session = _session;
+    if (!widget.aura ||
+        session == null ||
+        session.phase != SessionPhase.pending ||
+        session.busy ||
+        _loading ||
+        !_foreground ||
+        _covered ||
+        !widget.active ||
+        _sequenceQueued ||
+        _sequence.isAnimating ||
+        _answerOpen)
+      return;
+    _sequenceQueued = true;
+    final generation = _auraGeneration;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!_currentAura(session, generation)) return;
+      _sequenceQueued = false;
+      if (session.phase == SessionPhase.pending &&
+          session.pendingAnswer != null) {
+        unawaited(_animateAura(session, generation));
+      }
+    });
+  }
+
+  Future<void> _animateAura(QuestionSession session, int generation) async {
+    if (_animatingSession != null || _answerOpen) return;
+    final answer = session.pendingAnswer;
+    if (answer == null) return;
+    _animatingSession = session;
+    _sequenceFeedbackMask = 0;
+    _quietSequence =
+        MediaQuery.disableAnimationsOf(context) ||
+        MediaQuery.accessibleNavigationOf(context);
+    _haptic('transform');
+    _sequence.duration = _quietSequence
+        ? const Duration(milliseconds: 300)
+        : const Duration(milliseconds: 4500);
+    try {
+      await _sequence.forward(from: 0).orCancel;
+    } on TickerCanceled {
+      return;
+    }
+    if (!_currentAura(session, generation) ||
+        session.phase != SessionPhase.pending)
+      return;
+    _animatingSession = null;
+    await _openAuraAnswer(session, answer, generation);
+  }
+
+  Future<void> _openAuraAnswer(
+    QuestionSession session,
+    Answer answer,
+    int generation,
+  ) async {
+    if (_answerOpen || !_currentAura(session, generation)) return;
+    _answerOpen = true;
+    widget.onAnswerScreen?.call(true);
+    _visuals();
+    final route = PageRouteBuilder<void>(
+      transitionDuration: Duration.zero,
+      reverseTransitionDuration: Duration.zero,
+      pageBuilder: (_, __, ___) => AuraAnswerPage(
+        answer: answer,
+        question: _shownQuestion,
+        language: _language,
+        profile: _appearance,
+        session: session,
+        interaction: _interaction,
+        onVisible: () async {
+          if (!_currentAura(session, generation)) return;
+          if (session.phase == SessionPhase.pending) {
+            _visibleAnswer = answer;
+            _haptic('reveal');
+            await session.acknowledgeShown();
+          }
+        },
+      ),
+    );
+    _answerRoute = route;
+    await Navigator.of(context).push(route);
+    if (!mounted) return;
+    if (identical(_answerRoute, route)) _answerRoute = null;
+    _answerOpen = false;
+    widget.onAnswerScreen?.call(false);
+    _visuals();
+    setState(() {});
+  }
+
+  void _openInput() {
+    if (_session?.phase != SessionPhase.ready ||
+        _session!.busy ||
+        !_foreground ||
+        !widget.active ||
+        _covered)
+      return;
+    _haptic();
+    setState(() {
+      _inputMode = true;
+      _result = null;
+    });
+    _visuals();
+  }
+
+  Widget _auraForm(double height) => SizedBox(
+    height: height,
+    width: double.infinity,
+    child: AuraTouchSurface(
+      interaction: _interaction,
+      label: t(
+        'Живая форма. Коснись, чтобы задать вопрос',
+        'Living form. Tap to ask a question',
+      ),
+      active: _foreground && widget.active && !_covered && !_answerOpen,
+      phase: _auraPhase,
+      onShortTap: _openInput,
+      onTouchFeedback: _haptic,
+      child: AuraScene(
+        background: _appearance.background.name,
+        form: _appearance.answerStyle.name,
+        showBackground: false,
+        formAlignment: Alignment.center,
+        formScale: 1.25,
+        interaction: _interaction,
+        phase: _auraPhase,
+        progress: _sequence.value,
+        energy: _voice?.recording == true ? _voice!.level : 0,
+        active: _foreground && widget.active && !_covered && !_answerOpen,
+        child: const SizedBox.expand(),
+      ),
+    ),
+  );
+
+  Widget _auraContent(QuestionSession session, double height) {
+    final phase = session.phase;
+    if (phase == SessionPhase.failed || phase == SessionPhase.interrupted)
+      return _content(session);
+    if (phase == SessionPhase.loading ||
+        phase == SessionPhase.checking ||
+        phase == SessionPhase.pending) {
+      return Column(
+        children: [
+          _auraForm(height),
+          const SizedBox(height: 16),
+          Text(
+            phase == SessionPhase.pending
+                ? t('Побудь в этом мгновении', 'Stay in this moment')
+                : t('Проверяем вопрос…', 'Checking your question…'),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      );
+    }
+    if (phase == SessionPhase.cooldown) {
+      final seconds = session.remainingSeconds;
+      final time =
+          '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
+      return Column(
+        children: [
+          _auraForm(height),
+          Text(
+            t('Вселенная уже ответила', 'The Universe has answered'),
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 12),
+          Text(
+            time,
+            key: const ValueKey('cooldown'),
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          const SizedBox(height: 12),
+          if (_visibleAnswer != null)
+            TextButton(
+              key: const ValueKey('view-answer'),
+              onPressed: () =>
+                  _openAuraAnswer(session, _visibleAnswer!, _auraGeneration),
+              child: Text(t('Посмотреть ответ', 'View answer')),
+            ),
+        ],
+      );
+    }
+    if (phase == SessionPhase.review) {
+      final review = _review;
+      if (review == null) return const SizedBox.shrink();
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _auraForm(height * .6),
+          Text(
+            t('Это твой вопрос?', 'Is this your question?'),
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            widget.diagnostic
+                ? t('Технический пример', 'Technical fixture')
+                : review.text,
+            key: const ValueKey('review-question'),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 32),
+          FilledButton(
+            key: const ValueKey('confirm-question'),
+            onPressed: _confirm,
+            child: Text(t('Спросить Вселенную', 'Ask the Universe')),
+          ),
+          TextButton(
+            onPressed: () {
+              session.cancelReview();
+              _visuals();
+            },
+            child: Text(t('Изменить вопрос', 'Edit question')),
+          ),
+        ],
+      );
+    }
+    if (!_inputMode && !widget.diagnostic) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _auraForm(height),
+          Text(
+            t('О чём ты думаешь?', 'What is on your mind?'),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 10),
+          Text(
+            t('Один вопрос. Один ответ.', 'One question. One answer.'),
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 24),
+          FilledButton(
+            key: const ValueKey('ask-question'),
+            onPressed: _openInput,
+            child: Text(t('Задать вопрос', 'Ask a question')),
+          ),
+        ],
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _auraForm(height * .55),
+        if (!widget.diagnostic)
+          TextField(
+            key: const ValueKey('question-input'),
+            controller: _input,
+            minLines: 1,
+            maxLines: 5,
+            maxLength: 8192,
+            enableSuggestions: false,
+            autocorrect: false,
+            style: Theme.of(context).textTheme.headlineSmall,
+            decoration: InputDecoration(
+              hintText: t('Стоит ли мне…', 'Should I…'),
+              filled: false,
+              counterText: '',
+              border: const UnderlineInputBorder(),
+            ),
+            onTap: () {
+              if (_voice?.busy == true) _discardVoice();
+            },
+            onChanged: (value) {
+              _discardVoice();
+              session.edit(value, language: _language);
+              _result = null;
+              _interaction.pulse(.3);
+              _visuals();
+            },
+          ),
+        if (!widget.diagnostic) ...[
+          const SizedBox(height: 12),
+          Center(
+            child: IconButton(
+              key: const ValueKey('voice-input'),
+              tooltip: _voice!.recording
+                  ? t('Остановить запись', 'Stop recording')
+                  : t('Голосовой ввод', 'Voice input'),
+              onPressed: _voice!.recording
+                  ? _voice!.stop
+                  : (_voice!.busy ? null : _startVoice),
+              icon: AuraIcon(
+                kind: _voice!.recording
+                    ? AuraIconKind.close
+                    : AuraIconKind.microphone,
+              ),
+            ),
+          ),
+          if (_voice!.busy || _voice!.state == VoiceInputState.error)
+            Text(
+              _voiceStatus
+                  .replaceAll('звезду', 'микрофон')
+                  .replaceAll('star', 'microphone'),
+              key: const ValueKey('voice-status'),
+              textAlign: TextAlign.center,
+            ),
+          if (_voice!.busy)
+            TextButton(
+              onPressed: _cancelVoice,
+              child: Text(t('Отменить запись', 'Cancel recording')),
+            ),
+        ],
+        const SizedBox(height: 24),
+        FilledButton(
+          onPressed:
+              session.busy ||
+                  _voice?.busy == true ||
+                  (!widget.diagnostic && session.draft.trim().isEmpty)
+              ? null
+              : () {
+                  FocusScope.of(context).unfocus();
+                  _haptic();
+                  _prepare();
+                  _visuals();
+                },
+          child: Text(
+            widget.diagnostic
+                ? t('Подготовить тестовый ответ', 'Prepare test answer')
+                : t('Продолжить', 'Continue'),
+          ),
+        ),
+        TextButton(
+          onPressed: () {
+            _discardVoice();
+            _input.clear();
+            session.edit('', language: _language);
+            setState(() {
+              _inputMode = false;
+              _result = null;
+            });
+            _visuals();
+          },
+          child: Text(t('Отмена', 'Cancel')),
+        ),
+        if (_result != null && _outcome(_result!).isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(top: 12),
+            child: Text(
+              _outcome(_result!),
+              key: const ValueKey('outcome'),
+              textAlign: TextAlign.center,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _auraBody() => LayoutBuilder(
+    builder: (context, constraints) {
+      if (!_foreground || !widget.active || _covered || _answerOpen)
+        return const SizedBox.shrink();
+      final height = (constraints.maxHeight * .60).clamp(180.0, 430.0);
+      return SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 520),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (widget.nickname.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Text(
+                      t(
+                        'Привет, ${widget.nickname}',
+                        'Hello, ${widget.nickname}',
+                      ),
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                  ),
+                if (_failed) ...[
+                  Text(_loadFailure),
+                  TextButton(
+                    onPressed: _load,
+                    child: Text(t('Повторить загрузку', 'Retry loading')),
+                  ),
+                ] else if (_loading || _session == null) ...[
+                  _auraForm(height),
+                  Center(
+                    child: Text(
+                      t('Вселенная пробуждается…', 'The Universe is waking…'),
+                    ),
+                  ),
+                ] else
+                  _auraContent(_session!, height),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
 
   Widget _content(QuestionSession session) {
     if (!_foreground || _covered || !widget.active)
@@ -721,6 +1278,23 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final session = _session;
+    if (widget.aura) {
+      final body = _auraBody();
+      return widget.embedded
+          ? body
+          : AuraScene(
+              background: _appearance.background.name,
+              interaction: _interaction,
+              showForm: false,
+              phase: _auraPhase,
+              progress: _sequence.value,
+              active: _foreground && widget.active && !_answerOpen,
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: SafeArea(child: body),
+              ),
+            );
+    }
     return Scaffold(
       backgroundColor: widget.embedded ? Colors.transparent : null,
       appBar: widget.embedded
@@ -857,6 +1431,9 @@ class _SessionPageState extends State<SessionPage> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    ++_auraGeneration;
+    _sequence.dispose();
+    if (_ownsInteraction) _interaction.dispose();
     WidgetsBinding.instance.removeObserver(this);
     _tick?.cancel();
     _session?.onChanged = null;

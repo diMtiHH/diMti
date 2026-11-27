@@ -12,7 +12,25 @@ void main() {
       const channel = MethodChannel('ask_universe/presentation');
       const voice = MethodChannel('ask_universe/voice');
       final original = await channel.invokeMethod<String>('readProfile');
-      if (original != null) expect(jsonDecode(original), isA<Map>());
+      if (original != null) {
+        final profile = jsonDecode(original) as Map;
+        expect(profile['version'], 2);
+        expect(
+          profile.keys,
+          unorderedEquals([
+            'version',
+            'name',
+            'background',
+            'answerStyle',
+            'onboardingStep',
+            'completed',
+            'termsVersion',
+            'audioEnabled',
+            'ambientEnabled',
+            'hapticsEnabled',
+          ]),
+        );
+      }
       final permissions = await voice.invokeMapMethod<Object?, Object?>(
         'availability',
         {'language': 'ru'},
@@ -27,16 +45,27 @@ void main() {
         ),
       );
       final fixture = <String, Object>{
-        'version': 1,
+        'version': 2,
         'name': 'profile fixture',
-        'background': 'stars',
-        'answerStyle': 'sphere',
+        'background': 'aurora',
+        'answerStyle': 'livingMatter',
         'onboardingStep': 0,
         'completed': false,
         'termsVersion': 0,
         'audioEnabled': true,
+        'ambientEnabled': false,
+        'hapticsEnabled': true,
       };
       final valid = jsonEncode(fixture);
+      final legacy =
+          <String, Object>{
+            ...fixture,
+            'version': 1,
+            'background': 'nebula',
+            'answerStyle': 'sphere',
+          }..removeWhere(
+            (key, _) => key == 'ambientEnabled' || key == 'hapticsEnabled',
+          );
       // Never write a valid profile: a missing original has no delete/restore
       // API. Invalid writes must preserve both absence and an existing profile.
       final invalid = [
@@ -44,16 +73,26 @@ void main() {
         '{',
         ' ' * 2049,
         jsonEncode({...fixture, 'version': true}),
-        jsonEncode({...fixture, 'version': 1.0}),
-        valid.replaceFirst('"version":1', '"version":1,"version":1'),
-        valid.replaceFirst('"version":1', r'"version":1,"\u0076ersion":1'),
+        jsonEncode({...fixture, 'version': 2.0}),
+        jsonEncode({...fixture, 'version': 1}),
+        jsonEncode({...fixture, 'version': 3}),
+        valid.replaceFirst('"version":2', '"version":2,"version":2'),
+        valid.replaceFirst('"version":2', r'"version":2,"\u0076ersion":2'),
         jsonEncode({...fixture, 'name': 'a' * 41}),
         jsonEncode({...fixture, 'name': 'line\ncontrol'}),
         jsonEncode({...fixture, 'audioEnabled': 1}),
+        jsonEncode({...fixture, 'ambientEnabled': 1}),
+        jsonEncode({...fixture, 'hapticsEnabled': 'true'}),
+        jsonEncode({...fixture}..remove('ambientEnabled')),
         jsonEncode({...fixture, 'completed': true}),
         jsonEncode({...fixture, 'termsVersion': 1}),
         jsonEncode({...fixture, 'background': '../stars'}),
+        jsonEncode({...fixture, 'background': 'nebula'}),
+        jsonEncode({...fixture, 'answerStyle': 'sphere'}),
         jsonEncode({...fixture, 'question': 'forbidden field'}),
+        jsonEncode({...legacy, 'audioEnabled': 1}),
+        jsonEncode({...legacy, 'background': 'aurora'}),
+        jsonEncode({...legacy, 'ambientEnabled': false}),
       ];
       for (final value in invalid) {
         await expectLater(

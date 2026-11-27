@@ -46,6 +46,8 @@ struct PresentationStorage {
       data.append(chunk)
     }
     guard data.count <= PresentationSchema.maxBytes, let text = String(data: data, encoding: .utf8) else { throw PresentationDataError.invalid }
+    // Legacy v1 is mapped in memory only. Reading must never replace the
+    // user's original file; an explicit later write atomically commits v2.
     return try PresentationSchema.encode(PresentationSchema.profile(text))
   }
 

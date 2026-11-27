@@ -14,8 +14,16 @@ import 'session_clock_scope.dart';
 import 'session_core.dart';
 import 'session_page.dart';
 import 'voice_input.dart';
+import 'ambient_audio.dart';
+import 'aura_answer_page.dart';
+import 'aura_renderer.dart';
+import 'aura_ui.dart';
+
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
 
 class UniverseApp extends StatelessWidget {
+  final AmbientBackend? ambientBackend;
   final PresentationBackend? presentationBackend;
   final SessionBackend? sessionBackend;
   final NarrationBackend? narrationBackend;
@@ -30,6 +38,7 @@ class UniverseApp extends StatelessWidget {
     this.voiceBackend,
     this.inspector,
     this.random,
+    this.ambientBackend,
   });
   @override
   Widget build(BuildContext context) => SessionClockScope(
@@ -44,12 +53,14 @@ class UniverseApp extends StatelessWidget {
         voiceBackend: voiceBackend,
         inspector: inspector,
         random: random,
+        ambientBackend: ambientBackend,
       ),
     ),
   );
 }
 
 class UniverseShell extends StatefulWidget {
+  final AmbientBackend? ambientBackend;
   final PresentationBackend? presentationBackend;
   final SessionBackend? sessionBackend;
   final NarrationBackend? narrationBackend;
@@ -64,6 +75,7 @@ class UniverseShell extends StatefulWidget {
     this.voiceBackend,
     this.inspector,
     this.random,
+    this.ambientBackend,
   });
   @override
   State<UniverseShell> createState() => _UniverseShellState();
@@ -73,6 +85,11 @@ class _UniverseShellState extends State<UniverseShell>
     with WidgetsBindingObserver {
   late final PresentationController _presentation;
   late final SessionBackend _sessionBackend;
+  late final AmbientController _ambient;
+  final _interaction = AuraInteractionController();
+  final _visual = ValueNotifier(const AuraVisualState());
+  bool _capturingSpeech = false, _answerCover = false;
+  PresentationProfile? _lastAppearance;
   String _language = 'ru';
   bool _preferencesLoading = true,
       _preferencesFailed = false,
@@ -84,6 +101,7 @@ class _UniverseShellState extends State<UniverseShell>
   void initState() {
     super.initState();
     _sessionBackend = widget.sessionBackend ?? const IosSessionBackend();
+    _ambient = AmbientController(backend: widget.ambientBackend);
     _presentation = PresentationController(
       widget.presentationBackend ?? IosPresentationBackend(),
     )..addListener(_changed);
@@ -95,7 +113,49 @@ class _UniverseShellState extends State<UniverseShell>
   }
 
   void _changed() {
-    if (mounted) setState(() {});
+    if (!mounted) return;
+    final profile = _presentation.profile;
+    final old = _lastAppearance;
+    final intent =
+        profile != null &&
+        old != null &&
+        profile.ambientEnabled &&
+        (!old.ambientEnabled || old.background != profile.background);
+    _lastAppearance = profile;
+    _syncAmbient(userIntent: intent);
+    setState(() {});
+  }
+
+  void _syncAmbient({bool userIntent = false}) {
+    final profile = _presentation.profile;
+    if (profile == null) return;
+    unawaited(
+      _ambient.sync(
+        enabled: profile.ambientEnabled,
+        environment: profile.background.name,
+        active: _foreground,
+        capturingSpeech: _capturingSpeech,
+        allowPlayback:
+            !_presentation.needsOnboarding && !_presentation.needsConsent,
+        userIntent: userIntent,
+      ),
+    );
+  }
+
+  void _visualChanged(AuraVisualState value) {
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _visual.value = value;
+      });
+    } else {
+      _visual.value = value;
+    }
+  }
+
+  void _captureChanged(bool value) {
+    _capturingSpeech = value;
+    _syncAmbient();
   }
 
   Future<void> _load() async {
@@ -135,6 +195,7 @@ class _UniverseShellState extends State<UniverseShell>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (mounted)
       setState(() => _foreground = state == AppLifecycleState.resumed);
+    _syncAmbient();
   }
 
   Future<void> _settings() async {
@@ -147,6 +208,8 @@ class _UniverseShellState extends State<UniverseShell>
           backend: _sessionBackend,
           language: _language,
           onLanguage: _languageTo,
+          ambient: _ambient,
+          onResumeAmbient: () => _syncAmbient(userIntent: true),
         ),
       ),
     );
@@ -204,91 +267,188 @@ class _UniverseShellState extends State<UniverseShell>
         narrationBackend: widget.narrationBackend,
       );
     }
-    return CosmicScene(
-      background: profile.background.name,
-      active: _foreground && !_covered,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          title: Text(t('Спроси Вселенную', 'Ask the Universe')),
-          actions: [
-            IconButton(
-              key: const ValueKey('open-settings'),
-              tooltip: t('Настройки', 'Settings'),
-              onPressed: _settings,
-              icon: const Icon(Icons.tune_rounded),
-            ),
-          ],
-        ),
-        body: IndexedStack(
-          index: _tab,
+    final content = Scaffold(
+      backgroundColor: Colors.transparent,
+      resizeToAvoidBottomInset: true,
+      body: SafeArea(
+        child: Column(
           children: [
-            TickerMode(
-              enabled: _tab == 0 && !_covered,
-              child: SessionPage(
-                embedded: true,
-                active: _tab == 0 && !_covered,
-                nickname: profile.name,
-                languageRevision: _languageRevision,
-                backend: _sessionBackend,
-                voiceBackend: widget.voiceBackend,
-                inspector: widget.inspector,
-                random: widget.random,
-              ),
-            ),
-            SafeArea(
-              child: Center(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(32),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 440),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(
-                          Icons.public_rounded,
-                          size: 48,
-                          color: Color(0xffaabbd7),
-                        ),
-                        const SizedBox(height: 24),
-                        Text(
-                          t('Что волнует мир', 'What moves the world'),
-                          style: Theme.of(context).textTheme.headlineMedium,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 18),
-                        Text(
-                          t(
-                            'Этот раздел появится в следующем обновлении. Сейчас данные не собираются.',
-                            'This section is coming in a future update. No data is being collected.',
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+            Padding(
+              padding: const EdgeInsets.fromLTRB(24, 14, 18, 8),
+              child: Row(
+                children: [
+                  AuraBrandMark(
+                    size: 28,
+                    color: auraAccent(profile.background.name),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      t('Спроси\nВселенную', 'Ask the\nUniverse'),
+                      style: Theme.of(context).textTheme.titleMedium
+                          ?.copyWith(height: 1.25, letterSpacing: .5),
                     ),
                   ),
-                ),
+                  IconButton(
+                    key: const ValueKey('open-settings'),
+                    tooltip: t('Настройки', 'Settings'),
+                    onPressed: _settings,
+                    icon: const AuraIcon(kind: AuraIconKind.settings),
+                    style: IconButton.styleFrom(
+                      backgroundColor: Colors.white.withValues(alpha: .045),
+                      side: BorderSide(
+                        color: Colors.white.withValues(alpha: .09),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
+            Expanded(
+              child: IndexedStack(
+                index: _tab,
+                children: [
+                  TickerMode(
+                    enabled: _tab == 0 && !_covered && !_answerCover,
+                    child: SessionPage(
+                      embedded: true,
+                      aura: true,
+                      appearance: profile,
+                      interaction: _interaction,
+                      onVisuals: _visualChanged,
+                      onVoiceCapture: _captureChanged,
+                      onFeedback: (event) => unawaited(_ambient.cue(event)),
+                      onAnswerScreen: (open) {
+                        if (mounted) setState(() => _answerCover = open);
+                      },
+                      active: _tab == 0 && !_covered,
+                      nickname: profile.name,
+                      languageRevision: _languageRevision,
+                      backend: _sessionBackend,
+                      voiceBackend: widget.voiceBackend,
+                      inspector: widget.inspector,
+                      random: widget.random,
+                    ),
+                  ),
+                  _WorldPage(
+                    language: _language,
+                    background: profile.background.name,
+                    active: _foreground && _tab == 1 && !_covered,
+                  ),
+                ],
+              ),
+            ),
+            if (MediaQuery.viewInsetsOf(context).bottom == 0)
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
+                child: Row(
+                  children: [
+                    _navigation(
+                      0,
+                      AuraIconKind.universe,
+                      t('Вселенная', 'Universe'),
+                      profile,
+                    ),
+                    _navigation(
+                      1,
+                      AuraIconKind.world,
+                      t('Что волнует мир', 'What concerns the world'),
+                      profile,
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: _tab,
-          backgroundColor: const Color(0xe6090e20),
-          onDestinationSelected: (index) => setState(() => _tab = index),
-          destinations: [
-            NavigationDestination(
-              icon: const Icon(Icons.auto_awesome_outlined),
-              selectedIcon: const Icon(Icons.auto_awesome),
-              label: t('Вселенная', 'Universe'),
+      ),
+    );
+    return ValueListenableBuilder<AuraVisualState>(
+      valueListenable: _visual,
+      child: content,
+      builder: (_, visual, child) => AuraScene(
+        background: profile.background.name,
+        showForm: false,
+        interaction: _interaction,
+        phase: _tab == 0 ? visual.phase : AuraPhase.idle,
+        energy: _tab == 0 ? visual.energy : 0,
+        progress: _tab == 0 ? visual.progress : 0,
+        active: _foreground && !_covered && !_answerCover,
+        child: Opacity(
+          opacity: _tab == 0 && visual.phase == AuraPhase.answerAnimation
+              ? (1 -
+                    ((visual.progress - 3.8 / 4.5) / (0.7 / 4.5)).clamp(
+                      0.0,
+                      1.0,
+                    ))
+              : 1,
+          child: child!,
+        ),
+      ),
+    );
+  }
+
+  Widget _navigation(
+    int index,
+    AuraIconKind icon,
+    String label,
+    PresentationProfile profile,
+  ) {
+    final selected = _tab == index;
+    return Expanded(
+      child: Semantics(
+        selected: selected,
+        button: true,
+        child: InkWell(
+          key: ValueKey('tab-$index'),
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            if (profile.hapticsEnabled)
+              unawaited(HapticFeedback.selectionClick());
+            setState(() => _tab = index);
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                AuraIcon(
+                  kind: icon,
+                  color: selected
+                      ? auraAccent(profile.background.name)
+                      : const Color(0xff8c96a9),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  label,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: selected
+                        ? const Color(0xffe9eef8)
+                        : const Color(0xff8c96a9),
+                  ),
+                ),
+                const SizedBox(height: 7),
+                Container(
+                  width: 4,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: selected
+                        ? auraAccent(profile.background.name)
+                        : Colors.transparent,
+                    boxShadow: selected
+                        ? [
+                            BoxShadow(
+                              color: auraAccent(profile.background.name),
+                              blurRadius: 8,
+                            ),
+                          ]
+                        : null,
+                  ),
+                ),
+              ],
             ),
-            NavigationDestination(
-              icon: const Icon(Icons.public_outlined),
-              selectedIcon: const Icon(Icons.public),
-              label: t('Что волнует мир', 'The world'),
-            ),
-          ],
+          ),
         ),
       ),
     );
@@ -299,11 +459,58 @@ class _UniverseShellState extends State<UniverseShell>
     WidgetsBinding.instance.removeObserver(this);
     _presentation.removeListener(_changed);
     _presentation.dispose();
+    _ambient.dispose();
+    _interaction.dispose();
+    _visual.dispose();
     super.dispose();
   }
 }
 
+class _WorldPage extends StatelessWidget {
+  final String language, background;
+  final bool active;
+  const _WorldPage({
+    required this.language,
+    required this.background,
+    required this.active,
+  });
+  @override
+  Widget build(BuildContext context) => SingleChildScrollView(
+    padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+    child: Column(
+      children: [
+        SizedBox(
+          height: 300,
+          child: AuraScene(
+            background: background,
+            form: 'constellation',
+            showBackground: false,
+            formAlignment: Alignment.center,
+            active: active,
+            child: const SizedBox.expand(),
+          ),
+        ),
+        Text(
+          language == 'ru' ? 'Что волнует мир' : 'What concerns the world',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
+        const SizedBox(height: 18),
+        Text(
+          language == 'ru'
+              ? 'Здесь появится тихое отражение общих тем. Раздел ещё создаётся — сейчас данные не собираются.'
+              : 'A quiet reflection of shared themes will appear here. This space is still taking shape — no data is being collected.',
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      ],
+    ),
+  );
+}
+
 class PresentationSettings extends StatefulWidget {
+  final AmbientController? ambient;
+  final VoidCallback? onResumeAmbient;
   final PresentationController controller;
   final SessionBackend backend;
   final String language;
@@ -314,6 +521,8 @@ class PresentationSettings extends StatefulWidget {
     required this.backend,
     required this.language,
     required this.onLanguage,
+    this.ambient,
+    this.onResumeAmbient,
   });
   @override
   State<PresentationSettings> createState() => _PresentationSettingsState();
@@ -331,6 +540,7 @@ class _PresentationSettingsState extends State<PresentationSettings> {
     _language = widget.language;
     _name = TextEditingController(text: widget.controller.profile!.name);
     widget.controller.addListener(_changed);
+    widget.ambient?.addListener(_changed);
     _readPreferences();
   }
 
@@ -411,6 +621,18 @@ class _PresentationSettingsState extends State<PresentationSettings> {
         appBar: AppBar(
           backgroundColor: Colors.transparent,
           title: Text(t('Настройки', 'Settings')),
+          centerTitle: true,
+          leading: IconButton(
+            tooltip: t('Назад', 'Back'),
+            icon: const AuraIcon(kind: AuraIconKind.back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(t('Готово', 'Done')),
+            ),
+          ],
         ),
         body: SafeArea(
           child: Center(
@@ -452,17 +674,17 @@ class _PresentationSettingsState extends State<PresentationSettings> {
                     t('Язык', 'Language'),
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
-                  Wrap(
-                    spacing: 12,
-                    children: [
-                      for (final language in ['ru', 'en'])
-                        TextButton(
-                          onPressed: busy || language == _language
-                              ? null
-                              : () => _languageTo(language),
-                          child: Text(language == 'ru' ? 'Русский' : 'English'),
-                        ),
+                  const SizedBox(height: 12),
+                  SegmentedButton<String>(
+                    segments: const [
+                      ButtonSegment(value: 'ru', label: Text('Русский')),
+                      ButtonSegment(value: 'en', label: Text('English')),
                     ],
+                    selected: {_language},
+                    showSelectedIcon: false,
+                    onSelectionChanged: busy
+                        ? null
+                        : (value) => _languageTo(value.single),
                   ),
                   const SizedBox(height: 28),
                   PersonalizationControls(
@@ -473,6 +695,50 @@ class _PresentationSettingsState extends State<PresentationSettings> {
                     onChanged: (next) => widget.controller.save(next),
                   ),
                   const SizedBox(height: 28),
+                  SwitchListTile(
+                    key: const ValueKey('ambient-enabled'),
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(t('Звук пространства', 'Ambient sound')),
+                    subtitle: Text(
+                      t(
+                        'Тихий фон выбранной Вселенной',
+                        'A quiet background for your Universe',
+                      ),
+                    ),
+                    value: profile.ambientEnabled,
+                    onChanged: busy
+                        ? null
+                        : (value) => widget.controller.save(
+                            profile.copyWith(ambientEnabled: value),
+                          ),
+                  ),
+                  SwitchListTile(
+                    key: const ValueKey('haptics-enabled'),
+                    contentPadding: EdgeInsets.zero,
+                    title: Text(t('Тактильный отклик', 'Haptic feedback')),
+                    value: profile.hapticsEnabled,
+                    onChanged: busy
+                        ? null
+                        : (value) => widget.controller.save(
+                            profile.copyWith(hapticsEnabled: value),
+                          ),
+                  ),
+                  if (profile.ambientEnabled && widget.ambient?.failed == true)
+                    Text(
+                      t(
+                        'Звук сейчас недоступен.',
+                        'Sound is currently unavailable.',
+                      ),
+                    ),
+                  if (profile.ambientEnabled &&
+                      widget.ambient?.interrupted == true)
+                    TextButton(
+                      onPressed: widget.onResumeAmbient,
+                      child: Text(
+                        t('Возобновить звук', 'Resume ambient sound'),
+                      ),
+                    ),
+                  const SizedBox(height: 12),
                   if (_preferences != null)
                     SwitchListTile(
                       contentPadding: EdgeInsets.zero,
@@ -521,14 +787,26 @@ class _PresentationSettingsState extends State<PresentationSettings> {
                   ListTile(
                     contentPadding: EdgeInsets.zero,
                     title: Text(t('Принципы взаимодействия', 'Our principles')),
-                    trailing: const Icon(Icons.chevron_right),
+                    trailing: const AuraIcon(kind: AuraIconKind.arrowRight),
                     onTap: () => _open(PrinciplesPage(language: _language)),
                   ),
-                  ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    title: Text(t('Проверка ядра', 'Core check')),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () => _open(const SessionPage(diagnostic: true)),
+                  const SizedBox(height: 28),
+                  Text(
+                    t(
+                      'Пространство для размышлений. Ответы случайны и не предназначены для принятия важных решений.',
+                      'A space for reflection. Answers are random and are not intended for important decisions.',
+                    ),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  const SizedBox(height: 18),
+                  Text(
+                    t(
+                      'Спроси Вселенную · 0.6.0 (10)',
+                      'Ask the Universe · 0.6.0 (10)',
+                    ),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall,
                   ),
                 ],
               ),
@@ -542,6 +820,7 @@ class _PresentationSettingsState extends State<PresentationSettings> {
   @override
   void dispose() {
     widget.controller.removeListener(_changed);
+    widget.ambient?.removeListener(_changed);
     _name.dispose();
     super.dispose();
   }

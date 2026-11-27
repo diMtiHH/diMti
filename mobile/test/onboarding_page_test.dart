@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:universe_lab/app_shell.dart';
-import 'package:universe_lab/cosmic_scene.dart';
+import 'package:universe_lab/aura_renderer.dart';
 import 'package:universe_lab/cosmic_theme.dart';
 import 'package:universe_lab/engine.dart';
 import 'package:universe_lab/narration.dart';
@@ -118,6 +118,7 @@ void main() {
 
   Future<void> tap(WidgetTester tester, Finder finder) async {
     await tester.ensureVisible(finder);
+    await tester.pump();
     await tester.tap(finder);
     await flushUi(tester);
   }
@@ -142,12 +143,12 @@ void main() {
       expect(find.text('2 / 3'), findsOneWidget);
       expect(fixture.stored.name, 'Астра');
       expect(fixture.stored.completed, isFalse);
-      await tap(tester, find.byKey(const ValueKey('background-nebula')));
-      expect(fixture.stored.background, PresentationBackground.nebula);
-      expect(fixture.stored.answerStyle, PresentationAnswerStyle.sphere);
-      await tap(tester, find.byKey(const ValueKey('answer-style-coin')));
-      expect(fixture.stored.background, PresentationBackground.nebula);
-      expect(fixture.stored.answerStyle, PresentationAnswerStyle.coin);
+      await tap(tester, find.byKey(const ValueKey('background-galaxy')));
+      expect(fixture.stored.background, PresentationBackground.galaxy);
+      expect(fixture.stored.answerStyle, PresentationAnswerStyle.livingMatter);
+      await tap(tester, find.byKey(const ValueKey('answer-style-liquidMetal')));
+      expect(fixture.stored.background, PresentationBackground.galaxy);
+      expect(fixture.stored.answerStyle, PresentationAnswerStyle.liquidMetal);
       expect(fixture.narration.plays, isEmpty);
       await tap(tester, find.text('Продолжить'));
       expect(find.text('3 / 3'), findsOneWidget);
@@ -176,12 +177,13 @@ void main() {
       await flushUi(tester);
       expect(find.byType(OnboardingPage), findsNothing);
       expect(find.byKey(const ValueKey('open-settings')), findsOneWidget);
-      expect(find.text('Астра, какой у тебя вопрос?'), findsOneWidget);
-      expect(find.text('Допуск всех вопросов закрыт'), findsOneWidget);
+      expect(find.text('Привет, Астра'), findsOneWidget);
+      expect(find.byKey(const ValueKey('ask-question')), findsOneWidget);
+      expect(find.byKey(const ValueKey('answer')), findsNothing);
       expect(fixture.stored.completed, isTrue);
       expect(fixture.stored.termsVersion, currentTermsVersion);
-      expect(fixture.stored.background, PresentationBackground.nebula);
-      expect(fixture.stored.answerStyle, PresentationAnswerStyle.coin);
+      expect(fixture.stored.background, PresentationBackground.galaxy);
+      expect(fixture.stored.answerStyle, PresentationAnswerStyle.liquidMetal);
       fixture.expectNoQuestionAction();
       await close(tester, fixture);
     },
@@ -248,7 +250,7 @@ void main() {
         await show(tester, fixture);
         expect(find.byType(OnboardingPage), findsNothing);
         expect(find.byKey(const ValueKey('open-settings')), findsOneWidget);
-        expect(find.text('Орион, какой у тебя вопрос?'), findsOneWidget);
+        expect(find.text('Привет, Орион'), findsOneWidget);
         await tester.pump(const Duration(seconds: 10));
         expect(fixture.narration.plays, isEmpty);
         expect(fixture.profile.writes, isEmpty);
@@ -264,8 +266,8 @@ void main() {
       final fixture = OnboardingFixture();
       final old = PresentationProfile(
         name: 'Луна',
-        background: PresentationBackground.blackHole,
-        answerStyle: PresentationAnswerStyle.coin,
+        background: PresentationBackground.gravity,
+        answerStyle: PresentationAnswerStyle.livingMatter,
         completed: true,
         onboardingStep: 2,
         termsVersion: currentTermsVersion + 1,
@@ -412,7 +414,7 @@ void main() {
       fixture.profile.value = PresentationProfile(onboardingStep: 2).toJson();
       await show(tester, fixture);
       final old = fixture.narration.id;
-      await tap(tester, find.text('English'));
+      await tap(tester, find.text('EN'));
       expect(fixture.session.language, 'en');
       expect(fixture.narration.stops, contains(old));
       expect(fixture.narration.plays, hasLength(1));
@@ -544,31 +546,32 @@ void main() {
           termsVersion: currentTermsVersion,
         ).toJson();
         await show(tester, fixture);
+        await tap(tester, find.byKey(const ValueKey('ask-question')));
         await tester.enterText(
-          find.byType(TextField),
+          find.byKey(const ValueKey('question-input')),
           'private review fixture',
         );
         await flushUi(tester);
         await tap(tester, find.text('Продолжить'));
-        expect(find.text('Подтверждаю'), findsOneWidget);
+        expect(find.byKey(const ValueKey('confirm-question')), findsOneWidget);
         if (destination == 'world tab') {
-          await tap(tester, find.text('Что волнует мир'));
+          await tap(tester, find.byKey(const ValueKey('tab-1')));
         } else {
           await tap(tester, find.byKey(const ValueKey('open-settings')));
         }
         expect(find.text('private review fixture'), findsNothing);
-        expect(find.text('Подтверждаю'), findsNothing);
+        expect(find.byKey(const ValueKey('confirm-question')), findsNothing);
         if (destination == 'world tab') {
-          await tap(tester, find.text('Вселенная'));
+          await tap(tester, find.byKey(const ValueKey('tab-0')));
         } else {
-          await tester.pageBack();
-          await flushUi(tester);
+          await tap(tester, find.byTooltip('Назад'));
         }
+        await tap(tester, find.byKey(const ValueKey('ask-question')));
         expect(
           tester.widget<TextField>(find.byType(TextField)).controller!.text,
           isEmpty,
         );
-        expect(find.text('Подтверждаю'), findsNothing);
+        expect(find.byKey(const ValueKey('confirm-question')), findsNothing);
         expect(
           tester
               .widget<FilledButton>(
@@ -623,25 +626,15 @@ void main() {
     'render three onboarding screens and home at iPhone width for review',
     (tester) async {
       final fixture = OnboardingFixture();
-      final family = await tester.runAsync(() async {
+      await tester.runAsync(() async {
         final icons = FontLoader('MaterialIcons');
         icons.addFont(rootBundle.load('fonts/MaterialIcons-Regular.otf'));
         await icons.load();
-        for (final path in [
-          r'C:\Windows\Fonts\segoeui.ttf',
-          '/System/Library/Fonts/Supplemental/Arial.ttf',
-          '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf',
-        ]) {
-          final file = File(path);
-          if (!await file.exists()) continue;
-          final loader = FontLoader('OnboardingPreviewSans');
-          loader.addFont(
-            Future.value(ByteData.sublistView(await file.readAsBytes())),
-          );
-          await loader.load();
-          return 'OnboardingPreviewSans';
+        final loader = FontLoader('Manrope');
+        for (final weight in ['Light', 'Regular', 'Medium', 'SemiBold']) {
+          loader.addFont(rootBundle.load('assets/fonts/Manrope-$weight.ttf'));
         }
-        return null;
+        await loader.load();
       });
       await preload(tester);
       tester.view.physicalSize = const Size(390, 844);
@@ -654,11 +647,7 @@ void main() {
         SessionClockScope(
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: family == null
-                ? theme
-                : theme.copyWith(
-                    textTheme: theme.textTheme.apply(fontFamily: family),
-                  ),
+            theme: theme,
             home: RepaintBoundary(key: boundaryKey, child: fixture.shell()),
           ),
         ),
@@ -674,7 +663,7 @@ void main() {
           final image = await boundary.toImage(pixelRatio: 2);
           try {
             final png = await image.toByteData(format: ui.ImageByteFormat.png);
-            final output = File('build/stage5/screens/$name.png');
+            final output = File('build/stage6/screens/$name.png');
             await output.parent.create(recursive: true);
             await output.writeAsBytes(png!.buffer.asUint8List());
           } finally {
@@ -690,7 +679,7 @@ void main() {
         find.text('Выбери, как Вселенная\nбудет тебе отвечать').hitTestable(),
         findsOneWidget,
       );
-      await tap(tester, find.byKey(const ValueKey('background-nebula')));
+      await tap(tester, find.byKey(const ValueKey('background-aurora')));
       await tap(
         tester,
         find.byKey(const ValueKey('answer-style-constellation')),
@@ -707,8 +696,8 @@ void main() {
       await tap(tester, find.text('Я понимаю и принимаю'));
       expect(find.byKey(const ValueKey('open-settings')), findsOneWidget);
       expect(
-        tester.widget<CosmicScene>(find.byType(CosmicScene).first).background,
-        'nebula',
+        tester.widget<AuraScene>(find.byType(AuraScene).first).background,
+        'aurora',
       );
       await capture('home');
       fixture.expectNoQuestionAction();

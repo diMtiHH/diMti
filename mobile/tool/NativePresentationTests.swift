@@ -6,6 +6,11 @@ private enum ProfileTestError: Error { case failed(String), injected }
 @main struct NativePresentationTests {
   static var passed = 0
   static let initial: [String: Any] = [
+    "version": 2, "name": "Test", "background": "aurora", "answerStyle": "livingMatter",
+    "onboardingStep": 0, "completed": false, "termsVersion": 0, "audioEnabled": true,
+    "ambientEnabled": false, "hapticsEnabled": true,
+  ]
+  static let legacyInitial: [String: Any] = [
     "version": 1, "name": "Test", "background": "stars", "answerStyle": "sphere",
     "onboardingStep": 0, "completed": false, "termsVersion": 0, "audioEnabled": true,
   ]
@@ -45,14 +50,78 @@ private enum ProfileTestError: Error { case failed(String), injected }
     let profileRoot = root.appendingPathComponent("UniversePresentationV1")
     let store = PresentationStorage(root: profileRoot)
     let original = try raw(initial)
-    for background in ["stars", "galaxy", "nebula", "blackHole"] {
-      for style in ["coin", "sphere", "blackHole", "constellation"] {
+    for background in ["stars", "galaxy", "aurora", "gravity"] {
+      for style in ["livingMatter", "liquidMetal", "infinity", "constellation"] {
         var profile = changed("background", background)
         profile["answerStyle"] = style
         _ = try PresentationSchema.profile(raw(profile))
       }
     }
     pass("all fixed background and answer style combinations are valid")
+
+    let legacyBackgrounds = ["stars": "stars", "galaxy": "galaxy", "nebula": "aurora", "blackHole": "gravity"]
+    let legacyStyles = ["coin": "livingMatter", "sphere": "liquidMetal", "blackHole": "infinity", "constellation": "constellation"]
+    for (oldBackground, background) in legacyBackgrounds {
+      for (oldStyle, style) in legacyStyles {
+        var legacy = legacyInitial
+        legacy["background"] = oldBackground
+        legacy["answerStyle"] = oldStyle
+        legacy["completed"] = true
+        legacy["onboardingStep"] = 2
+        legacy["termsVersion"] = 7
+        legacy["audioEnabled"] = false
+        let rawLegacy = try raw(legacy)
+        let migrated = try PresentationSchema.profile(rawLegacy)
+        try check(migrated["version"] as? Int == 2 && Set(migrated.keys) == PresentationSchema.keys, "migration schema")
+        try check(migrated["background"] as? String == background && migrated["answerStyle"] as? String == style, "migration choices")
+        try check(migrated["name"] as? String == "Test" && migrated["termsVersion"] as? Int == 7, "migration changed personal data or consent")
+        try check(migrated["completed"] as? Bool == true && migrated["onboardingStep"] as? Int == 2, "migration changed onboarding")
+        try check(migrated["audioEnabled"] as? Bool == false && migrated["ambientEnabled"] as? Bool == false && migrated["hapticsEnabled"] as? Bool == true, "migration audio preferences")
+        let legacyRoot = root.appendingPathComponent("legacy-\(oldBackground)-\(oldStyle)")
+        let legacyStore = PresentationStorage(root: legacyRoot)
+        try check(try legacyStore.readProfile() == nil, "legacy fixture unexpectedly exists")
+        let legacyTarget = legacyRoot.appendingPathComponent("profile.json")
+        let legacyBytes = Data(rawLegacy.utf8)
+        try legacyBytes.write(to: legacyTarget)
+        for _ in 0..<2 {
+          try check(try legacyStore.readProfile() == PresentationSchema.encode(migrated), "legacy read not canonical v2")
+          try check(try Data(contentsOf: legacyTarget) == legacyBytes, "read rewrote legacy file")
+          try check(!FileManager.default.fileExists(atPath: legacyRoot.appendingPathComponent("profile.pending").path), "read staged a migration")
+        }
+      }
+    }
+    pass("all 16 legacy choices migrate in memory without changing the original bytes or consent")
+
+    var badLegacy = [legacyInitial]
+    badLegacy[0]["ambientEnabled"] = false
+    for (key, value) in [("version", 2 as Any), ("background", "aurora" as Any), ("answerStyle", "livingMatter" as Any),
+                         ("audioEnabled", 1 as Any), ("completed", true as Any), ("hapticsEnabled", true as Any)] {
+      var item = legacyInitial
+      item[key] = value
+      badLegacy.append(item)
+    }
+    var missingLegacy = legacyInitial
+    missingLegacy.removeValue(forKey: "name")
+    badLegacy.append(missingLegacy)
+    for invalid in badLegacy {
+      try reject("mixed or corrupt legacy schema migrated") { _ = try PresentationSchema.profile(raw(invalid)) }
+    }
+    let rawLegacy = try raw(legacyInitial)
+    for invalid in [rawLegacy.replacingOccurrences(of: "\"version\":1", with: "\"version\":1.0"),
+                    rawLegacy.replacingOccurrences(of: "\"version\":1", with: "\"version\":1,\"\\u0076ersion\":1")] {
+      try reject("ambiguous legacy schema migrated") { _ = try PresentationSchema.profile(invalid) }
+    }
+    for step in 0...2 {
+      for enabled in [false, true] {
+        var legacy = legacyInitial
+        legacy["onboardingStep"] = step
+        legacy["audioEnabled"] = enabled
+        let migrated = try PresentationSchema.profile(raw(legacy))
+        try check(migrated["completed"] as? Bool == false && migrated["termsVersion"] as? Int == 0 && migrated["onboardingStep"] as? Int == step, "migration accepted unfinished terms")
+        try check(migrated["audioEnabled"] as? Bool == enabled && migrated["ambientEnabled"] as? Bool == false, "narration opted user into ambience")
+      }
+    }
+    pass("legacy migration rejects mixed schemas and preserves incomplete onboarding and narration choice")
 
     for key in PresentationSchema.keys {
       var missing = initial
@@ -61,19 +130,22 @@ private enum ProfileTestError: Error { case failed(String), injected }
     }
     try reject("unknown field accepted") { _ = try PresentationSchema.profile(raw(changed("question", "not allowed"))) }
     let badFields: [(String, Any)] = [
-      ("version", 0), ("version", true), ("version", 2), ("name", 7),
+      ("version", 0), ("version", true), ("version", 1), ("version", 3), ("name", 7),
       ("background", "../nebula"), ("answerStyle", "unknown"),
+      ("background", "nebula"), ("background", "blackHole"),
+      ("answerStyle", "coin"), ("answerStyle", "sphere"), ("answerStyle", "blackHole"),
       ("onboardingStep", -1), ("onboardingStep", 3), ("onboardingStep", true),
       ("termsVersion", -1), ("termsVersion", 100001), ("termsVersion", false),
       ("completed", 1), ("completed", "false"), ("audioEnabled", 0), ("audioEnabled", "true"),
+      ("ambientEnabled", 1), ("ambientEnabled", "false"), ("hapticsEnabled", 0), ("hapticsEnabled", "true"),
     ]
     for (key, value) in badFields {
       try reject("wrong field type or value") { _ = try PresentationSchema.profile(raw(changed(key, value))) }
     }
     pass("exact profile keys strict booleans integers and enums are enforced")
 
-    for malformed in ["[]", "null", "{", original.replacingOccurrences(of: "\"version\":1", with: "\"version\":1.0"),
-                      original.replacingOccurrences(of: "\"version\":1", with: "\"version\":1e0"),
+    for malformed in ["[]", "null", "{", original.replacingOccurrences(of: "\"version\":2", with: "\"version\":2.0"),
+                      original.replacingOccurrences(of: "\"version\":2", with: "\"version\":2e0"),
                       original.replacingOccurrences(of: "\"name\":\"Test\"", with: "\"name\":\"\\ud800\""),
                       original.replacingOccurrences(of: "\"name\":\"Test\"", with: "\"name\":\"First\",\"name\":\"Test\""),
                       original.replacingOccurrences(of: "\"name\":\"Test\"", with: "\"n\\u0061me\":\"First\",\"name\":\"Test\"") ] {
@@ -175,6 +247,30 @@ private enum ProfileTestError: Error { case failed(String), injected }
     }
     pass("ten process interruptions preserve only the old or committed profile")
 
+    for point in PresentationWriteStep.allCases {
+      let directory = root.appendingPathComponent("legacy-crash-\(point.rawValue)")
+      let isolated = PresentationStorage(root: directory)
+      _ = try isolated.readProfile()
+      let legacyTarget = directory.appendingPathComponent("profile.json")
+      let legacyBytes = Data(rawLegacy.utf8)
+      try legacyBytes.write(to: legacyTarget)
+      let child = Process()
+      child.executableURL = URL(fileURLWithPath: CommandLine.arguments[0])
+      child.arguments = ["--crash", point.rawValue, directory.path, accepted]
+      try child.run()
+      child.waitUntilExit()
+      try check(child.terminationStatus == 73, "legacy migration missed crash checkpoint")
+      let committed = [.afterRename, .afterDirectorySync].contains(point)
+      let bytes = try Data(contentsOf: legacyTarget)
+      let expectedBytes = committed ? Data(try PresentationSchema.encode(PresentationSchema.profile(accepted)).utf8) : legacyBytes
+      try check(bytes == expectedBytes, "interrupted migration changed original bytes before atomic rename")
+      let expectedRead = try PresentationSchema.encode(PresentationSchema.profile(committed ? accepted : rawLegacy))
+      try check(try isolated.readProfile() == expectedRead, "interrupted migration could not restore old or new profile")
+      try check(try Data(contentsOf: legacyTarget) == bytes, "post-crash read committed a migration")
+      interruptions += 1
+    }
+    pass("five migration process interruptions preserve exact v1 bytes until atomic v2 commit")
+
     try store.writeProfile(original)
     let ambiguous = PresentationStorage(root: profileRoot, checkpoint: { point in
       if point == .afterRename { throw ProfileTestError.injected }
@@ -183,6 +279,20 @@ private enum ProfileTestError: Error { case failed(String), injected }
     try check(try store.readProfile() == PresentationSchema.encode(PresentationSchema.profile(accepted)), "committed state not recovered")
     try check(!FileManager.default.fileExists(atPath: staging.path), "successful rename left staging")
     pass("ambiguous post-rename error propagates while committed profile remains readable")
+
+    for point in [PresentationWriteStep.afterFileSync, .afterRename] {
+      try Data(rawLegacy.utf8).write(to: target)
+      let migrating = PresentationStorage(root: profileRoot, checkpoint: { step in
+        if step == point { throw ProfileTestError.injected }
+      })
+      try reject("migration write error swallowed") { try migrating.writeProfile(accepted) }
+      let committed = point == .afterRename
+      let expected = committed ? accepted : rawLegacy
+      try check(try Data(contentsOf: target) == Data(expected.utf8), "migration acknowledgement error changed wrong version")
+      try check(try store.readProfile() == PresentationSchema.encode(PresentationSchema.profile(expected)), "migration readback failed")
+      try check(try Data(contentsOf: target) == Data(expected.utf8), "migration readback wrote data")
+    }
+    pass("migration write errors before and after rename require readback without silently resetting data")
 
     try check(NarrationPolicy.filename("ru") == "ru.wav" && NarrationPolicy.filename("en") == "en.wav", "fixed filenames")
     let invalidLanguages: [Any] = ["../ru", "ru.wav", "en-US", "", true, NSNull()]

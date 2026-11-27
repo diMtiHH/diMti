@@ -11,7 +11,23 @@ enum SessionStorageError: Error { case system(Int32) }
 // environment variable or an app setting. No testing commands exist in the app.
 struct SessionStorage {
   let root: URL
-  var checkpoint: (SessionWriteStep) throws -> Void = { _ in }
+  var checkpoint: (SessionWriteStep) throws -> Void
+  let preferredLanguages: [String]
+
+  init(root: URL, checkpoint: @escaping (SessionWriteStep) throws -> Void = { _ in },
+       preferredLanguages: [String] = Locale.preferredLanguages) {
+    self.root = root
+    self.checkpoint = checkpoint
+    self.preferredLanguages = preferredLanguages
+  }
+
+  static func initialLanguage(_ preferred: [String]) -> String {
+    for identifier in preferred {
+      let language = identifier.lowercased().split(whereSeparator: { $0 == "-" || $0 == "_" }).first.map(String.init)
+      if language == "ru" || language == "en" { return language! }
+    }
+    return "ru"
+  }
 
   private func folder(_ scope: SessionScope) throws -> URL {
     var directory = root.appendingPathComponent(scope.rawValue, isDirectory: true)
@@ -86,7 +102,9 @@ struct SessionStorage {
   }
 
   func preferences(_ scope: SessionScope) throws -> [String: Any] {
-    guard let raw = try read(scope, .preferences) else { return ["language": "ru", "notifications": false] }
+    guard let raw = try read(scope, .preferences) else {
+      return ["language": Self.initialLanguage(preferredLanguages), "notifications": false]
+    }
     return try SessionSchema.preferences(raw)
   }
 

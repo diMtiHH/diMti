@@ -1,0 +1,41 @@
+{
+  "protocol": "aura13-neutral-cues-v1",
+  "provisional": true,
+  "final_sound_approved": false,
+  "origin": "Original offline mathematical oscillators",
+  "third_party_recordings": false,
+  "speech": false,
+  "runtime_synthesis": false,
+  "answer_independent": true,
+  "native_max_player_volume": 0.24,
+  "generator": "mobile/tool/prepare_ambient_cues.py",
+  "assets": {
+    "touch": {
+      "filename": "cue-touch.wav",
+      "sha256": "a65304e28f5f6f2f0a42b9b8c7c024d662961fc2e7243f8f8624f4c7b5048f57",
+      "bytes": 21212,
+      "frames": 5292,
+      "duration_seconds": 0.24,
+      "peak_dbfs": -24.91,
+      "rms_dbfs": -33.75
+    },
+    "transform": {
+      "filename": "cue-transform.wav",
+      "sha256": "7b66dc5b13b02d61d12808b2d7b983c93dc21848b803f80b03fc781e77edf034",
+      "bytes": 105884,
+      "frames": 26460,
+      "duration_seconds": 1.2,
+      "peak_dbfs": -24.9,
+      "rms_dbfs": -33.75
+    },
+    "reveal": {
+      "filename": "cue-reveal.wav",
+      "sha256": "6aebb2f70df5933af6c474fb9cda60d17258bd4b4938e3312d1320871bd4d75b",
+      "bytes": 70604,
+      "frames": 17640,
+      "duration_seconds": 0.8,
+      "peak_dbfs": -23.84,
+      "rms_dbfs": -32.68
+    }
+  }
+}

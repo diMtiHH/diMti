@@ -7,9 +7,14 @@ const currentTermsVersion = 1;
 const maxPresentationNameScalars = 40;
 const maxPresentationProfileBytes = 2048;
 
-enum PresentationBackground { stars, galaxy, nebula, blackHole }
+enum PresentationBackground { stars, galaxy, aurora, gravity }
 
-enum PresentationAnswerStyle { coin, sphere, blackHole, constellation }
+enum PresentationAnswerStyle {
+  livingMatter,
+  liquidMetal,
+  infinity,
+  constellation,
+}
 
 // Syntax is checked by jsonDecode first. This flat schema rejects duplicate
 // field spellings, including escaped keys, before interpreting their values.
@@ -56,16 +61,20 @@ class PresentationProfile {
   final bool completed;
   final int termsVersion;
   final bool audioEnabled;
+  final bool ambientEnabled;
+  final bool hapticsEnabled;
 
   const PresentationProfile.defaults()
-    : version = 1,
+    : version = 2,
       name = '',
-      background = PresentationBackground.stars,
-      answerStyle = PresentationAnswerStyle.sphere,
+      background = PresentationBackground.aurora,
+      answerStyle = PresentationAnswerStyle.livingMatter,
       onboardingStep = 0,
       completed = false,
       termsVersion = 0,
-      audioEnabled = true;
+      audioEnabled = true,
+      ambientEnabled = false,
+      hapticsEnabled = true;
 
   const PresentationProfile._({
     required this.name,
@@ -75,16 +84,20 @@ class PresentationProfile {
     required this.completed,
     required this.termsVersion,
     required this.audioEnabled,
-  }) : version = 1;
+    required this.ambientEnabled,
+    required this.hapticsEnabled,
+  }) : version = 2;
 
   factory PresentationProfile({
     String name = '',
-    PresentationBackground background = PresentationBackground.stars,
-    PresentationAnswerStyle answerStyle = PresentationAnswerStyle.sphere,
+    PresentationBackground background = PresentationBackground.aurora,
+    PresentationAnswerStyle answerStyle = PresentationAnswerStyle.livingMatter,
     int onboardingStep = 0,
     bool completed = false,
     int termsVersion = 0,
     bool audioEnabled = true,
+    bool ambientEnabled = false,
+    bool hapticsEnabled = true,
   }) {
     if (!isValidName(name) ||
         onboardingStep < 0 ||
@@ -103,6 +116,8 @@ class PresentationProfile {
       completed: completed,
       termsVersion: termsVersion,
       audioEnabled: audioEnabled,
+      ambientEnabled: ambientEnabled,
+      hapticsEnabled: hapticsEnabled,
     );
   }
 
@@ -130,6 +145,8 @@ class PresentationProfile {
     bool? completed,
     int? termsVersion,
     bool? audioEnabled,
+    bool? ambientEnabled,
+    bool? hapticsEnabled,
   }) => PresentationProfile(
     name: name ?? this.name,
     background: background ?? this.background,
@@ -138,6 +155,8 @@ class PresentationProfile {
     completed: completed ?? this.completed,
     termsVersion: termsVersion ?? this.termsVersion,
     audioEnabled: audioEnabled ?? this.audioEnabled,
+    ambientEnabled: ambientEnabled ?? this.ambientEnabled,
+    hapticsEnabled: hapticsEnabled ?? this.hapticsEnabled,
   );
 
   factory PresentationProfile.fromJson(String value) {
@@ -146,7 +165,7 @@ class PresentationProfile {
     }
     final raw = jsonDecode(value);
     _rejectDuplicateProfileKeys(value);
-    const fields = {
+    const legacyFields = {
       'version',
       'name',
       'background',
@@ -157,25 +176,47 @@ class PresentationProfile {
       'audioEnabled',
     };
     if (raw is! Map<String, dynamic> ||
-        raw.length != fields.length ||
-        raw.keys.any((key) => !fields.contains(key)) ||
         raw['version'] is! int ||
-        raw['version'] != 1 ||
+        (raw['version'] != 1 && raw['version'] != 2)) {
+      throw const FormatException('Unknown presentation profile version');
+    }
+    final legacy = raw['version'] == 1;
+    final fields = {
+      ...legacyFields,
+      if (!legacy) ...['ambientEnabled', 'hapticsEnabled'],
+    };
+    if (raw.length != fields.length ||
+        raw.keys.any((key) => !fields.contains(key)) ||
         raw['name'] is! String ||
         raw['background'] is! String ||
         raw['answerStyle'] is! String ||
         raw['onboardingStep'] is! int ||
         raw['completed'] is! bool ||
         raw['termsVersion'] is! int ||
-        raw['audioEnabled'] is! bool) {
+        raw['audioEnabled'] is! bool ||
+        (!legacy &&
+            (raw['ambientEnabled'] is! bool ||
+                raw['hapticsEnabled'] is! bool))) {
       throw const FormatException('Invalid presentation profile schema');
     }
-    final backgrounds = {
-      for (final item in PresentationBackground.values) item.name: item,
-    };
-    final styles = {
-      for (final item in PresentationAnswerStyle.values) item.name: item,
-    };
+    // Migration is deterministic and read-only. Native storage follows the
+    // same mapping; only a later explicit save writes the canonical v2 record.
+    final backgrounds = legacy
+        ? const {
+            'stars': PresentationBackground.stars,
+            'galaxy': PresentationBackground.galaxy,
+            'nebula': PresentationBackground.aurora,
+            'blackHole': PresentationBackground.gravity,
+          }
+        : {for (final item in PresentationBackground.values) item.name: item};
+    final styles = legacy
+        ? const {
+            'coin': PresentationAnswerStyle.livingMatter,
+            'sphere': PresentationAnswerStyle.liquidMetal,
+            'blackHole': PresentationAnswerStyle.infinity,
+            'constellation': PresentationAnswerStyle.constellation,
+          }
+        : {for (final item in PresentationAnswerStyle.values) item.name: item};
     final background = backgrounds[raw['background']];
     final answerStyle = styles[raw['answerStyle']];
     if (background == null || answerStyle == null) {
@@ -189,6 +230,8 @@ class PresentationProfile {
       completed: raw['completed'] as bool,
       termsVersion: raw['termsVersion'] as int,
       audioEnabled: raw['audioEnabled'] as bool,
+      ambientEnabled: legacy ? false : raw['ambientEnabled'] as bool,
+      hapticsEnabled: legacy ? true : raw['hapticsEnabled'] as bool,
     );
   }
 
@@ -201,6 +244,8 @@ class PresentationProfile {
     'completed': completed,
     'termsVersion': termsVersion,
     'audioEnabled': audioEnabled,
+    'ambientEnabled': ambientEnabled,
+    'hapticsEnabled': hapticsEnabled,
   });
 
   @override
@@ -213,7 +258,9 @@ class PresentationProfile {
       onboardingStep == other.onboardingStep &&
       completed == other.completed &&
       termsVersion == other.termsVersion &&
-      audioEnabled == other.audioEnabled;
+      audioEnabled == other.audioEnabled &&
+      ambientEnabled == other.ambientEnabled &&
+      hapticsEnabled == other.hapticsEnabled;
 
   @override
   int get hashCode => Object.hash(
@@ -225,6 +272,8 @@ class PresentationProfile {
     completed,
     termsVersion,
     audioEnabled,
+    ambientEnabled,
+    hapticsEnabled,
   );
 }
 
@@ -253,6 +302,7 @@ class PresentationController extends ChangeNotifier {
   PresentationProfile? _profile;
   int _pending = 0;
   bool _loading = false, _failed = false, _disposed = false;
+  bool _profileWasMissing = false;
 
   PresentationController(PresentationBackend backend) : _backend = backend;
 
@@ -260,6 +310,9 @@ class PresentationController extends ChangeNotifier {
   bool get loading => _loading;
   bool get busy => _pending > 0;
   bool get failed => _failed;
+
+  /// True only after a successful absent read, until an acknowledged save.
+  bool get profileWasMissing => _profileWasMissing;
   bool get needsOnboarding => _profile?.needsOnboarding ?? true;
   bool get needsConsent => _profile?.needsConsent ?? true;
 
@@ -293,6 +346,7 @@ class PresentationController extends ChangeNotifier {
           : PresentationProfile.fromJson(raw);
       if (_disposed) return false;
       _profile = value;
+      _profileWasMissing = raw == null;
       _failed = false;
       return true;
     } catch (_) {
@@ -325,6 +379,7 @@ class PresentationController extends ChangeNotifier {
       await _backend.writeProfile(value.toJson());
       if (_disposed) return false;
       _profile = value;
+      _profileWasMissing = false;
       return true;
     } catch (_) {
       if (!_disposed) _failed = true;

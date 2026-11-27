@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A60000000000000000000001 /* AmbientBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60000000000000000000002 /* AmbientBridge.swift */; };
+		A60000000000000000000003 /* AmbientPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60000000000000000000004 /* AmbientPolicy.swift */; };
+		A60000000000000000000005 /* GraphicsBudgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A60000000000000000000006 /* GraphicsBudgetBridge.swift */; };
 		A50000000000000000000001 /* PresentationBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000002 /* PresentationBridge.swift */; };
 		A50000000000000000000003 /* PresentationSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000004 /* PresentationSchema.swift */; };
 		A50000000000000000000005 /* PresentationStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50000000000000000000006 /* PresentationStorage.swift */; };
@@ -54,6 +57,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A60000000000000000000002 /* AmbientBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientBridge.swift; sourceTree = "<group>"; };
+		A60000000000000000000004 /* AmbientPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientPolicy.swift; sourceTree = "<group>"; };
+		A60000000000000000000006 /* GraphicsBudgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GraphicsBudgetBridge.swift; sourceTree = "<group>"; };
 		A50000000000000000000002 /* PresentationBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationBridge.swift; sourceTree = "<group>"; };
 		A50000000000000000000004 /* PresentationSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationSchema.swift; sourceTree = "<group>"; };
 		A50000000000000000000006 /* PresentationStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationStorage.swift; sourceTree = "<group>"; };
@@ -148,6 +154,9 @@
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
 				74858FAE1ED2DC5600515810 /* AppDelegate.swift */,
 				A50000000000000000000002 /* PresentationBridge.swift */,
+				A60000000000000000000002 /* AmbientBridge.swift */,
+				A60000000000000000000004 /* AmbientPolicy.swift */,
+				A60000000000000000000006 /* GraphicsBudgetBridge.swift */,
 				A50000000000000000000004 /* PresentationSchema.swift */,
 				A50000000000000000000006 /* PresentationStorage.swift */,
 				A40000000000000000000002 /* VoiceBridge.swift */,
@@ -319,6 +328,9 @@
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				A50000000000000000000001 /* PresentationBridge.swift in Sources */,
+				A60000000000000000000001 /* AmbientBridge.swift in Sources */,
+				A60000000000000000000003 /* AmbientPolicy.swift in Sources */,
+				A60000000000000000000005 /* GraphicsBudgetBridge.swift in Sources */,
 				A50000000000000000000003 /* PresentationSchema.swift in Sources */,
 				A50000000000000000000005 /* PresentationStorage.swift in Sources */,
 				A40000000000000000000001 /* VoiceBridge.swift in Sources */,

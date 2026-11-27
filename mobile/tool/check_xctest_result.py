@@ -16,6 +16,8 @@ EXPECTED = {
         'UniverseIntegrationTests',
     'testnativepresentationprofileandbundlednarrationrejectunsafemutation':
         'UniverseIntegrationTests',
+    'testnativeaurashadersrenderallsixteenenvironmentsandlivingforms':
+        'UniverseIntegrationTests',
     'bundledmodelisaccessibletotheflutterworker': 'RunnerTests',
 }
 
@@ -54,6 +56,6 @@ def validate(document):
 
 if __name__ == '__main__':
     passed = validate(json.loads(Path(sys.argv[1]).read_text(encoding='utf-8')))
-    print('Verified XCTest results: 5 Flutter integration cases + 1 native resource case passed.')
+    print('Verified XCTest results: 6 Flutter integration cases + 1 native resource case passed.')
     for name in passed:
         print(f'PASS {name}')

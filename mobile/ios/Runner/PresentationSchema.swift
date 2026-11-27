@@ -5,7 +5,10 @@ enum PresentationDataError: Error { case invalid }
 
 enum PresentationSchema {
   static let maxBytes = 2048
-  static let keys: Set<String> = ["version", "name", "background", "answerStyle", "onboardingStep", "completed", "termsVersion", "audioEnabled"]
+  static let legacyKeys: Set<String> = ["version", "name", "background", "answerStyle", "onboardingStep", "completed", "termsVersion", "audioEnabled"]
+  static let keys = legacyKeys.union(["ambientEnabled", "hapticsEnabled"])
+  private static let legacyBackgrounds = ["stars": "stars", "galaxy": "galaxy", "nebula": "aurora", "blackHole": "gravity"]
+  private static let legacyStyles = ["coin": "livingMatter", "sphere": "liquidMetal", "blackHole": "infinity", "constellation": "constellation"]
 
   private static func boolean(_ value: Any?) throws -> Bool {
     guard let number = value as? NSNumber,
@@ -82,13 +85,14 @@ enum PresentationSchema {
     let value: [String: Any]
     do { value = try dictionary(text) }
     catch { throw PresentationDataError.invalid }
-    guard Set(value.keys) == keys,
-          try integer(value["version"], maximum: 1) == 1,
+    let version = try integer(value["version"], maximum: 2)
+    guard version == 1 || version == 2,
+          Set(value.keys) == (version == 1 ? legacyKeys : keys),
           let name = value["name"] as? String,
           name.unicodeScalars.count <= 40,
           !name.unicodeScalars.contains(where: { $0.value <= 31 || (127...159).contains($0.value) }),
-          ["stars", "galaxy", "nebula", "blackHole"].contains(value["background"] as? String ?? ""),
-          ["coin", "sphere", "blackHole", "constellation"].contains(value["answerStyle"] as? String ?? "") else {
+          let background = value["background"] as? String,
+          let style = value["answerStyle"] as? String else {
       throw PresentationDataError.invalid
     }
     let step = try integer(value["onboardingStep"], maximum: 2)
@@ -96,7 +100,25 @@ enum PresentationSchema {
     let completed = try boolean(value["completed"])
     _ = try boolean(value["audioEnabled"])
     guard (completed ? (step == 2 && terms >= 1) : terms == 0) else { throw PresentationDataError.invalid }
-    return value
+    var canonical = value
+    if version == 1 {
+      guard let migratedBackground = legacyBackgrounds[background],
+            let migratedStyle = legacyStyles[style] else { throw PresentationDataError.invalid }
+      canonical["version"] = 2
+      canonical["background"] = migratedBackground
+      canonical["answerStyle"] = migratedStyle
+      // Onboarding narration permission does not opt the user into ambience.
+      canonical["ambientEnabled"] = false
+      canonical["hapticsEnabled"] = true
+    } else {
+      guard ["stars", "galaxy", "aurora", "gravity"].contains(background),
+            ["livingMatter", "liquidMetal", "infinity", "constellation"].contains(style) else {
+        throw PresentationDataError.invalid
+      }
+      _ = try boolean(value["ambientEnabled"])
+      _ = try boolean(value["hapticsEnabled"])
+    }
+    return canonical
   }
 
   static func encode(_ value: [String: Any]) throws -> String {

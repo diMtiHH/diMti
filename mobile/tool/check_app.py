@@ -27,6 +27,8 @@ for name, expected in {
     print(f'{name}: verified in Runner.app')
 print('App bytes:', sum(p.stat().st_size for p in app.rglob('*') if p.is_file()))
 info = plistlib.loads((app / 'Info.plist').read_bytes())
+assert info.get('CFBundleShortVersionString') == '0.6.0', 'Wrong app version'
+assert str(info.get('CFBundleVersion')) == '10', 'Wrong app build number'
 assert info.get('UniverseEnglishNoticeApproved') is False
 for key in ('NSMicrophoneUsageDescription', 'NSSpeechRecognitionUsageDescription'):
     assert isinstance(info.get(key), str) and info[key].strip(), key
@@ -53,3 +55,72 @@ for language in ('ru', 'en'):
     for segment in track['segments']:
         assert 0 <= segment['startMs'] < segment['endMs'] <= track['durationMs']
 print('Bundled provisional narration RU/EN, timing and text: verified')
+
+# These paths are the actual bundle lookup paths used by Flutter and native
+# playback. Verify packaged bytes, not merely the source pubspec declarations.
+flutter_assets = app / 'Frameworks/App.framework/flutter_assets'
+font_source = repo / 'mobile/assets/fonts'
+font_manifest = json.loads((font_source / 'sources.json').read_text(encoding='utf-8'))
+packaged_fonts = json.loads((flutter_assets / 'FontManifest.json').read_text(encoding='utf-8'))
+manrope = [entry for entry in packaged_fonts if entry['family'] == 'Manrope']
+assert len(manrope) == 1, 'Missing or duplicate Manrope family'
+assert {(entry['asset'], entry['weight']) for entry in manrope[0]['fonts']} == {
+    (f'assets/fonts/{name}', entry['weight'])
+    for name, entry in font_manifest['static_faces'].items()
+}, 'Wrong packaged Manrope weights'
+for name, expected in {
+    **font_manifest['static_faces'],
+    'OFL.txt': font_manifest['source_files']['OFL.txt'],
+}.items():
+    data = (flutter_assets / 'assets/fonts' / name).read_bytes()
+    assert len(data) == expected['bytes'], name
+    assert hashlib.sha256(data).hexdigest() == expected['sha256'], name
+print('Four static Manrope faces and SIL OFL license: verified')
+
+ambient = flutter_assets / 'assets/audio/ambient'
+ambient_source = repo / 'mobile/assets/audio/ambient'
+ambient_metadata = (ambient / 'metadata.json').read_bytes()
+assert ambient_metadata == (ambient_source / 'metadata.json').read_bytes(), 'Wrong ambient metadata'
+ambient_manifest = json.loads(ambient_metadata)
+assert ambient_manifest['provisional'] is True
+for flag in ('default_enabled', 'final_sound_approved', 'speech', 'runtime_synthesis', 'third_party_recordings'):
+    assert ambient_manifest[flag] is False, flag
+assert ambient_manifest['native_max_player_volume'] <= 0.24
+assert set(ambient_manifest['assets']) == {'stars.wav', 'galaxy.wav', 'aurora.wav', 'gravity.wav'}
+for name, expected in ambient_manifest['assets'].items():
+    path = ambient / name
+    data = path.read_bytes()
+    assert len(data) == expected['bytes'], name
+    assert hashlib.sha256(data).hexdigest() == expected['sha256'], name
+    with wave.open(str(path), 'rb') as wav:
+        assert (wav.getnchannels(), wav.getsampwidth(), wav.getframerate()) == (2, 2, 22050), name
+        assert wav.getnframes() == 20 * 22050, name
+print('Four original provisional ambient loops, default off: verified')
+
+cue_metadata = (ambient / 'cues.json').read_bytes()
+assert cue_metadata == (ambient_source / 'cues.json').read_bytes(), 'Wrong cue metadata'
+cues = json.loads(cue_metadata)
+assert cues['provisional'] is True and cues['answer_independent'] is True
+for flag in ('final_sound_approved', 'third_party_recordings', 'speech', 'runtime_synthesis'):
+    assert cues[flag] is False, flag
+assert set(cues['assets']) == {'touch', 'transform', 'reveal'}
+assert cues['native_max_player_volume'] <= .24
+for event, expected in cues['assets'].items():
+    assert expected['filename'] == f'cue-{event}.wav'
+    path = ambient / expected['filename']
+    data = path.read_bytes()
+    assert len(data) == expected['bytes'], event
+    assert hashlib.sha256(data).hexdigest() == expected['sha256'], event
+    with wave.open(str(path), 'rb') as wav:
+        assert (wav.getnchannels(), wav.getsampwidth(), wav.getframerate()) == (2, 2, 22050), event
+        assert wav.getnframes() == expected['frames'], event
+        assert 0 < wav.getnframes() / wav.getframerate() <= 2, event
+print('Three short neutral touch/transform/reveal cues: verified')
+
+for name in ('aura_environment.frag', 'aura_matter.frag', 'aura_metal.frag'):
+    data = (flutter_assets / 'shaders' / name).read_bytes()
+    # IPLR is the compiled Impeller runtime-stage flatbuffer identifier. A raw
+    # copied GLSL file cannot satisfy this check or work in the shipped renderer.
+    assert len(data) > 128 and data[4:8] == b'IPLR', f'Uncompiled/missing shader: {name}'
+    assert data != (repo / 'mobile/shaders' / name).read_bytes(), name
+print('Three compiled AURA runtime shaders and version 0.6.0+10: verified')

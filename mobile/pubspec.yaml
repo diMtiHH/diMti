@@ -1,7 +1,7 @@
 name: universe_lab
 description: Local bilingual iPhone validation bench for Ask the Universe.
 publish_to: none
-version: 0.5.0+9
+version: 0.6.0+10
 environment:
   sdk: '>=3.14.0 <4.0.0'
 dependencies:
@@ -18,7 +18,24 @@ dev_dependencies:
     sdk: flutter
 flutter:
   uses-material-design: true
+  shaders:
+    - shaders/aura_environment.frag
+    - shaders/aura_matter.frag
+    - shaders/aura_metal.frag
+  fonts:
+    - family: Manrope
+      fonts:
+        - asset: assets/fonts/Manrope-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Manrope-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Manrope-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Manrope-SemiBold.ttf
+          weight: 600
   assets:
+    - assets/fonts/OFL.txt
+    - assets/audio/ambient/
     - assets/onboarding/script.json
     - assets/onboarding/narration.json
     - assets/onboarding/ru.wav

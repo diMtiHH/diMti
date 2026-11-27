@@ -49,6 +49,8 @@ final class VoiceBridge {
   private let channel: FlutterMethodChannel
   private let lifecycle = VoiceLifecycle()
   private let audio = AVAudioSession.sharedInstance()
+  private let audioActivityChanged: ((Bool) -> Void)?
+  private var captureOwnsAudio = false
   private var engine: AVAudioEngine?
   private var input: VoiceAudioInput?
   private var recognizer: SFSpeechRecognizer?
@@ -62,7 +64,8 @@ final class VoiceBridge {
   private var awaitingActivation: VoiceTicket?
   private var observers: [NSObjectProtocol] = []
 
-  init(messenger: FlutterBinaryMessenger) {
+  init(messenger: FlutterBinaryMessenger, audioActivityChanged: ((Bool) -> Void)? = nil) {
+    self.audioActivityChanged = audioActivityChanged
     channel = FlutterMethodChannel(name: "ask_universe/voice", binaryMessenger: messenger)
     channel.setMethodCallHandler { [weak self] call, result in
       guard let self else {
@@ -117,6 +120,7 @@ final class VoiceBridge {
     if tapInstalled { engine?.inputNode.removeTap(onBus: 0) }
     task?.cancel()
     if audioActivated { try? audio.setActive(false, options: .notifyOthersOnDeactivation) }
+    if captureOwnsAudio { audioActivityChanged?(false) }
     startResult?(FlutterError(code: "interrupted", message: "Voice interrupted", details: nil))
   }
 
@@ -224,6 +228,7 @@ final class VoiceBridge {
     permissionDeadline?.cancel()
     permissionDeadline = nil
     do {
+      setAudioActivity(true)
       try audio.setCategory(.record, mode: .measurement, options: [])
       try audio.setActive(true)
       audioActivated = true
@@ -311,6 +316,13 @@ final class VoiceBridge {
       try? audio.setActive(false, options: .notifyOthersOnDeactivation)
       audioActivated = false
     }
+    setAudioActivity(false)
+  }
+
+  private func setAudioActivity(_ active: Bool) {
+    guard captureOwnsAudio != active else { return }
+    captureOwnsAudio = active
+    audioActivityChanged?(active)
   }
 
   private func interrupt() {

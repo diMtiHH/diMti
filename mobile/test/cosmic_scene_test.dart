@@ -7,13 +7,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:universe_lab/cosmic_scene.dart';
 import 'package:universe_lab/cosmic_theme.dart';
+import 'package:universe_lab/aura_renderer.dart';
 
 void main() {
   const boundaryKey = ValueKey('cosmic-preview');
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await warmUpAuraShaders();
+  });
 
   Widget app({
     String background = 'stars',
-    String style = 'coin',
+    String style = 'livingMatter',
     bool active = true,
     bool animate = true,
     bool reduced = true,
@@ -45,6 +50,7 @@ void main() {
                       Center(
                         child: AnswerStylePreview(
                           style: style,
+                          environment: background,
                           active: active,
                           animate: animate,
                           semanticLabel: 'Decorative style preview',
@@ -59,15 +65,19 @@ void main() {
     ),
   );
 
-  T painter<T extends CustomPainter>(WidgetTester tester) =>
+  AuraPainter selectedPainter(WidgetTester tester, bool background) =>
       tester
               .widget<CustomPaint>(
                 find.byWidgetPredicate(
-                  (widget) => widget is CustomPaint && widget.painter is T,
+                  (widget) =>
+                      widget is CustomPaint &&
+                      widget.painter is AuraPainter &&
+                      (widget.painter! as AuraPainter).showBackground ==
+                          background,
                 ),
               )
               .painter!
-          as T;
+          as AuraPainter;
 
   Future<Uint8List> pixels(WidgetTester tester) async {
     final boundary = tester.renderObject<RenderRepaintBoundary>(
@@ -128,8 +138,8 @@ void main() {
         for (final style in cosmicAnswerStyles) {
           await tester.pumpWidget(app(background: background, style: style));
           await tester.pumpAndSettle();
-          expect(painter<CosmicScenePainter>(tester).background, background);
-          expect(painter<AnswerStylePainter>(tester).style, style);
+          expect(selectedPainter(tester, true).background, background);
+          expect(selectedPainter(tester, false).form, style);
           final image = await pixels(tester);
           for (final previous in rendered) {
             expect(image, isNot(orderedEquals(previous)));
@@ -147,15 +157,15 @@ void main() {
     'normal motion advances independently without changing selection',
     (tester) async {
       await tester.pumpWidget(
-        app(reduced: false, background: 'galaxy', style: 'sphere'),
+        app(reduced: false, background: 'galaxy', style: 'liquidMetal'),
       );
       await tester.pump(const Duration(seconds: 2));
-      final scene = painter<CosmicScenePainter>(tester);
-      final preview = painter<AnswerStylePainter>(tester);
-      expect(scene.phase, greaterThan(0));
-      expect(preview.phase, greaterThan(scene.phase));
+      final scene = selectedPainter(tester, true);
+      final preview = selectedPainter(tester, false);
+      expect(scene.interaction.elapsed, greaterThan(0));
+      expect(preview.interaction.elapsed, greaterThan(0));
       expect(scene.background, 'galaxy');
-      expect(preview.style, 'sphere');
+      expect(preview.form, 'liquidMetal');
       expect(tester.binding.transientCallbackCount, greaterThan(0));
       await tester.pumpWidget(const SizedBox());
     },
@@ -296,8 +306,8 @@ void main() {
     (tester) async {
       await tester.pumpWidget(app(background: 'invalid', style: 'invalid'));
       await tester.pumpAndSettle();
-      expect(painter<CosmicScenePainter>(tester).background, 'stars');
-      expect(painter<AnswerStylePainter>(tester).style, 'coin');
+      expect(selectedPainter(tester, true).background, 'aurora');
+      expect(selectedPainter(tester, false).form, 'livingMatter');
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     },
@@ -307,7 +317,7 @@ void main() {
     'render a deterministic sixteen-combination contact sheet for review',
     (tester) async {
       // A local system font makes the review artifact readable outside the test
-      // runner. The app still uses platform typography; no font asset is shipped.
+      // runner, independently from the bundled app typography.
       final family = await tester.runAsync(() async {
         for (final path in [
           r'C:\Windows\Fonts\segoeui.ttf',
@@ -355,7 +365,7 @@ void main() {
                       ),
                       const SizedBox(height: 6),
                       const Text(
-                        'Stage 5 · visual foundation · 16 independent combinations',
+                        'AURA 13 · procedural environments and living forms · 16 combinations',
                         style: TextStyle(
                           fontSize: 14,
                           color: CosmicPalette.silver,
@@ -386,8 +396,8 @@ void main() {
                                             [
                                               'Stars',
                                               'Galaxy',
-                                              'Nebula',
-                                              'Black hole',
+                                              'Aurora',
+                                              'Gravity',
                                             ][i],
                                             style: const TextStyle(
                                               fontSize: 20,
@@ -406,6 +416,8 @@ void main() {
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   AnswerStylePreview(
+                                                    environment:
+                                                        cosmicBackgrounds[i],
                                                     style:
                                                         cosmicAnswerStyles[s],
                                                     size: 112,
@@ -413,9 +425,9 @@ void main() {
                                                   ),
                                                   Text(
                                                     [
-                                                      'Coin',
-                                                      'Sphere',
-                                                      'Black hole',
+                                                      'Living matter',
+                                                      'Liquid metal',
+                                                      'Infinity',
                                                       'Constellation',
                                                     ][s],
                                                     style: const TextStyle(
@@ -455,7 +467,7 @@ void main() {
         final image = await boundary.toImage(pixelRatio: 1.5);
         try {
           final png = await image.toByteData(format: ui.ImageByteFormat.png);
-          final output = File('build/stage5/cosmic-preview.png');
+          final output = File('build/stage6/cosmic-preview.png');
           await output.parent.create(recursive: true);
           await output.writeAsBytes(png!.buffer.asUint8List());
         } finally {

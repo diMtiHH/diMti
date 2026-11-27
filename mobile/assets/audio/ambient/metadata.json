@@ -1,0 +1,58 @@
+{
+  "protocol": "aura13-provisional-ambient-v1",
+  "provisional": true,
+  "final_sound_approved": false,
+  "origin": "Original mathematical oscillators, generated offline for this project",
+  "third_party_recordings": false,
+  "speech": false,
+  "runtime_synthesis": false,
+  "default_enabled": false,
+  "native_max_player_volume": 0.24,
+  "generator": "mobile/tool/prepare_ambient_audio.py",
+  "assets": {
+    "stars.wav": {
+      "sha256": "b1d03e4f5395e2000b4eef6ef1d0c04600a21bfe581b69adaa21dfb73ec2e4f6",
+      "bytes": 1764044,
+      "duration_seconds": 20,
+      "sample_rate": 22050,
+      "channels": 2,
+      "pcm_bits": 16,
+      "peak_dbfs": -23.59,
+      "rms_dbfs": -33.73,
+      "seam_endpoint_delta_pcm": 0
+    },
+    "galaxy.wav": {
+      "sha256": "214425e251481a2dbf3633c2351eaeca93a3988b470b58212833060c9b262926",
+      "bytes": 1764044,
+      "duration_seconds": 20,
+      "sample_rate": 22050,
+      "channels": 2,
+      "pcm_bits": 16,
+      "peak_dbfs": -21.92,
+      "rms_dbfs": -32.7,
+      "seam_endpoint_delta_pcm": 0
+    },
+    "aurora.wav": {
+      "sha256": "f37a5518545c772aa492b5e778c38174e52185cb8c9a9104b9c55e97bebf2fa0",
+      "bytes": 1764044,
+      "duration_seconds": 20,
+      "sample_rate": 22050,
+      "channels": 2,
+      "pcm_bits": 16,
+      "peak_dbfs": -23.67,
+      "rms_dbfs": -33.95,
+      "seam_endpoint_delta_pcm": 0
+    },
+    "gravity.wav": {
+      "sha256": "c4af9a2afceb26bf60421521b31cbca0606299964656362e2bc8ef65f4daaa06",
+      "bytes": 1764044,
+      "duration_seconds": 20,
+      "sample_rate": 22050,
+      "channels": 2,
+      "pcm_bits": 16,
+      "peak_dbfs": -23.19,
+      "rms_dbfs": -33.2,
+      "seam_endpoint_delta_pcm": 0
+    }
+  }
+}

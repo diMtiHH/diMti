@@ -1,0 +1,90 @@
+{
+  "protocol": "aura13-original-vector-icon-v1",
+  "origin": "Original four-ray energy mark drawn by AuraIconPainter; no external image or font glyph",
+  "vector_source": "mobile/lib/aura_ui.dart",
+  "vector_source_sha256": "fa71556615aecabad489b52b52d719365ea322eaa8311621a247b4a787b5c77f",
+  "composition_source": "mobile/test/aura_ui_test.dart",
+  "source_render_sha256": "1fb1271bd82fa377be76c7ad720888650da3627520e3cd52807385ceb453d53b",
+  "export_script": "mobile/tool/prepare_aura_app_icon.py",
+  "pillow_version": "12.0.0",
+  "color_mode": "RGB",
+  "transparency": false,
+  "final_brand_acceptance": false,
+  "exports": {
+    "Icon-App-20x20@2x.png": {
+      "size_px": 40,
+      "bytes": 1824,
+      "sha256": "67a065993c15640c28b99ef2036b0374349e9e1bffec5da1cb5fcb39fe6f4db6"
+    },
+    "Icon-App-20x20@3x.png": {
+      "size_px": 60,
+      "bytes": 3346,
+      "sha256": "d684c9db0f80b257e4ddb82794e52b6b88c6771aa82df4e477e12a48fbd0e12f"
+    },
+    "Icon-App-29x29@1x.png": {
+      "size_px": 29,
+      "bytes": 1224,
+      "sha256": "21ff04fb8ec0ca0327fd939d039c61fd5714f19b804813612e005051aa626252"
+    },
+    "Icon-App-29x29@2x.png": {
+      "size_px": 58,
+      "bytes": 3156,
+      "sha256": "fb07007e612e894252a4b9281e736b84c1972869c18495d00f84b73b6a3da05f"
+    },
+    "Icon-App-29x29@3x.png": {
+      "size_px": 87,
+      "bytes": 6001,
+      "sha256": "044627cca652705de6822faad6d2733e7e06252518ea9643aeea13bb0bfa29bf"
+    },
+    "Icon-App-40x40@2x.png": {
+      "size_px": 80,
+      "bytes": 5192,
+      "sha256": "c6644a3e21941f7b7032c79f01faa9c92a46ea0a501a53b9ae13438b22416cd9"
+    },
+    "Icon-App-40x40@3x.png": {
+      "size_px": 120,
+      "bytes": 9921,
+      "sha256": "706f6b2b2c2f7804bfa159b60e1a8e590922592e234c0c8bb32573f52c98b527"
+    },
+    "Icon-App-60x60@2x.png": {
+      "size_px": 120,
+      "bytes": 9921,
+      "sha256": "706f6b2b2c2f7804bfa159b60e1a8e590922592e234c0c8bb32573f52c98b527"
+    },
+    "Icon-App-60x60@3x.png": {
+      "size_px": 180,
+      "bytes": 19344,
+      "sha256": "783c042175dd34654edc59802a420ea32f2f3aecf9115efcb26d6a7e751aaeba"
+    },
+    "Icon-App-20x20@1x.png": {
+      "size_px": 20,
+      "bytes": 698,
+      "sha256": "dbe14f7930e82018c6a3fd25abe0fc9980da4436a80791fc119a09df216efc51"
+    },
+    "Icon-App-40x40@1x.png": {
+      "size_px": 40,
+      "bytes": 1824,
+      "sha256": "67a065993c15640c28b99ef2036b0374349e9e1bffec5da1cb5fcb39fe6f4db6"
+    },
+    "Icon-App-76x76@1x.png": {
+      "size_px": 76,
+      "bytes": 4832,
+      "sha256": "047d3cccbb984576b7e66a89b49f80bc919b1a991f51e260563645e1f76cdaa9"
+    },
+    "Icon-App-76x76@2x.png": {
+      "size_px": 152,
+      "bytes": 14741,
+      "sha256": "e871958dc7e25caa09c92c9e351cb14f6effe16837f76e01a6f108e78c6fd11c"
+    },
+    "Icon-App-83.5x83.5@2x.png": {
+      "size_px": 167,
+      "bytes": 16684,
+      "sha256": "46b1cedad701a664d84f8abc172d8789472db26e679de52f2c5b60c9c8910f62"
+    },
+    "Icon-App-1024x1024@1x.png": {
+      "size_px": 1024,
+      "bytes": 339621,
+      "sha256": "9f91d29267c568c3116acc4ca551af8faaa617cc28d91936c9f4963fd4882c64"
+    }
+  }
+}
