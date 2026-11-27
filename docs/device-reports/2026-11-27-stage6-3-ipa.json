@@ -1,0 +1,103 @@
+{
+  "protocol": "stage6-3-ipa-verification-v1",
+  "path": "C:\\Users\\user\\Downloads\\Ask-the-Universe-Stage6-0.6.3\\Ask-the-Universe-0.6.3-build13.ipa",
+  "bytes": 304189487,
+  "sha256": "3bfd34e3822fcbee063fd48073bf81d6dbf2b6bdc808f5524916aa05e6eee196",
+  "version": "0.6.3",
+  "build": "13",
+  "platform": "iPhoneOS",
+  "unsigned_for_personal_signing": true,
+  "source_commit": "31a38450d1380f06ac9851c69263e6937b643d88",
+  "artifact_zip_sha256": "3657f85ff7d650647ec367ea69bf44bc5eb14a1ed44c6f255fa2a51695731cea",
+  "app_bytes": 548861926,
+  "assets_sha256": {
+    "model.onnx": "ca456c06b3a9505ddfd9131408916dd79290368331e7d76bb621f1cba6bc8665",
+    "tokenizer.json": "0b44a9d7b51c3c62626640cda0e2c2f70fdacdc25bbbd68038369d14ebdf4c39",
+    "head.json": "fc3593cfabdc324d4e37b69c4fd49749e957bb582e42367fcbcb7692feab8ea9"
+  },
+  "model_release_enabled": false,
+  "english_notifications_approved": false,
+  "narration": {
+    "ru": {
+      "sha256": "99f4890f1d3f260ff1dbc56faf0e6b9f2028cfd2c505a87ae1f735d91fef7f77",
+      "duration_ms": 34583
+    },
+    "en": {
+      "sha256": "6897a88fb8f54b4ed5fb4fbf6ec83c66db6e7b8c284bd1263bccb6f8df278349",
+      "duration_ms": 30442
+    }
+  },
+  "provisional_narration": true,
+  "english_wording_approved": false,
+  "fonts_sha256": {
+    "CormorantGaramond-Light.ttf": "9faf7cede1c059bf57fede38533fc18aa19846a171b88743826e7aa94970c25c",
+    "CormorantGaramond-Regular.ttf": "67a9da018f4cae694840d9e962215e7e5fca669f6c5de6ab9e675da53ec1e400",
+    "CormorantGaramond-Medium.ttf": "1e077af6a5bf0c9ab147458e815c9ecc3a080bebd7872d7c018f5f4d340e2a6e",
+    "CormorantGaramond-SemiBold.ttf": "b19592bc76e045bba4278a12028562d4f94855b4e12fd62c0dbd325bd1b63666",
+    "CormorantGaramond-OFL.txt": "60700d351cac4650c51f3f9db318d2a420f8b45052dba2715eb5fec41f0f6956",
+    "Literata-Regular.ttf": "c944f14b1be128d5136a7434546155856a9590417f276ef6f6bd03aa33c45222",
+    "Literata-Medium.ttf": "48a52bbd303b258aba7f3e14ec1571d37cdfa9260712e1a4cf34c30b9236f9b7",
+    "Literata-SemiBold.ttf": "f78c3124f410f9628f61769bf736c65dc1e3d1569c2fa6d1e6be95c0b07f4fc4",
+    "Literata-OFL.txt": "8742963604cd89dc81437811a850018fc03b2bfad686d7422c8235967c87614e",
+    "Manrope-Regular.ttf": "2602c71d1f36c96da0022706f15da7d51102d19d10510b77b5a39bf861122807",
+    "Manrope-Medium.ttf": "729037f5dc28daa949c5ce8e69d945bf14faf2649db737e6eb085c120c778dd0",
+    "OFL.txt": "58172e0c0fac2cda8a37b348164bb55e44b0e69051e557e92b1d3f6910141f7b"
+  },
+  "ambient_audio_sha256": {
+    "stars.wav": "b1d03e4f5395e2000b4eef6ef1d0c04600a21bfe581b69adaa21dfb73ec2e4f6",
+    "galaxy.wav": "214425e251481a2dbf3633c2351eaeca93a3988b470b58212833060c9b262926",
+    "aurora.wav": "f37a5518545c772aa492b5e778c38174e52185cb8c9a9104b9c55e97bebf2fa0",
+    "gravity.wav": "c4af9a2afceb26bf60421521b31cbca0606299964656362e2bc8ef65f4daaa06",
+    "cue-touch.wav": "a65304e28f5f6f2f0a42b9b8c7c024d662961fc2e7243f8f8624f4c7b5048f57",
+    "cue-transform.wav": "7b66dc5b13b02d61d12808b2d7b983c93dc21848b803f80b03fc781e77edf034",
+    "cue-reveal.wav": "6aebb2f70df5933af6c474fb9cda60d17258bd4b4938e3312d1320871bd4d75b"
+  },
+  "ambient_default_enabled": false,
+  "provisional_ambient_and_cues": true,
+  "answer_independent_cues": true,
+  "compiled_shaders": {
+    "aura_environment.frag": {
+      "bytes": 21176,
+      "sha256": "e041264aa71171bd0eac1c35bbc9fb72b17d459dae702e433d0b72ed6ba9b0b8",
+      "format": "IPLR"
+    },
+    "aura_matter.frag": {
+      "bytes": 8104,
+      "sha256": "6b7f9d653217251e7de37f2d38235669d76685102f721dfdb444324f26ea554a",
+      "format": "IPLR"
+    },
+    "aura_metal.frag": {
+      "bytes": 6728,
+      "sha256": "59b1d2137bfba1bee2128a5deba7f7e17401c5435349421614d4ca06823d3c45",
+      "format": "IPLR"
+    }
+  },
+  "native_channels": [
+    "ask_universe/presentation",
+    "ask_universe/voice",
+    "ask_universe/ambient",
+    "ask_universe/graphicsBudget",
+    "ask_universe/motion",
+    "ask_universe/haptics"
+  ],
+  "verified": [
+    "artifact digest and exact source commit",
+    "artifact and IPA CRC",
+    "unique ZIP entries",
+    "IPA checksum",
+    "version/build and iPhoneOS",
+    "model hashes and closed release flag",
+    "privacy manifest",
+    "English notification flag false",
+    "denied sysctl absent",
+    "permissions RU/EN and no background modes",
+    "on-device speech selector",
+    "presentation voice ambient graphics motion and haptics channels",
+    "no personal signing profile",
+    "narration hashes PCM timing script and draft flags",
+    "nine Cormorant Garamond/Literata/Manrope faces manifest and three OFL licenses",
+    "four loops three neutral cues hashes PCM peaks",
+    "three compiled IPLR shaders"
+  ],
+  "limits": "Static artifact checks; physical behavior, performance and sound acceptance are not inferred."
+}

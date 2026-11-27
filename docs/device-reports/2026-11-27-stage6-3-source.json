@@ -1,0 +1,118 @@
+{
+  "date": "2026-11-27",
+  "source_commit": "31a38450d1380f06ac9851c69263e6937b643d88",
+  "version": "0.6.3",
+  "build": 13,
+  "admission": "closed",
+  "english_notifications_approved": false,
+  "physical_063_tested": false,
+  "commit": "31a38450d1380f06ac9851c69263e6937b643d88",
+  "tree": "69491eb9c8aacea5fa490fd338d8ef851d9017eb",
+  "parent": "c382642659723852374015c5e17a12e346a3273c",
+  "changed": [
+    {
+      "path": "PROJECT_STATUS.md",
+      "bytes": 70457,
+      "blob": "7ae836d5b053ed7e1ff8fac9a927fb3dfde76935",
+      "sha256": "d7113b2b4b753164967881bbd235f272984e666213e7b4b294dd07e8746a2139"
+    },
+    {
+      "path": "docs/STAGE_6_3.md",
+      "bytes": 5754,
+      "blob": "f19644c7b38a1f288adb235e8033796e9e20b87a",
+      "sha256": "ca2fcb6eab416c245f25cf5debe9682243d63ffb2368e2a1d8f516eb1199d6c1"
+    },
+    {
+      "path": "docs/device-reports/2026-11-27-stage6-2-video-feedback.json",
+      "bytes": 1566,
+      "blob": "26dae271a3316110928b6aef51ac263e00dd920e",
+      "sha256": "100b32378e2d24d63d5a3a81ff596a8b28fb9dfb15fb2cb7dd18feff1d211ac8"
+    },
+    {
+      "path": "mobile/integration_test/ios_aura_test.dart",
+      "bytes": 9170,
+      "blob": "f0309c71447d7570a6bdd55cee6eaf18c8cbbc49",
+      "sha256": "bb2253986866a403396a4e613c1c4d933415941d56969e924062a575fad8d53d"
+    },
+    {
+      "path": "mobile/ios/Runner/Base.lproj/LaunchScreen.storyboard",
+      "bytes": 2398,
+      "blob": "4d975ba90a80ab0da0f929e1de566b4da0ef4f25",
+      "sha256": "ae9e6409959957351378a006e0f00d2ab24db105f645031fc9992e03d9c406ba"
+    },
+    {
+      "path": "mobile/ios/Runner/Base.lproj/Main.storyboard",
+      "bytes": 1632,
+      "blob": "5e45401131fe2726a19ef1f29335f72141156a0f",
+      "sha256": "2244a10412b514bc43e4c32a9467d71531c6682fd323b4cd256e653afdc1c7ed"
+    },
+    {
+      "path": "mobile/lib/app_shell.dart",
+      "bytes": 53659,
+      "blob": "a1fe925d3ad200e548f551b91ce712b943b94bde",
+      "sha256": "6e6e241ba246719991853ee95fd27d9c13b4d7fad76eb5a4980aee9c998d8a6d"
+    },
+    {
+      "path": "mobile/lib/aura_renderer.dart",
+      "bytes": 44727,
+      "blob": "8ca5344b1261a3795a7082e163942ccd8366a01b",
+      "sha256": "245d873caf5d127a19a8e213ad73fe3358178c0a0bcb8c25925cd581691935df"
+    },
+    {
+      "path": "mobile/pubspec.yaml",
+      "bytes": 1739,
+      "blob": "30fe017ab7defd6fd29b5a6ae5d85f536dd47f42",
+      "sha256": "dca672ace18120e6d7388223b54eebc5d12348909cba1b7f1c121414ebf9c659"
+    },
+    {
+      "path": "mobile/shaders/aura_environment.frag",
+      "bytes": 4074,
+      "blob": "61ceed4ca5650562aa01af4ea35b32506aeb78f7",
+      "sha256": "13b01fba5e9a1f46e5f4752361c1f46f0ae5611c6cef95d77be0a3106a765d54"
+    },
+    {
+      "path": "mobile/shaders/aura_matter.frag",
+      "bytes": 2507,
+      "blob": "74af1255c277d45fceccf1a803d97f82b9574b75",
+      "sha256": "4c4851fc580145d498d127962e7ce17dc7f00177aead3882c68002046dafa147"
+    },
+    {
+      "path": "mobile/shaders/aura_metal.frag",
+      "bytes": 2808,
+      "blob": "339a53e2776bc0033dbdbb6581b7c3a800d4fc64",
+      "sha256": "1b69f0411abd9281c61c03f44f6251df9cee8dcef5f65312011f9a9453b96ddc"
+    },
+    {
+      "path": "mobile/test/aura_frame_budget_test.dart",
+      "bytes": 5052,
+      "blob": "1f9c586fe4e6d22b246cff42a4995ed10bbdc1f8",
+      "sha256": "1da4663bab89a3be24847a73408e0ef4bfbec0da04e35dadb0ce7880d083ed31"
+    },
+    {
+      "path": "mobile/test/aura_raster_cache_test.dart",
+      "bytes": 6787,
+      "blob": "80a82c4afcd0deb8c9b45a933074db3beac9f5ab",
+      "sha256": "3db9189567e0630daf390ac7e0028c249930877a5c608c8d246c62a865156127"
+    },
+    {
+      "path": "mobile/test/aura_renderer_test.dart",
+      "bytes": 20487,
+      "blob": "5e56f8f4df5454ce6a4af2ce9d039696474b80af",
+      "sha256": "eaa60c0402bc78ee605802249e9205bab710aa51f5876d5cfa3424b352ae11e7"
+    },
+    {
+      "path": "mobile/tool/check_app.py",
+      "bytes": 7908,
+      "blob": "373c3beb972d59aa96ca48b75c6461d314e22b01",
+      "sha256": "d3d580af4f3aa1f386913da80bba3fcb92618e0800d7f1766a9afafe8150875e"
+    }
+  ],
+  "unchanged_blobs_verified": 319,
+  "all_blobs": 335,
+  "branch": "stage6-iphone",
+  "local_tests": 413,
+  "local_exit_code": 0,
+  "local_total_seconds": 239.4,
+  "python_tests": 20,
+  "protocol": "stage6-3-source-verification-v1"
+}

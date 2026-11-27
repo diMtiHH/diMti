@@ -1,0 +1,21 @@
+No issues found! (ran in 1.3s)
+00:00 +6: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ambient_audio_test.dart: malformed environment and failed native playback remain silent
+00:56 +83: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/aura_session_test.dart: AURA confirmation preserves wording and every production outcome stays closed
+01:06 +85: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/aura_session_test.dart: diagnostic AURA hold stays visual without voice or a new answer
+01:08 +86: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/aura_session_test.dart: AURA permission alert restores visible voice editor and stop control
+01:12 +87: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/aura_session_test.dart: AURA background during permission discards editor and late capture
+01:40 +92: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/aura_session_test.dart: failed reveal persistence blocks and closes the private route without another draw
+02:01 +99: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/aura_shell_test.dart: capture actual AURA home input confirmation and world with bundled fonts and shaders
+02:18 +114: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart: a failed check cannot yield a successful benchmark
+03:21 +205: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: failed reload retains last profile but blocks writes until valid read
+03:21 +235: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed intent write (committed=false) never calls RNG
+03:21 +236: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed answer write (committed=false) cannot reroll on recovery
+03:21 +237: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed cooldown write (committed=false) recovers conservatively
+03:21 +238: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed intent write (committed=true) never calls RNG
+03:21 +239: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed answer write (committed=true) cannot reroll on recovery
+03:21 +240: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed cooldown write (committed=true) recovers conservatively
+03:21 +242: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed cleanup after RNG error preserves interruption without automatic retry
+03:21 +252: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: real failed rebase write retains the accepted clock sample
+03:21 +257: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic failed rebase write retains the accepted clock sample
+03:44 +387: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: failed leaves a manual draft without leaking platform details
+03:47 +413: All tests passed!

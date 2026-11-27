@@ -1,0 +1,19 @@
+{
+  "date": "2026-11-27",
+  "source_commit": "31a38450d1380f06ac9851c69263e6937b643d88",
+  "version": "0.6.3",
+  "build": 13,
+  "admission": "closed",
+  "english_notifications_approved": false,
+  "physical_063_tested": false,
+  "exit_code": 0,
+  "elapsed_seconds": 239.4,
+  "flutter_tests_passed": 413,
+  "python_tests_passed": 20,
+  "analyzer": "No issues found",
+  "full_log_on_workstation": "setup-windows-stage6-3-final.log",
+  "published_excerpt": "docs/device-reports/2026-11-27-stage6-3-local-excerpt.log",
+  "full_log_sha256": "c441ddcdebdd7dc2252bd45d15314cb718951fff83e6ec966b978ee684896a44",
+  "virtual_tests": "5 minutes, no new atmosphere images; 60/120 Hz scheduling; 3x native geometry; hidden views stop",
+  "limits": "Virtual time and pixel tests are not physical temperature or device FPS measurements."
+}

@@ -1,0 +1,23 @@
+2026-11-27T08:48:03.3161094Z test_failed_case_cannot_pass (test_xctest_result.XCTestResultContract.test_failed_case_cannot_pass) ... ok
+2026-11-27T08:48:03.3169575Z Ran 20 tests in 1.665s
+2026-11-27T08:50:29.0491612Z No issues found! (ran in 11.7s)
+2026-11-27T08:50:40.6787119Z 00:00 +6: D:/a/diMti/diMti/mobile/test/ambient_audio_test.dart: malformed environment and failed native playback remain silent
+2026-11-27T08:52:06.2436426Z 01:25 +83: D:/a/diMti/diMti/mobile/test/aura_session_test.dart: AURA confirmation preserves wording and every production outcome stays closed
+2026-11-27T08:52:19.7871554Z 01:39 +85: D:/a/diMti/diMti/mobile/test/aura_session_test.dart: diagnostic AURA hold stays visual without voice or a new answer
+2026-11-27T08:52:22.3733993Z 01:41 +86: D:/a/diMti/diMti/mobile/test/aura_session_test.dart: AURA permission alert restores visible voice editor and stop control
+2026-11-27T08:52:27.5854525Z 01:46 +87: D:/a/diMti/diMti/mobile/test/aura_session_test.dart: AURA background during permission discards editor and late capture
+2026-11-27T08:53:06.5668475Z 02:25 +92: D:/a/diMti/diMti/mobile/test/aura_session_test.dart: failed reveal persistence blocks and closes the private route without another draw
+2026-11-27T08:53:36.8070054Z 02:56 +99: D:/a/diMti/diMti/mobile/test/aura_shell_test.dart: capture actual AURA home input confirmation and world with bundled fonts and shaders
+2026-11-27T08:54:02.7849174Z 03:22 +114: D:/a/diMti/diMti/mobile/test/device_run_test.dart: a failed check cannot yield a successful benchmark
+2026-11-27T08:55:33.1218836Z 04:52 +205: D:/a/diMti/diMti/mobile/test/presentation_profile_test.dart: failed reload retains last profile but blocks writes until valid read
+2026-11-27T08:55:34.3478399Z 04:53 +235: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed intent write (committed=false) never calls RNG
+2026-11-27T08:55:34.3506432Z 04:53 +236: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed answer write (committed=false) cannot reroll on recovery
+2026-11-27T08:55:34.3532784Z 04:53 +237: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed cooldown write (committed=false) recovers conservatively
+2026-11-27T08:55:34.3561645Z 04:53 +238: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed intent write (committed=true) never calls RNG
+2026-11-27T08:55:34.3591245Z 04:53 +239: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed answer write (committed=true) cannot reroll on recovery
+2026-11-27T08:55:34.3616403Z 04:53 +240: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed cooldown write (committed=true) recovers conservatively
+2026-11-27T08:55:34.3677607Z 04:53 +242: D:/a/diMti/diMti/mobile/test/session_core_test.dart: failed cleanup after RNG error preserves interruption without automatic retry
+2026-11-27T08:55:34.4042513Z 04:53 +252: D:/a/diMti/diMti/mobile/test/session_core_test.dart: real failed rebase write retains the accepted clock sample
+2026-11-27T08:55:34.4224072Z 04:53 +257: D:/a/diMti/diMti/mobile/test/session_core_test.dart: diagnostic failed rebase write retains the accepted clock sample
+2026-11-27T08:56:14.3811327Z 05:33 +387: D:/a/diMti/diMti/mobile/test/voice_input_test.dart: failed leaves a manual draft without leaking platform details
+2026-11-27T08:56:23.2867323Z 05:42 +413: All tests passed!

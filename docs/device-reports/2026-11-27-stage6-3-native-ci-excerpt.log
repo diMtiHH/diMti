@@ -1,0 +1,159 @@
+2026-11-27T08:48:18.1324610Z PASS 1: commit token before creating kernel marker
+2026-11-27T08:48:18.1327030Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-27T08:48:18.1328530Z PASS 3: simulated reboot rotates token
+2026-11-27T08:48:18.1329510Z PASS 4: failed write recovery
+2026-11-27T08:48:18.1330330Z PASS 5: ambiguous committed write recovery
+2026-11-27T08:48:18.1331420Z PASS 6: crash between persisted token and kernel creation
+2026-11-27T08:48:18.1332770Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-27T08:48:18.1334620Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-27T08:48:18.1337350Z PASS 9: strict private marker validation
+2026-11-27T08:48:18.1338540Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-27T08:48:18.1339720Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-27T08:48:18.1340940Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-27T08:48:18.1341980Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-27T08:48:18.1343220Z PASS 14: notification callback success/error and duplicate completion
+2026-11-27T08:48:18.1344250Z PASS 15: missing OS callback releases the serial queue
+2026-11-27T08:48:18.1345310Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-27T08:48:18.1346360Z Native safety checks: 16/16 passed
+2026-11-27T08:48:21.8446330Z PASS storage 1: fresh preferences use the first supported system language with RU fallback and no write
+2026-11-27T08:48:21.8660070Z PASS storage 2: saved language and opt-in take precedence while corrupt preferences remain blocked
+2026-11-27T08:48:22.1238420Z PASS storage 3: shared Dart/Swift state contract: 74 cases; rejected input preserves bytes
+2026-11-27T08:48:22.1245390Z PASS storage 4: notification preference and channel switch require actual booleans
+2026-11-27T08:48:22.1246740Z PASS storage 5: invalid preferences cannot overwrite saved opt-in
+2026-11-27T08:48:26.4696390Z PASS storage 6: 40 process exits across 5 write checkpoints and both scopes
+2026-11-27T08:48:26.4726530Z PASS storage 7: first uncommitted reservation is never loaded from staging
+2026-11-27T08:48:26.4776050Z PASS storage 8: error after rename propagates; reload recovers the committed timer
+2026-11-27T08:48:26.4857660Z PASS storage 9: corrupt, invalid UTF-8 and oversized committed files never use pending data
+2026-11-27T08:48:26.4910940Z PASS storage 10: diagnostic reset isolation and answer removal in committed cooldown
+2026-11-27T08:48:26.4941210Z PASS storage 11: ambiguous preferences rejected; canonical state committed without leftover staging
+2026-11-27T08:48:26.4956470Z PASS storage 12: both private scope directories excluded from backup
+2026-11-27T08:48:26.4994420Z Native storage checks: 12/12 passed; 74 contract cases; 40 process interruptions
+2026-11-27T08:48:28.2591020Z PASS only explicit RU and EN voice locales are accepted
+2026-11-27T08:48:28.2592720Z PASS request identity rejects booleans strings fractions and overflow
+2026-11-27T08:48:28.2594170Z PASS cancel invalidates delayed permission completion
+2026-11-27T08:48:28.2596660Z PASS supersession rejects callbacks even when caller reuses an ID
+2026-11-27T08:48:28.2597850Z PASS duplicate and stale callbacks cannot start or stop another capture
+2026-11-27T08:48:28.2599010Z PASS graceful stop keeps final results but forbids automatic restart
+2026-11-27T08:48:28.2600480Z PASS terminal delivery retires once and rejects later transcript or level
+2026-11-27T08:48:28.2601610Z PASS silence and low room noise do not produce synthetic animation
+2026-11-27T08:48:28.2602670Z PASS level follows actual RMS with smooth attack and slower release
+2026-11-27T08:48:28.2603830Z PASS invalid audio measurements cannot leak NaN or unbounded levels
+2026-11-27T08:48:28.2604950Z PASS transcript size matches Dart UTF16 limit without silent truncation
+2026-11-27T08:48:28.2606230Z PASS partial and corrected hypotheses replace the same audio range without duplication
+2026-11-27T08:48:28.2607720Z PASS a later disjoint audio range keeps the accepted phrase across a pause
+2026-11-27T08:48:28.2609070Z PASS cumulative final and empty silence results do not duplicate or erase previous speech
+2026-11-27T08:48:28.2610730Z PASS intentional repetition at distinct audio times is preserved without duplicate callbacks
+2026-11-27T08:48:28.2612770Z PASS untimed partials revise only the active phrase and ambiguous resets never guess a boundary
+2026-11-27T08:48:28.2614610Z PASS combined utterances enforce UTF16 bounds without silent truncation or state corruption
+2026-11-27T08:48:28.2616100Z PASS invalid timing cannot corrupt text and a new capture has no retained transcription
+2026-11-27T08:48:28.2617390Z PASS capture permission and finalization waits have explicit limits
+2026-11-27T08:48:28.2618440Z Native voice checks: 19/19 passed
+2026-11-27T08:48:35.9571060Z PASS all fixed background and answer style combinations are valid
+2026-11-27T08:48:35.9572540Z PASS all 16 legacy choices migrate in memory without changing the original bytes or consent
+2026-11-27T08:48:35.9574100Z PASS legacy migration rejects mixed schemas and preserves incomplete onboarding and narration choice
+2026-11-27T08:48:35.9577370Z PASS exact profile keys strict booleans integers and enums are enforced
+2026-11-27T08:48:35.9579100Z PASS duplicate escaped keys decimal syntax malformed and oversized JSON are rejected
+2026-11-27T08:48:35.9580880Z PASS names use 40 Unicode scalars and reject every C0 and C1 control
+2026-11-27T08:48:35.9582390Z PASS completion requires slide two and nonzero accepted terms version
+2026-11-27T08:48:35.9583910Z PASS validation happens before writes and valid profile roundtrips canonically
+2026-11-27T08:48:35.9585550Z PASS private no-backup profile storage remains separate from session state
+2026-11-27T08:48:35.9587240Z PASS corruption invalid UTF8 oversized files and symlinks never become defaults
+2026-11-27T08:48:35.9588880Z PASS ten process interruptions preserve only the old or committed profile
+2026-11-27T08:48:35.9590680Z PASS five migration process interruptions preserve exact v1 bytes until atomic v2 commit
+2026-11-27T08:48:35.9592640Z PASS ambiguous post-rename error propagates while committed profile remains readable
+2026-11-27T08:48:35.9594910Z PASS migration write errors before and after rename require readback without silently resetting data
+2026-11-27T08:48:35.9596920Z PASS narration accepts only fixed bundled languages and positive integer identities
+2026-11-27T08:48:35.9598230Z PASS narration durations are finite positive and bounded
+2026-11-27T08:48:35.9599660Z Native presentation checks: 16/16 passed; 15 process interruptions
+2026-11-27T08:48:37.3713640Z PASS four fixed environment resources
+2026-11-27T08:48:37.3716750Z PASS no paths URLs or malformed resource types
+2026-11-27T08:48:37.3718180Z PASS bounded finite audio duration
+2026-11-27T08:48:37.3719500Z PASS explicit ambient audio ownership
+2026-11-27T08:48:37.3722380Z PASS recording ownership cannot be deactivated by ambient
+2026-11-27T08:48:37.3724250Z PASS three neutral cues with no answer-dependent resources
+2026-11-27T08:48:37.3726010Z PASS finite short cue duration
+2026-11-27T08:48:37.3791750Z Native ambient groups passed: 7
+2026-11-27T08:48:38.8126660Z PASS interaction 1: exact bounded owner identity
+2026-11-27T08:48:38.8127760Z PASS interaction 2: malformed identities rejected
+2026-11-27T08:48:38.8129640Z PASS interaction 3: no answer-dependent haptic commands
+2026-11-27T08:48:38.8131670Z PASS interaction 4: all pattern parameters bounded and ordered
+2026-11-27T08:48:38.8139420Z PASS interaction 5: soft continuous hold
+2026-11-27T08:48:38.8141180Z PASS interaction 6: varied rhythm aligns to animation milestones
+2026-11-27T08:48:38.8142890Z PASS interaction 7: release is stronger than hold
+2026-11-27T08:48:38.8144530Z PASS interaction 8: motion is centred and bounded
+2026-11-27T08:48:38.8146130Z PASS interaction 9: nonfinite motion is ignored
+2026-11-27T08:48:38.8147700Z PASS interaction 10: sample rate and lost-pointer lifetime bounded
+2026-11-27T08:48:38.8149550Z PASS interaction 11: soft hold onset is immediate and bounded
+2026-11-27T08:48:38.8151410Z PASS interaction 12: release acknowledgement waits for the short impulse
+2026-11-27T08:48:38.8153760Z Native interaction checks: 12/12 passed
+2026-11-27T08:48:41.5283110Z test_failed_case_cannot_pass (test_xctest_result.XCTestResultContract.test_failed_case_cannot_pass) ... ok
+2026-11-27T08:48:41.5312990Z Ran 20 tests in 2.191s
+2026-11-27T08:54:45.4865560Z Ignoring --strip-bitcode because --sign was not passed
+2026-11-27T08:54:48.9828730Z Ignoring --strip-bitcode because --sign was not passed
+2026-11-27T09:02:22.9618960Z 2026-11-27 09:02:22.436385+0000 Runner[15664:49575] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=15664
+2026-11-27T09:02:23.6114570Z 2026-11-27 09:02:22.506474+0000 Runner[15664:49575] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=15664
+2026-11-27T09:02:24.4033770Z 2026-11-27 09:02:22.507280+0000 Runner[15664:49575] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=15664
+2026-11-27T09:02:25.1884260Z 2026-11-27 09:02:22.811940+0000 Runner[15664:49575] fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-27T09:02:25.2912700Z 2026-11-27 09:02:23.046909+0000 Runner[15664:49575] fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-27T09:02:25.5042690Z 2026-11-27 09:02:23.165391+0000 Runner[15664:52368] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=15664
+2026-11-27T09:02:30.8411110Z 2026-11-27 09:02:30.569119+0000 Runner[15664:49575] flutter: 00:03 +4: native AURA shaders render all sixteen environments and living forms
+2026-11-27T09:02:35.7207420Z 2026-11-27 09:02:35.514952+0000 Runner[15664:49575] flutter: AURA raster ready stars/livingMatter/0.0: 3806 ms
+2026-11-27T09:02:35.8632640Z 2026-11-27 09:02:35.761487+0000 Runner[15664:49575] flutter: AURA raster ready stars/livingMatter/0.58: 0 ms
+2026-11-27T09:02:36.1248700Z 2026-11-27 09:02:35.955602+0000 Runner[15664:49575] flutter: AURA raster ready stars/liquidMetal/0.0: 0 ms
+2026-11-27T09:02:36.2265810Z 2026-11-27 09:02:36.146777+0000 Runner[15664:49575] flutter: AURA raster ready stars/liquidMetal/0.58: 0 ms
+2026-11-27T09:02:36.6707370Z 2026-11-27 09:02:36.362563+0000 Runner[15664:49575] flutter: AURA raster ready stars/infinity/0.0: 0 ms
+2026-11-27T09:02:36.7810260Z 2026-11-27 09:02:36.599775+0000 Runner[15664:49575] flutter: AURA raster ready stars/infinity/0.58: 0 ms
+2026-11-27T09:02:36.9719300Z 2026-11-27 09:02:36.854951+0000 Runner[15664:49575] flutter: AURA raster ready stars/constellation/0.0: 0 ms
+2026-11-27T09:02:37.2747410Z 2026-11-27 09:02:37.050473+0000 Runner[15664:49575] flutter: AURA raster ready stars/constellation/0.58: 0 ms
+2026-11-27T09:02:37.4751990Z 2026-11-27 09:02:37.213708+0000 Runner[15664:49575] flutter: AURA raster ready galaxy/livingMatter/0.0: 0 ms
+2026-11-27T09:02:37.6766800Z 2026-11-27 09:02:37.421797+0000 Runner[15664:49575] flutter: AURA raster ready galaxy/livingMatter/0.58: 0 ms
+2026-11-27T09:02:37.7900730Z 2026-11-27 09:02:37.590201+0000 Runner[15664:49575] flutter: AURA raster ready galaxy/liquidMetal/0.0: 0 ms
+2026-11-27T09:02:37.8931350Z 2026-11-27 09:02:37.767628+0000 Runner[15664:49575] flutter: AURA raster ready galaxy/liquidMetal/0.58: 0 ms
+2026-11-27T09:02:38.0800000Z 2026-11-27 09:02:37.982227+0000 Runner[15664:49575] flutter: AURA raster ready galaxy/infinity/0.0: 0 ms
+2026-11-27T09:02:38.3247040Z 2026-11-27 09:02:38.206374+0000 Runner[15664:49575] flutter: AURA raster ready galaxy/infinity/0.58: 0 ms
+2026-11-27T09:02:38.4817970Z 2026-11-27 09:02:38.430907+0000 Runner[15664:49575] flutter: AURA raster ready galaxy/constellation/0.0: 0 ms
+2026-11-27T09:02:38.8902450Z 2026-11-27 09:02:38.636499+0000 Runner[15664:49575] flutter: AURA raster ready galaxy/constellation/0.58: 0 ms
+2026-11-27T09:02:39.0176810Z 2026-11-27 09:02:38.819378+0000 Runner[15664:49575] flutter: AURA raster ready aurora/livingMatter/0.0: 0 ms
+2026-11-27T09:02:39.1186240Z 2026-11-27 09:02:39.013976+0000 Runner[15664:49575] flutter: AURA raster ready aurora/livingMatter/0.58: 0 ms
+2026-11-27T09:02:39.3210360Z 2026-11-27 09:02:39.188694+0000 Runner[15664:49575] flutter: AURA raster ready aurora/liquidMetal/0.0: 0 ms
+2026-11-27T09:02:39.4296900Z 2026-11-27 09:02:39.340270+0000 Runner[15664:49575] flutter: AURA raster ready aurora/liquidMetal/0.58: 0 ms
+2026-11-27T09:02:39.6405290Z 2026-11-27 09:02:39.497531+0000 Runner[15664:49575] flutter: AURA raster ready aurora/infinity/0.0: 0 ms
+2026-11-27T09:02:39.9417320Z 2026-11-27 09:02:39.720455+0000 Runner[15664:49575] flutter: AURA raster ready aurora/infinity/0.58: 0 ms
+2026-11-27T09:02:40.1564580Z 2026-11-27 09:02:39.930211+0000 Runner[15664:49575] flutter: AURA raster ready aurora/constellation/0.0: 0 ms
+2026-11-27T09:02:40.3596280Z 2026-11-27 09:02:40.106598+0000 Runner[15664:49575] flutter: AURA raster ready aurora/constellation/0.58: 0 ms
+2026-11-27T09:02:40.5605250Z 2026-11-27 09:02:40.280760+0000 Runner[15664:49575] flutter: AURA raster ready gravity/livingMatter/0.0: 0 ms
+2026-11-27T09:02:40.7615490Z 2026-11-27 09:02:40.469079+0000 Runner[15664:49575] flutter: AURA raster ready gravity/livingMatter/0.58: 0 ms
+2026-11-27T09:02:40.8619120Z 2026-11-27 09:02:40.649814+0000 Runner[15664:49575] flutter: AURA raster ready gravity/liquidMetal/0.0: 0 ms
+2026-11-27T09:02:40.9640300Z 2026-11-27 09:02:40.832515+0000 Runner[15664:49575] flutter: AURA raster ready gravity/liquidMetal/0.58: 0 ms
+2026-11-27T09:02:41.1637480Z 2026-11-27 09:02:41.009538+0000 Runner[15664:49575] flutter: AURA raster ready gravity/infinity/0.0: 0 ms
+2026-11-27T09:02:41.3647420Z 2026-11-27 09:02:41.224700+0000 Runner[15664:49575] flutter: AURA raster ready gravity/infinity/0.58: 0 ms
+2026-11-27T09:02:41.6704250Z 2026-11-27 09:02:41.467772+0000 Runner[15664:49575] flutter: AURA raster ready gravity/constellation/0.0: 0 ms
+2026-11-27T09:02:41.7714580Z 2026-11-27 09:02:41.636485+0000 Runner[15664:49575] flutter: AURA raster ready gravity/constellation/0.58: 0 ms
+2026-11-27T09:02:46.5292700Z 2026-11-27 09:02:46.090770+0000 Runner[15664:49575] flutter: AURA live 120 frames: no new atmosphere images; native vectors active
+2026-11-27T09:03:45.5390190Z 2026-11-27 09:03:45.258709+0000 Runner[15664:49575] flutter: 01:17 +7: All tests passed!
+2026-11-27T09:03:46.3151950Z Test Suite 'All tests' started at 2026-11-27 09:03:46.048.
+2026-11-27T09:03:46.4159510Z Test Suite 'RunnerTests.xctest' started at 2026-11-27 09:03:46.051.
+2026-11-27T09:03:46.5168230Z Test Suite 'UniverseIntegrationTests' started at 2026-11-27 09:03:46.051.
+2026-11-27T09:03:46.7194370Z Test Case '-[UniverseIntegrationTests testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState]' passed (0.008 seconds).
+2026-11-27T09:03:46.9264540Z Test Case '-[UniverseIntegrationTests testIosRunnerLoadsTheBundledModelAndChecksRuAndEn]' passed (0.002 seconds).
+2026-11-27T09:03:47.1274360Z Test Case '-[UniverseIntegrationTests testNativeIosStorageClockAndNotificationCancellationPreserveRecovery]' passed (0.002 seconds).
+2026-11-27T09:03:47.3284720Z Test Case '-[UniverseIntegrationTests testNativeVoiceCapabilityAndCancellationNeverRequestCapture]' passed (0.095 seconds).
+2026-11-27T09:03:47.5296960Z Test Case '-[UniverseIntegrationTests testNativeAuraShadersRenderAllSixteenEnvironmentsAndLivingForms]' passed (0.001 seconds).
+2026-11-27T09:03:47.7308360Z Test Case '-[UniverseIntegrationTests testNativePresentationProfileAndBundledNarrationRejectUnsafeMutation]' passed (0.001 seconds).
+2026-11-27T09:03:47.8319450Z Test Suite 'UniverseIntegrationTests' passed at 2026-11-27 09:03:46.164.
+2026-11-27T09:03:47.9322650Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 0.109 (0.112) seconds
+2026-11-27T09:03:48.0326140Z Test Suite 'RunnerTests.xctest' passed at 2026-11-27 09:03:46.164.
+2026-11-27T09:03:48.1730700Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 0.109 (0.113) seconds
+2026-11-27T09:03:48.2634600Z Test Suite 'All tests' passed at 2026-11-27 09:03:46.171.
+2026-11-27T09:03:48.3638490Z 	 Executed 6 tests, with 0 failures (0 unexpected) in 0.109 (0.123) seconds
+2026-11-27T09:03:48.9023480Z ✔ Test bundledModelIsAccessibleToTheFlutterWorker() passed after 0.001 seconds.
+2026-11-27T09:03:49.0025850Z ✔ Suite RunnerTests passed after 0.002 seconds.
+2026-11-27T09:03:49.1029600Z ✔ Test run with 1 test passed after 0.003 seconds.
+2026-11-27T09:03:56.2300890Z VERIFIED: all 6 Flutter integration tests and 1 native resource test passed in one XCTest run.
+2026-11-27T09:03:56.3302360Z PASS RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()
+2026-11-27T09:03:56.4303860Z PASS UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn
+2026-11-27T09:03:56.5308150Z PASS UniverseIntegrationTests/testNativeAuraShadersRenderAllSixteenEnvironmentsAndLivingForms
+2026-11-27T09:03:56.6310420Z PASS UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState
+2026-11-27T09:03:56.7314250Z PASS UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery
+2026-11-27T09:03:56.8319150Z PASS UniverseIntegrationTests/testNativePresentationProfileAndBundledNarrationRejectUnsafeMutation
+2026-11-27T09:03:56.9323790Z PASS UniverseIntegrationTests/testNativeVoiceCapabilityAndCancellationNeverRequestCapture
