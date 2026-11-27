@@ -133,4 +133,7 @@ for name in ('aura_environment.frag', 'aura_matter.frag', 'aura_metal.frag'):
     # copied GLSL file cannot satisfy this check or work in the shipped renderer.
     assert len(data) > 128 and data[4:8] == b'IPLR', f'Uncompiled/missing shader: {name}'
     assert data != (repo / 'mobile/shaders' / name).read_bytes(), name
-print('Three compiled AURA runtime shaders and version 0.6.3+13: verified')
+print(
+    'Three compiled AURA runtime shaders and version '
+    f"{info['CFBundleShortVersionString']}+{info['CFBundleVersion']}: verified"
+)

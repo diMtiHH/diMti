@@ -1,0 +1,23 @@
+2026-11-27T12:49:10.6314780Z Native safety checks: 16/16 passed
+2026-11-27T12:49:17.9045760Z Native storage checks: 12/12 passed; 74 contract cases; 40 process interruptions
+2026-11-27T12:49:19.5516740Z Native voice checks: 19/19 passed
+2026-11-27T12:49:24.5198570Z Native presentation checks: 20/20 passed; 15 process interruptions
+2026-11-27T12:49:25.5470400Z Native ambient groups passed: 7
+2026-11-27T12:49:26.8841830Z Native interaction checks: 12/12 passed
+2026-11-27T12:49:29.7378560Z Ran 20 tests in 2.314s
+2026-11-27T12:50:05.7592330Z Ran 10 tests in 35.688s
+2026-11-27T13:03:13.7946340Z 2026-11-27 13:03:13.507214+0000 Runner[16312:53342] flutter: 02:39 +8: All tests passed!
+2026-11-27T13:03:14.4491730Z Test Case '-[UniverseIntegrationTests testNativeAuraShadersRenderAllSixteenEnvironmentsAndLivingForms]' passed (0.009 seconds).
+2026-11-27T13:03:14.6527900Z Test Case '-[UniverseIntegrationTests testNativeWorldPrivacyCatalogAdmissionAndPersonalReset]' passed (0.002 seconds).
+2026-11-27T13:03:14.8596140Z Test Case '-[UniverseIntegrationTests testNativeVoiceCapabilityAndCancellationNeverRequestCapture]' passed (0.002 seconds).
+2026-11-27T13:03:15.0898490Z Test Case '-[UniverseIntegrationTests testNativePresentationProfileAndBundledNarrationRejectUnsafeMutation]' passed (0.086 seconds).
+2026-11-27T13:03:15.3997450Z Test Case '-[UniverseIntegrationTests testNativeIosStorageClockAndNotificationCancellationPreserveRecovery]' passed (0.003 seconds).
+2026-11-27T13:03:15.6184680Z Test Case '-[UniverseIntegrationTests testIosRunnerLoadsTheBundledModelAndChecksRuAndEn]' passed (0.002 seconds).
+2026-11-27T13:03:15.8199790Z Test Case '-[UniverseIntegrationTests testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState]' passed (0.002 seconds).
+2026-11-27T13:03:15.9213490Z Test Suite 'UniverseIntegrationTests' passed at 2026-11-27 13:03:13.847.
+2026-11-27T13:03:16.0240040Z 	 Executed 7 tests, with 0 failures (0 unexpected) in 0.107 (0.113) seconds
+2026-11-27T13:03:16.1245450Z Test Suite 'RunnerTests.xctest' passed at 2026-11-27 13:03:13.847.
+2026-11-27T13:03:16.2254060Z 	 Executed 7 tests, with 0 failures (0 unexpected) in 0.107 (0.114) seconds
+2026-11-27T13:03:16.3257200Z Test Suite 'All tests' passed at 2026-11-27 13:03:13.848.
+2026-11-27T13:03:16.4260580Z 	 Executed 7 tests, with 0 failures (0 unexpected) in 0.107 (0.118) seconds
+2026-11-27T13:03:17.0125060Z ✔ Test bundledModelIsAccessibleToTheFlutterWorker() passed after 0.002 seconds.

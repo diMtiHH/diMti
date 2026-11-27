@@ -1,0 +1,17 @@
+{
+  "protocol": "stage8-xctest-v1",
+  "flutter_integration_tests_passed": 7,
+  "native_resource_tests_passed": 1,
+  "cases": [
+    "RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()",
+    "UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn",
+    "UniverseIntegrationTests/testNativeAuraShadersRenderAllSixteenEnvironmentsAndLivingForms",
+    "UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState",
+    "UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery",
+    "UniverseIntegrationTests/testNativePresentationProfileAndBundledNarrationRejectUnsafeMutation",
+    "UniverseIntegrationTests/testNativeVoiceCapabilityAndCancellationNeverRequestCapture",
+    "UniverseIntegrationTests/testNativeWorldPrivacyCatalogAdmissionAndPersonalReset"
+  ],
+  "runner": "x86_64",
+  "test_retries": 0
+}

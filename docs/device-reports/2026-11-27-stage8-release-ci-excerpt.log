@@ -1,0 +1,8 @@
+2026-11-27T12:48:58.8940790Z Native safety checks: 16/16 passed
+2026-11-27T12:49:04.9497310Z Native storage checks: 12/12 passed; 74 contract cases; 40 process interruptions
+2026-11-27T12:49:05.7934800Z Native voice checks: 19/19 passed
+2026-11-27T12:49:08.7888160Z Native presentation checks: 20/20 passed; 15 process interruptions
+2026-11-27T12:49:09.3904680Z Native ambient groups passed: 7
+2026-11-27T12:49:10.2735410Z Native interaction checks: 12/12 passed
+2026-11-27T12:50:23.5381760Z No issues found! (ran in 14.4s)
+2026-11-27T12:53:30.8419540Z Three compiled AURA runtime shaders and version 0.6.3+13: verified
