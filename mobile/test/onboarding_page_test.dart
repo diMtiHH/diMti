@@ -459,7 +459,7 @@ void main() {
       final fixture = OnboardingFixture();
       fixture.profile.value = PresentationProfile(onboardingStep: 2).toJson();
       fixture.narration.playError = MissingPluginException();
-      await show(tester, fixture);
+      await show(tester, fixture, reduced: false);
       final track = (await tester.runAsync(() => NarrationTrack.load('ru')))!;
       expect(
         tester.widget<Text>(find.byKey(const ValueKey('principles-text'))).data,
@@ -485,6 +485,104 @@ void main() {
       await close(tester, fixture);
     },
   );
+
+  testWidgets(
+    'mid-playback failure automatically reveals complete text with motion enabled',
+    (tester) async {
+      final fixture = OnboardingFixture();
+      fixture.profile.value = PresentationProfile(onboardingStep: 2).toJson();
+      await show(tester, fixture, reduced: false);
+      final track = (await tester.runAsync(() => NarrationTrack.load('ru')))!;
+      String text() => tester
+          .widget<Text>(find.byKey(const ValueKey('principles-text')))
+          .data!;
+      final id = fixture.narration.id;
+      final position = track.segments.first.endMs ~/ 2;
+      fixture.narration.positions[id] = NarrationPosition(
+        position,
+        track.durationMs,
+        true,
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(text(), track.visibleText(position));
+      expect(text(), isNot(track.text));
+      // Native decode/interruption retires its playback id. The next position
+      // call fails; the UI must disclose the full text without a manual tap.
+      fixture.narration.positionError = PlatformException(code: 'interrupted');
+      await tester.pump(const Duration(milliseconds: 100));
+      expect(text(), track.text);
+      expect(fixture.narration.stops, contains(id));
+      expect(
+        find.text('Звук недоступен. Текст можно прочитать полностью.'),
+        findsOneWidget,
+      );
+      expect(
+        tester
+            .widget<FilledButton>(
+              find.widgetWithText(FilledButton, 'Я понимаю и принимаю'),
+            )
+            .onPressed,
+        isNotNull,
+      );
+      await tester.pump(const Duration(seconds: 5));
+      expect(fixture.narration.plays, hasLength(1));
+      expect(fixture.stored.completed, isFalse);
+      expect(fixture.profile.writes, isEmpty);
+      fixture.expectNoQuestionAction();
+      await close(tester, fixture);
+    },
+  );
+
+  for (final destination in ['world tab', 'settings']) {
+    testWidgets(
+      '$destination clears a private review and requires a fresh question after returning',
+      (tester) async {
+        final fixture = OnboardingFixture();
+        fixture.profile.value = PresentationProfile(
+          completed: true,
+          onboardingStep: 2,
+          termsVersion: currentTermsVersion,
+        ).toJson();
+        await show(tester, fixture);
+        await tester.enterText(
+          find.byType(TextField),
+          'private review fixture',
+        );
+        await flushUi(tester);
+        await tap(tester, find.text('Продолжить'));
+        expect(find.text('Подтверждаю'), findsOneWidget);
+        if (destination == 'world tab') {
+          await tap(tester, find.text('Что волнует мир'));
+        } else {
+          await tap(tester, find.byKey(const ValueKey('open-settings')));
+        }
+        expect(find.text('private review fixture'), findsNothing);
+        expect(find.text('Подтверждаю'), findsNothing);
+        if (destination == 'world tab') {
+          await tap(tester, find.text('Вселенная'));
+        } else {
+          await tester.pageBack();
+          await flushUi(tester);
+        }
+        expect(
+          tester.widget<TextField>(find.byType(TextField)).controller!.text,
+          isEmpty,
+        );
+        expect(find.text('Подтверждаю'), findsNothing);
+        expect(
+          tester
+              .widget<FilledButton>(
+                find.widgetWithText(FilledButton, 'Продолжить'),
+              )
+              .onPressed,
+          isNull,
+        );
+        expect(fixture.profile.writes, isEmpty);
+        fixture.expectNoQuestionAction();
+        await close(tester, fixture);
+      },
+    );
+  }
 
   testWidgets(
     'animated transcript uses actual player position and offers full text immediately',
