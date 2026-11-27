@@ -1,4 +1,5 @@
 """Build once, then run all iOS checks through XCTest (no VM-service discovery)."""
+import codecs
 import json
 import os
 from pathlib import Path
@@ -18,43 +19,67 @@ class StepFailed(RuntimeError):
         self.code = code
 
 
+def _tail_log(path, stop, console):
+    """Best-effort live view; the subprocess writes the complete log directly."""
+    decoder = codecs.getincrementaldecoder('utf-8')(errors='replace')
+    try:
+        with path.open('rb') as source:
+            while not stop.wait(0.1):
+                chunk = source.read(65536)
+                if chunk:
+                    console.write(decoder.decode(chunk))
+                    console.flush()
+            # A descendant may keep writing after the direct command exits.
+            # Drain only a bounded final chunk, never wait for its EOF.
+            console.write(decoder.decode(source.read(65536), final=True))
+            console.flush()
+    except (OSError, ValueError):
+        # Console forwarding cannot invalidate the command's actual result.
+        # Its original stdout/stderr bytes remain in the artifact log.
+        return
+
+
+def _terminate_group(process, force=False):
+    if os.name == 'posix':
+        os.killpg(process.pid, signal.SIGKILL if force else signal.SIGTERM)
+    elif force:
+        process.kill()
+    else:
+        process.terminate()
+
+
 def run(command, name, output, timeout):
-    """Keep live output and a file; stop only this command's process group."""
+    """Use the direct exit code; terminate its process group only on timeout."""
     print(f'CI STEP {name}: starting (limit {timeout}s)', flush=True)
-    with (output / f'{name}.log').open('w', encoding='utf-8') as log:
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                   text=True, errors='replace', start_new_session=True)
-
-        def copy_output():
-            for line in process.stdout:
-                log.write(line)
-                log.flush()
-                print(line, end='', flush=True)
-
-        reader = threading.Thread(target=copy_output, daemon=True)
+    path = output / f'{name}.log'
+    with path.open('wb', buffering=0) as log:
+        # CoreSimulator descendants inherit bootstatus's stdout. A pipe would
+        # stay open after a successful boot and falsely fail while awaiting EOF.
+        process = subprocess.Popen(command, stdout=log, stderr=subprocess.STDOUT,
+                                   start_new_session=True,
+                                   creationflags=getattr(subprocess, 'CREATE_NO_WINDOW', 0))
+        stop = threading.Event()
+        reader = threading.Thread(target=_tail_log, args=(path, stop, sys.stdout), daemon=True)
         reader.start()
         try:
-            code = process.wait(timeout=timeout)
-        except subprocess.TimeoutExpired:
-            print(f'CI STEP {name}: timeout; stopping its process group.', flush=True)
             try:
-                os.killpg(process.pid, signal.SIGTERM)
-                process.wait(timeout=5)
-            except ProcessLookupError:
-                pass
+                code = process.wait(timeout=timeout)
             except subprocess.TimeoutExpired:
-                os.killpg(process.pid, signal.SIGKILL)
-                process.wait(timeout=5)
-            code = 124
-        reader.join(timeout=5)
-        if reader.is_alive():
-            try:
-                os.killpg(process.pid, signal.SIGTERM)
-            except ProcessLookupError:
-                pass
-            reader.join(timeout=5)
-            raise StepFailed(name + '-output-not-closed', 124)
-        process.stdout.close()
+                print(f'CI STEP {name}: timeout; stopping its process group.', flush=True)
+                try:
+                    _terminate_group(process)
+                    process.wait(timeout=5)
+                except ProcessLookupError:
+                    pass
+                except subprocess.TimeoutExpired:
+                    _terminate_group(process, force=True)
+                    process.wait(timeout=5)
+                code = 124
+        finally:
+            stop.set()
+            # A slow CI console is not a failed command. The daemon owns only
+            # its read handle; returning cannot close a file it is writing to.
+            reader.join(timeout=1)
     print(f'CI STEP {name}: exit {code}', flush=True)
     return code
 

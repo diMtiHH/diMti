@@ -12,8 +12,8 @@ jobs:
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
-      - name: Test rejection of incomplete XCTest reports
-        run: python -m unittest discover -s mobile/tool -p test_xctest_result.py -v
+      - name: Test CI runner and rejection of incomplete XCTest reports
+        run: python -m unittest discover -s mobile/tool -p "test_*.py" -v
       - name: Set up pinned SDK, analyze and run all application tests
         shell: cmd
         run: setup-windows.cmd
@@ -33,8 +33,8 @@ jobs:
         run: bash mobile/tool/run_native_voice.sh
       - name: Test presentation profile and bundled narration policy
         run: bash mobile/tool/run_native_presentation.sh
-      - name: Test XCTest result validation
-        run: python3 -m unittest discover -s mobile/tool -p test_xctest_result.py -v
+      - name: Test CI runner and XCTest result validation
+        run: python3 -m unittest discover -s mobile/tool -p "test_*.py" -v
       - name: Install pinned Flutter SDK
         run: |
           git clone --depth 1 --branch 3.50.1 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
