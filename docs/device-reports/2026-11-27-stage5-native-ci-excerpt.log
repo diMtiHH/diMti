@@ -1,0 +1,91 @@
+2026-11-27T00:49:22.2476530Z PASS 1: commit token before creating kernel marker
+2026-11-27T00:49:22.2479890Z PASS 2: process relaunch reuses token without clock/date dependency
+2026-11-27T00:49:22.2482550Z PASS 3: simulated reboot rotates token
+2026-11-27T00:49:22.2483630Z PASS 4: failed write recovery
+2026-11-27T00:49:22.2486700Z PASS 5: ambiguous committed write recovery
+2026-11-27T00:49:22.2488960Z PASS 6: crash between persisted token and kernel creation
+2026-11-27T00:49:22.2490970Z PASS 7: sandbox/unsupported API falls back on documented clock
+2026-11-27T00:49:22.2494340Z PASS 8: unexpected resource failures block instead of weakening recovery
+2026-11-27T00:49:22.2495750Z PASS 9: strict private marker validation
+2026-11-27T00:49:22.2498330Z PASS 10: real Darwin semaphore and atomic file survive separate processes
+2026-11-27T00:49:22.2501710Z PASS 11: real missing-marker recovery across processes (reboot simulation)
+2026-11-27T00:49:22.2504560Z PASS 12: concurrent clock initialization cannot race durable marker
+2026-11-27T00:49:22.2507190Z PASS 13: corrupt persisted clock marker cannot silently reset timer
+2026-11-27T00:49:22.2510130Z PASS 14: notification callback success/error and duplicate completion
+2026-11-27T00:49:22.2539180Z PASS 15: missing OS callback releases the serial queue
+2026-11-27T00:49:22.2551750Z PASS 16: late add is cancelled; newer adds fenced; independent scopes and safe retry
+2026-11-27T00:49:22.2554240Z Native safety checks: 16/16 passed
+2026-11-27T00:49:24.8502990Z PASS storage 1: shared Dart/Swift state contract: 74 cases; rejected input preserves bytes
+2026-11-27T00:49:24.8509220Z PASS storage 2: notification preference and channel switch require actual booleans
+2026-11-27T00:49:24.8549700Z PASS storage 3: invalid preferences cannot overwrite saved opt-in
+2026-11-27T00:49:30.1610230Z PASS storage 4: 40 process exits across 5 write checkpoints and both scopes
+2026-11-27T00:49:30.1634540Z PASS storage 5: first uncommitted reservation is never loaded from staging
+2026-11-27T00:49:30.1670950Z PASS storage 6: error after rename propagates; reload recovers the committed timer
+2026-11-27T00:49:30.1737680Z PASS storage 7: corrupt, invalid UTF-8 and oversized committed files never use pending data
+2026-11-27T00:49:30.1775440Z PASS storage 8: diagnostic reset isolation and answer removal in committed cooldown
+2026-11-27T00:49:30.1793180Z PASS storage 9: ambiguous preferences rejected; canonical state committed without leftover staging
+2026-11-27T00:49:30.1801970Z PASS storage 10: both private scope directories excluded from backup
+2026-11-27T00:49:30.1812430Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-27T00:49:31.8433140Z PASS only explicit RU and EN voice locales are accepted
+2026-11-27T00:49:31.8434360Z PASS request identity rejects booleans strings fractions and overflow
+2026-11-27T00:49:31.8435310Z PASS cancel invalidates delayed permission completion
+2026-11-27T00:49:31.8436180Z PASS supersession rejects callbacks even when caller reuses an ID
+2026-11-27T00:49:31.8437190Z PASS duplicate and stale callbacks cannot start or stop another capture
+2026-11-27T00:49:31.8438350Z PASS graceful stop keeps final results but forbids automatic restart
+2026-11-27T00:49:31.8440970Z PASS terminal delivery retires once and rejects later transcript or level
+2026-11-27T00:49:31.8442110Z PASS silence and low room noise do not produce synthetic animation
+2026-11-27T00:49:31.8443090Z PASS level follows actual RMS with smooth attack and slower release
+2026-11-27T00:49:31.8444060Z PASS invalid audio measurements cannot leak NaN or unbounded levels
+2026-11-27T00:49:31.8445050Z PASS transcript size matches Dart UTF16 limit without silent truncation
+2026-11-27T00:49:31.8446050Z PASS capture permission and finalization waits have explicit limits
+2026-11-27T00:49:31.8446880Z Native voice checks: 12/12 passed
+2026-11-27T00:49:36.5744620Z PASS all fixed background and answer style combinations are valid
+2026-11-27T00:49:36.5745790Z PASS exact profile keys strict booleans integers and enums are enforced
+2026-11-27T00:49:36.5748550Z PASS duplicate escaped keys decimal syntax malformed and oversized JSON are rejected
+2026-11-27T00:49:36.5749610Z PASS names use 40 Unicode scalars and reject every C0 and C1 control
+2026-11-27T00:49:36.5750550Z PASS completion requires slide two and nonzero accepted terms version
+2026-11-27T00:49:36.5751640Z PASS validation happens before writes and valid profile roundtrips canonically
+2026-11-27T00:49:36.5752920Z PASS private no-backup profile storage remains separate from session state
+2026-11-27T00:49:36.5754000Z PASS corruption invalid UTF8 oversized files and symlinks never become defaults
+2026-11-27T00:49:36.5755090Z PASS ten process interruptions preserve only the old or committed profile
+2026-11-27T00:49:36.5756210Z PASS ambiguous post-rename error propagates while committed profile remains readable
+2026-11-27T00:49:36.5757470Z PASS narration accepts only fixed bundled languages and positive integer identities
+2026-11-27T00:49:36.5758470Z PASS narration durations are finite positive and bounded
+2026-11-27T00:49:36.5759610Z Native presentation checks: 12/12 passed; 10 process interruptions
+2026-11-27T00:49:37.3801680Z test_inherited_stdout_does_not_keep_successful_step_open (test_ios_runner.IOSCommandRunner.test_inherited_stdout_does_not_keep_successful_step_open) ... ok
+2026-11-27T00:49:37.4437780Z test_nonzero_exit_is_not_hidden_by_success_looking_output (test_ios_runner.IOSCommandRunner.test_nonzero_exit_is_not_hidden_by_success_looking_output) ... ok
+2026-11-27T00:49:37.6727320Z test_real_timeout_stops_direct_process_and_returns_124 (test_ios_runner.IOSCommandRunner.test_real_timeout_stops_direct_process_and_returns_124) ... ok
+2026-11-27T00:49:38.7887030Z test_slow_live_console_cannot_turn_success_into_failure (test_ios_runner.IOSCommandRunner.test_slow_live_console_cannot_turn_success_into_failure) ... ok
+2026-11-27T00:49:38.7918630Z test_spawn_failure_is_not_reported_as_success (test_ios_runner.IOSCommandRunner.test_spawn_failure_is_not_reported_as_success) ... ok
+2026-11-27T00:49:38.8574960Z test_stdout_stderr_and_non_utf8_bytes_are_preserved (test_ios_runner.IOSCommandRunner.test_stdout_stderr_and_non_utf8_bytes_are_preserved) ... ok
+2026-11-27T00:49:38.8597820Z test_timeout_escalates_to_kill_for_unresponsive_process_group (test_ios_runner.IOSCommandRunner.test_timeout_escalates_to_kill_for_unresponsive_process_group) ... ok
+2026-11-27T00:49:38.8601270Z test_all_required_cases (test_xctest_result.XCTestResultContract.test_all_required_cases) ... ok
+2026-11-27T00:49:38.8604140Z test_duplicate_cannot_replace_missing_case (test_xctest_result.XCTestResultContract.test_duplicate_cannot_replace_missing_case) ... ok
+2026-11-27T00:49:38.8606400Z test_empty_report_cannot_pass (test_xctest_result.XCTestResultContract.test_empty_report_cannot_pass) ... ok
+2026-11-27T00:49:38.8608290Z test_failed_case_cannot_pass (test_xctest_result.XCTestResultContract.test_failed_case_cannot_pass) ... ok
+2026-11-27T00:49:38.8610160Z test_missing_case_cannot_pass (test_xctest_result.XCTestResultContract.test_missing_case_cannot_pass) ... ok
+2026-11-27T00:49:38.8612180Z test_retry_cannot_disguise_failure (test_xctest_result.XCTestResultContract.test_retry_cannot_disguise_failure) ... ok
+2026-11-27T00:49:38.8614470Z test_same_name_from_wrong_suite_cannot_pass (test_xctest_result.XCTestResultContract.test_same_name_from_wrong_suite_cannot_pass) ... ok
+2026-11-27T00:49:38.8616650Z test_skipped_case_cannot_pass (test_xctest_result.XCTestResultContract.test_skipped_case_cannot_pass) ... ok
+2026-11-27T00:49:38.8618920Z Ran 15 tests in 1.857s
+2026-11-27T00:50:06.3106190Z Xcode 16.4
+2026-11-27T00:52:05.1094650Z CI STEP configure: starting (limit 600s)
+2026-11-27T00:52:41.1269490Z CI STEP configure: exit 0
+2026-11-27T00:52:41.1487030Z CI STEP build: starting (limit 1200s)
+2026-11-27T00:55:03.1299610Z CI STEP build: exit 0
+2026-11-27T00:55:06.4791900Z CI STEP boot-1: starting (limit 300s)
+2026-11-27T00:59:39.4254780Z [2026-11-27 00:58:45 +0000] Status=4294967295, isTerminal=YES, Elapsed=03:32.
+2026-11-27T00:59:39.7814740Z CI STEP boot-1: exit 0
+2026-11-27T00:59:39.8829470Z CI STEP test: starting (limit 600s)
+2026-11-27T01:04:26.5088420Z 	 Executed 5 tests, with 0 failures (0 unexpected) in 0.110 (0.115) seconds
+2026-11-27T01:04:26.7336360Z 	 Executed 5 tests, with 0 failures (0 unexpected) in 0.110 (0.117) seconds
+2026-11-27T01:04:26.9422070Z 	 Executed 5 tests, with 0 failures (0 unexpected) in 0.110 (0.123) seconds
+2026-11-27T01:04:28.8487390Z CI STEP test: exit 0
+2026-11-27T01:04:37.1726800Z VERIFIED: all 5 Flutter integration tests and 1 native resource test passed in one XCTest run.
+2026-11-27T01:04:37.2730850Z PASS RunnerTests/bundledModelIsAccessibleToTheFlutterWorker()
+2026-11-27T01:04:37.3738720Z PASS UniverseIntegrationTests/testIosRunnerLoadsTheBundledModelAndChecksRuAndEn
+2026-11-27T01:04:37.4738870Z PASS UniverseIntegrationTests/testNativeInvalidRecordsAndMalformedSettingsPreserveSavedState
+2026-11-27T01:04:37.5743920Z PASS UniverseIntegrationTests/testNativeIosStorageClockAndNotificationCancellationPreserveRecovery
+2026-11-27T01:04:37.6754330Z PASS UniverseIntegrationTests/testNativePresentationProfileAndBundledNarrationRejectUnsafeMutation
+2026-11-27T01:04:37.8758020Z PASS UniverseIntegrationTests/testNativeVoiceCapabilityAndCancellationNeverRequestCapture
+

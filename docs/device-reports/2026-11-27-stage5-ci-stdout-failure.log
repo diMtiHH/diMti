@@ -1,0 +1,19 @@
+2026-11-27T00:32:48.0419080Z Native safety checks: 16/16 passed
+2026-11-27T00:32:57.0916770Z Native storage checks: 10/10 passed; 74 contract cases; 40 process interruptions
+2026-11-27T00:33:00.8115030Z Native voice checks: 12/12 passed
+2026-11-27T00:33:04.8327280Z Native presentation checks: 12/12 passed; 10 process interruptions
+2026-11-27T00:35:35.8262290Z CI STEP configure: starting (limit 600s)
+2026-11-27T00:36:04.9200280Z CI STEP configure: exit 0
+2026-11-27T00:36:04.9201190Z CI STEP build: starting (limit 1200s)
+2026-11-27T00:37:51.0373670Z ** TEST BUILD SUCCEEDED **
+2026-11-27T00:37:51.1150810Z CI STEP build: exit 0
+2026-11-27T00:37:53.6318670Z CI STEP boot-1: starting (limit 300s)
+2026-11-27T00:40:29.9669290Z [2026-11-27 00:40:11 +0000] Status=4294967295, isTerminal=YES, Elapsed=02:12.
+2026-11-27T00:40:30.4120620Z 	Finished
+2026-11-27T00:40:30.8624610Z CI FAILED: boot-1-output-not-closed failed with exit code 124
+2026-11-27T00:40:31.0966100Z CI STEP device-diagnostics: starting (limit 20s)
+2026-11-27T00:40:47.8436250Z CI STEP device-diagnostics: timeout; stopping its process group.
+2026-11-27T00:40:47.9823510Z CI STEP device-diagnostics: exit 124
+2026-11-27T00:41:02.9923010Z ##[error]Process completed with exit code 124.
+2026-11-27T00:41:07.6429900Z Finished uploading artifact content to blob storage!
+

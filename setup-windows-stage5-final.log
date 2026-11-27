@@ -1,0 +1,301 @@
+Flutter SDK: C:\Users\user\AppData\Local\AskTheUniverse\flutter-3.50.1
+model.onnx: verified (470268510 bytes)
+tokenizer.json: verified (17082730 bytes)
+Resolving dependencies...
+Downloading packages...
+  crypto 3.0.7 (3.0.8 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.14 (0.7.15 available)
+Got dependencies!
+3 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Analyzing mobile...                                             
+No issues found! (ran in 5.9s)
+00:00 +0: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart
+00:00 +0: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: primary and secondary reading colors have sufficient dark contrast
+00:00 +1: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: all sixteen background and style combinations remain independent
+00:01 +2: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: normal motion advances independently without changing selection
+00:01 +3: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: Reduce Motion freezes scene and preview while retaining their image
+00:01 +4: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: accessible navigation stops decorative animation
+00:01 +5: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: inactive, disabled animation and TickerMode suspend motion
+00:02 +6: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: background lifecycle suspends both clocks and resume obeys active
+00:02 +7: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: decorations preserve foreground taps and provide passive semantics
+00:02 +8: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: unknown persisted appearance falls back to valid passive visuals
+00:02 +9: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/cosmic_scene_test.dart: render a deterministic sixteen-combination contact sheet for review
+00:02 +10: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_report_test.dart
+00:03 +10: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_report_test.dart: report preserves units, UTC time, build mode and verified asset identity
+00:03 +11: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart
+00:04 +11: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart: device measurement uses nearest-rank percentiles and checks both outcomes
+00:04 +12: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart: a failed check cannot yield a successful benchmark
+00:04 +13: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart: interruption during check 1 discards the run
+00:04 +14: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/device_run_test.dart: interruption during check 20 discards the run
+00:04 +15: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart
+00:06 +15: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: (setUpAll)
+00:12 +15: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: FP32 Dart path agrees with the frozen Python implementation, one full question per run
+00:13 +16: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: full input is required
+00:13 +17: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: missing or corrupt model fails at startup
+00:13 +18: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: UI worker runs the bundled model off the UI isolate
+00:19 +19: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/engine_test.dart: (tearDownAll)
+00:19 +19: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart
+00:20 +19: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: text follows player position, not elapsed wall time
+00:20 +20: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: completion keeps final text and stops polling
+00:20 +21: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: cancelling delayed playback cleans up again when play replies late
+00:20 +22: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: new language ignores a late old player position and stops by id
+00:20 +23: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: play timeout bounds busy state and late success cannot restart audio
+00:20 +24: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: stalled position fails closed and stops the player
+00:20 +25: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: missing audio plugin leaves no player or automatic retry
+00:20 +26: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: dispose and controller recreation never reuse a playback identity
+00:20 +27: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: synchronous cancellation listener prevents native play
+00:20 +28: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: bundled tracks have monotonic segments and complete readable text
+00:20 +29: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: native narration reply validation valid calls use exact methods, language and playback id
+00:20 +30: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: native narration reply validation missing, mistyped, out-of-range or extra play fields are rejected
+00:20 +31: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/narration_test.dart: native narration reply validation missing, mistyped, impossible or extra position fields are rejected
+00:20 +32: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart
+00:21 +32: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: three steps persist independent choices and enter home only after consent write
+00:22 +33: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: skip makes the name optional and does not imply consent
+00:22 +34: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: restart resumes persisted step 1 without replaying earlier slides
+00:22 +35: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: restart resumes persisted step 2 without replaying earlier slides
+00:22 +36: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: completed onboarding never replays intro or narration after restart
+00:22 +37: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: changed terms show only static consent without replaying onboarding audio
+00:22 +38: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: principles in settings are read-only and never play audio
+00:22 +39: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: corrupt profile blocks entry and retry never resets stored data
+00:22 +40: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: ambiguous consent write blocks home until explicit readback recovers it
+00:22 +41: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: background cancels pending audio and resume needs an explicit play tap
+00:22 +42: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: language change cancels narration and displays new text without automatic sound
+00:23 +43: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: delayed slide persistence cannot start narration after background and resume
+00:23 +44: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: audio failure leaves complete readable principles and explicit consent available
+00:23 +45: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: mid-playback failure automatically reveals complete text with motion enabled
+00:23 +46: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: world tab clears a private review and requires a fresh question after returning
+00:23 +47: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: settings clears a private review and requires a fresh question after returning
+00:23 +48: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: animated transcript uses actual player position and offers full text immediately
+00:23 +49: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/onboarding_page_test.dart: render three onboarding screens and home at iPhone width for review
+00:25 +50: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart
+00:25 +50: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: only absent storage produces defaults, without writing or consent
+00:25 +51: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: stars/coin survives persistence and restart
+00:25 +52: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: stars/sphere survives persistence and restart
+00:25 +53: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: stars/blackHole survives persistence and restart
+00:25 +54: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: stars/constellation survives persistence and restart
+00:25 +55: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: galaxy/coin survives persistence and restart
+00:25 +56: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: galaxy/sphere survives persistence and restart
+00:25 +57: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: galaxy/blackHole survives persistence and restart
+00:25 +58: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: galaxy/constellation survives persistence and restart
+00:25 +59: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: nebula/coin survives persistence and restart
+00:25 +60: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: nebula/sphere survives persistence and restart
+00:25 +61: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: nebula/blackHole survives persistence and restart
+00:25 +62: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: nebula/constellation survives persistence and restart
+00:25 +63: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: blackHole/coin survives persistence and restart
+00:25 +64: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: blackHole/sphere survives persistence and restart
+00:25 +65: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: blackHole/blackHole survives persistence and restart
+00:25 +66: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: blackHole/constellation survives persistence and restart
+00:25 +67: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: name clearing preserves independent presentation choices and consent
+00:25 +68: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: unfinished onboarding resumes step 0 without accepting terms
+00:25 +69: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: unfinished onboarding resumes step 1 without accepting terms
+00:25 +70: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: unfinished onboarding resumes step 2 without accepting terms
+00:25 +71: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: consent persists completion, final step and version atomically
+00:25 +72: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: different accepted terms require only consent, preserving the profile
+00:25 +73: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: writes and consent are serialized, never optimistically committed
+00:25 +74: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: listener-enqueued mutation cannot overtake the initiating save
+00:25 +75: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: ambiguous write committed=false blocks mutations until readback
+00:25 +76: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: ambiguous write committed=true blocks mutations until readback
+00:25 +77: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: read corruption blocks first load and does not rewrite defaults
+00:25 +78: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: failed reload retains last profile but blocks writes until valid read
+00:25 +79: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: missing native plugin is a storage failure, not an absent profile
+00:25 +80: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: load flags reflect a delayed read and saves wait for that read
+00:25 +81: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: dispose prevents late publication and skips queued writes
+00:25 +82: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: a late read after dispose does not publish a profile
+00:25 +83: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: names use Unicode scalars, preserve spacing and reject C0/C1
+00:25 +84: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: schema rejects missing, extra, mistyped, unknown and inconsistent values
+00:25 +85: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: duplicate fields including escaped spellings are corruption
+00:25 +86: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/presentation_profile_test.dart: native backend uses only the profile channel and exact payload
+00:25 +87: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart
+00:26 +87: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic pause restores and expires at exactly one minute
+00:26 +88: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: short pause keeps its duration through reboot and clock rebasing
+00:26 +89: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: a real session rejects the diagnostic record without altering it
+00:26 +90: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: upgrading diagnostic mode preserves a legacy thirty minute deadline
+00:26 +91: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: short timer schema rejects unsupported durations and extra fields
+00:26 +92: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: all 100 values map to exactly 50 YES and 50 NO
+00:26 +93: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: system source returns only integers inside its contract
+00:26 +94: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: production gate never reaches RNG for any model outcome or error
+00:26 +95: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: unsupported language never invokes the model adapter
+00:26 +96: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: editing or cancelling a review requires a fresh explicit confirmation
+00:26 +97: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: review from another session and changed language cannot authorize RNG
+00:26 +98: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: confirmation sends the exact approved text and language
+00:26 +99: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: edit during validation discards the late ALLOW
+00:26 +100: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: language during validation discards the late ALLOW
+00:26 +101: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: background during validation discards the late ALLOW
+00:26 +102: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: timeout and validator failure keep the attempt available without RNG
+00:26 +103: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: double tap invokes one validation and one random draw
+00:26 +104: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: background clears review and disallows submission while inactive
+00:26 +105: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: background during intent persistence cancels before RNG
+00:26 +106: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: answer stays hidden until its persistence is acknowledged
+00:26 +107: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: restart restores the exact answer with no draw or premature timer
+00:26 +108: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed intent write (committed=false) never calls RNG
+00:26 +109: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed answer write (committed=false) cannot reroll on recovery
+00:26 +110: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed cooldown write (committed=false) recovers conservatively
+00:26 +111: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed intent write (committed=true) never calls RNG
+00:26 +112: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed answer write (committed=true) cannot reroll on recovery
+00:26 +113: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed cooldown write (committed=true) recovers conservatively
+00:26 +114: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: CSPRNG errors and invalid values do not fabricate an answer or spend attempt
+00:26 +115: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: failed cleanup after RNG error preserves interruption without automatic retry
+00:26 +116: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: cooldown expires at exactly 1800000 ms and duplicate display cannot extend it
+00:26 +117: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: restart and background include elapsed device sleep
+00:26 +118: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: same-boot wall-clock jumps neither shorten nor lengthen pause
+00:26 +119: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: new boot uses UTC then rebases to the new continuous clock
+00:26 +120: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: reboot fallback is bounded to 30 minutes and cannot prove offline wall time
+00:26 +121: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: clock failure or same-boot monotonic regression cannot unlock session
+00:26 +122: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: real small clock regression stays blocked until catch-up
+00:26 +123: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: real clock regression after wall rebase preserves state
+00:26 +124: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: real new clock domain accepts low uptime then guards it
+00:26 +125: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: real failed rebase write retains the accepted clock sample
+00:26 +126: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: real restored controller guards its first clock sample
+00:26 +127: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic small clock regression stays blocked until catch-up
+00:26 +128: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic clock regression after wall rebase preserves state
+00:26 +129: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic new clock domain accepts low uptime then guards it
+00:26 +130: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic failed rebase write retains the accepted clock sample
+00:26 +131: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: diagnostic restored controller guards its first clock sample
+00:26 +132: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: unavailable clock after display preserves the same pending answer
+00:26 +133: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: expiry persistence failure does not make another attempt available
+00:26 +134: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: unknown, truncated, extra-field and malformed records fail closed
+00:26 +135: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: notification failure never changes the durable deadline
+00:26 +136: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: restored locale is supplied by preferences, not question persistence
+00:26 +137: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_core_test.dart: notification is one replaceable generic request and refresh does not reschedule
+00:26 +138: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_language_test.dart
+00:27 +138: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_language_test.dart: language revision during loading reloads latest preferences (stale error=false)
+00:27 +139: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_language_test.dart: language revision during loading reloads latest preferences (stale error=true)
+00:28 +140: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart
+00:28 +140: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: real input requires confirmation and every model result stays closed
+00:29 +141: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: diagnostic stores before showing and restart never selects again
+00:29 +142: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: real reload cannot forget a clock regression
+00:29 +143: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: diagnostic reload cannot forget a clock regression
+00:29 +144: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: real recreated screen retains the observed clock
+00:30 +145: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: diagnostic recreated screen retains the observed clock
+00:30 +146: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: returning to diagnostic route cannot reset clock protection
+00:30 +147: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: replacing the Navigator preserves application clock history
+00:30 +148: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: independent application clock owners do not share history
+00:30 +149: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: background removes review and requires a new edit
+00:30 +150: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: legacy diagnostic pause stays intact until explicit test reset
+00:30 +151: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: notification denial cannot start or reset a timer; locale preserves state
+00:30 +152: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: unavailable clock blocks input with a visible retry
+00:30 +153: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: settings failure is specific and reveals no exception details
+00:30 +154: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: small screen and large text keep confirmation reachable
+00:30 +155: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: diagnostic validator rejects arbitrary questions and unknown language
+00:30 +156: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_page_test.dart: native bridge scopes storage and rejects real reset before platform call
+00:31 +157: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart
+00:31 +157: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real idle
+00:31 +158: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real reserved
+00:31 +159: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real pending yes
+00:31 +160: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real pending no
+00:31 +161: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real legacy 30 minute cooldown
+00:31 +162: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real minute cooldown
+00:31 +163: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: real maximum safe deadlines
+00:31 +164: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic idle
+00:31 +165: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic reserved
+00:31 +166: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic pending yes
+00:31 +167: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic pending no
+00:31 +168: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic legacy 30 minute cooldown
+00:31 +169: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic minute cooldown
+00:31 +170: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic maximum safe deadlines
+00:31 +171: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 14
+00:31 +172: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 15
+00:31 +173: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 16
+00:31 +174: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 17
+00:31 +175: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 18
+00:31 +176: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 19
+00:31 +177: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 20
+00:31 +178: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 21
+00:31 +179: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid root or version 22
+00:31 +180: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 23
+00:31 +181: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 24
+00:31 +182: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 25
+00:31 +183: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 26
+00:31 +184: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 27
+00:31 +185: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 28
+00:31 +186: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 29
+00:31 +187: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid utcDeadline 30
+00:31 +188: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 31
+00:31 +189: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 32
+00:31 +190: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 33
+00:31 +191: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 34
+00:31 +192: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 35
+00:31 +193: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 36
+00:31 +194: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 37
+00:31 +195: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid continuousDeadline 38
+00:31 +196: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 39
+00:31 +197: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 40
+00:31 +198: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 41
+00:31 +199: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 42
+00:31 +200: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 43
+00:31 +201: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 44
+00:31 +202: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid short duration 45
+00:31 +203: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 46
+00:31 +204: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 47
+00:31 +205: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 48
+00:31 +206: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 49
+00:31 +207: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 50
+00:31 +208: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid clock token 51
+00:31 +209: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 52
+00:31 +210: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 53
+00:31 +211: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic valid clock string 54
+00:31 +212: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for idle
+00:31 +213: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for reserved
+00:31 +214: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic short version forbidden for pending
+00:31 +215: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 58
+00:31 +216: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 59
+00:31 +217: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 60
+00:31 +218: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic invalid pending answer 61
+00:31 +219: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing version
+00:31 +220: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing phase
+00:31 +221: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing utcDeadline
+00:31 +222: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing continuousDeadline
+00:31 +223: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic missing bootToken
+00:31 +224: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic unexpected input field
+00:31 +225: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic answer cannot accompany timer
+00:31 +226: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic oversized text
+00:31 +227: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic numeric exponent deadline
+00:31 +228: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic duplicate phase ending valid
+00:31 +229: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic duplicate phase ending invalid
+00:31 +230: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/session_record_contract_test.dart: shared native contract: diagnostic escaped duplicate key
+00:31 +231: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ui_test.dart
+00:32 +231: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ui_test.dart: unavailable iOS bundle leaves input disabled and language switch usable
+00:33 +232: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ui_test.dart: real question entry clears text and returns a closed outcome in both languages
+00:40 +233: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/ui_test.dart: only a completed benchmark can copy a report without question text
+00:47 +234: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart
+00:48 +234: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: voice supplies editable text and level without automatic actions
+00:48 +235: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: stop acknowledgement waits for the final transcript event
+00:48 +236: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: final event before stop reply survives its late platform error
+00:48 +237: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: cancel invalidates delayed permission start before native reply
+00:48 +238: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: restarting in a new language ignores every old event
+00:48 +239: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: stalled start times out and cleans up a later successful reply
+00:48 +240: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: missing final event bounds stop even when reply stalls=false
+00:48 +241: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: missing final event bounds stop even when reply stalls=true
+00:48 +242: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: permissionDenied leaves a manual draft without leaking platform details
+00:48 +243: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: unavailable leaves a manual draft without leaking platform details
+00:48 +244: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: interrupted leaves a manual draft without leaking platform details
+00:48 +245: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: failed leaves a manual draft without leaking platform details
+00:48 +246: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: missing plugin is unavailable and manual cancellation remains usable
+00:48 +247: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: unknown failures use a fixed code and input bounds prevent native start
+00:48 +248: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: malformed native events never become text or amplitude
+00:48 +249: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: controller also rejects invalid typed events from a backend
+00:48 +250: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: dispose invalidates pending start and IDs never repeat in a new owner
+00:48 +251: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: synchronous listener cancellation cannot launch a native start
+00:48 +252: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_input_test.dart: iOS handler ownership preserves a replacement backend and validates events
+00:48 +253: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart
+00:49 +253: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: ru voice needs stop and confirmation; admission stays closed
+00:49 +254: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: en voice needs stop and confirmation; admission stays closed
+00:50 +255: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: explicit voice cancel restores the prior typed draft and ignores late events
+00:50 +256: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: manual edit ends voice ownership and survives a late final result
+00:50 +257: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: background clears voice text and resume never restarts the microphone
+00:50 +258: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: language change cancels the old capture and selects the next locale
+00:50 +259: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: permissionDenied leaves manual input and closed confirmation available
+00:50 +260: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: unavailable leaves manual input and closed confirmation available
+00:50 +261: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: permission dialog inactivity can finish only after returning active
+00:50 +262: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: background during permission request invalidates the late start
+00:50 +263: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: diagnostic fixture never creates microphone controls
+00:50 +264: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_page_test.dart: persisted cooldown disables microphone without altering its deadline
+00:50 +265: loading C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart
+00:51 +265: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: measured level changes rendered brightness and creates a preview
+00:52 +266: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: reduced motion stops the breathing ticker while retaining audio feedback
+00:52 +267: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: inactive star freezes animation and disabled star does not tick
+00:52 +268: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: star has button semantics and cannot activate when disabled
+00:52 +269: C:/Users/user/Desktop/Ask-the-Universe/mobile/test/voice_star_test.dart: malformed audio levels render safely and inactive speech ignores stale energy
+00:52 +270: All tests passed!
